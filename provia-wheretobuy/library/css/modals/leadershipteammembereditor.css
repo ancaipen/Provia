@@ -1,0 +1,21 @@
+/* CSS for the tab editor modal*/
+#winleadershipteammembereditor #multiRelationshipEditor { width:500px; }
+#winleadershipteammembereditor #multiRelationshipEditor .right *, #multiRelationshipEditor .left * { position:static; }
+#winleadershipteammembereditor #featuredItems, #allItems { height:33px; list-style-type: none; margin: 0; padding: 0; }
+#winleadershipteammembereditor #multiRelationshipEditor .right ul, #multiRelationshipEditor .left ul { border:1px solid #323031; margin:0; padding:0 1px; overflow:auto; width:494px;}
+#winleadershipteammembereditor #multiRelationshipEditor .right ul { height:100px; }
+#winleadershipteammembereditor #multiRelationshipEditor .left ul { height:200px; }
+#winleadershipteammembereditor #multiRelationshipEditor .right ul li, #multiRelationshipEditor .left ul li { overflow:hidden; font-weight:bold; padding:3px; height:30px; background-color:#FFF0A5; display:block; border:2px solid #FED22F; margin:2px 2px 0 0; color:#323031; }
+#winleadershipteammembereditor #multiRelationshipEditor .right ul li { float:left; width:86px; }
+#winleadershipteammembereditor #multiRelationshipEditor .left ul li { float:left; width:235px; }
+#winleadershipteammembereditor .ui-state-highlight { background-color:White !important; border:dashed 2px gray !important; margin:0; padding:0; }
+#winleadershipteammembereditor #multiRelationshipEditor ul li .edit { background-image:url('/incontext/assets/image/incontext_icons.gif');background-position:-32px 0;float:right;margin:0 2px;width:16px; }
+#winleadershipteammembereditor #multiRelationshipEditor ul li .text { cursor:default; width:200px; float:left; }
+
+#winleadershipteammembereditor .teamMemberEditor{ width:540px; }
+#winleadershipteammembereditor .teamMemberEditor div { margin:0 0 10px 0; }
+#winleadershipteammembereditor .teamMemberEditor div textarea { width:250px; }
+#winleadershipteammembereditor .teamMemberEditor div h2 { margin:0 0 5px 0; }
+#winleadershipteammembereditor .teamMemberEditor .tabProps li, .tabEditor .tabInfo li { float:left !important; margin:0 10px 0 0; }
+#winleadershipteammembereditor .teamMemberEditor #txtName, .tabEditor #txtShortName { width:255px; }
+#winleadershipteammembereditor .teamMemberEditor #txtBodyCopy { width:540px; }

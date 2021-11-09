@@ -1,0 +1,15 @@
+/* CSS for the product content editor modal*/
+/* CSS for the target audience editor modal*/
+#winproductcontenteditor #productContentEditor{  }
+#winproductcontenteditor #productContentEditor div { margin:0 0 10px 0; }
+#winproductcontenteditor #productContentEditor div textarea { width:250px; }
+#winproductcontenteditor #productContentEditor #txtImageLinkURL { width:310px; }
+#winproductcontenteditor #productContentEditor div h2 { margin:0 0 5px 0; }
+#winproductcontenteditor #productContentEditor .secProps li, #productContentEditor .secInfo li { float:left !important; margin:0 10px 0 0; }
+#winproductcontenteditor #productContentEditor #txtHeading,
+#winproductcontenteditor #productContentEditor #txtHeadingBold,
+#winproductcontenteditor #productContentEditor #txtDisplayName,
+#winproductcontenteditor #productContentEditor #txtTitle { width:215px; }
+#productContentEditor #txtShortName { width:205px; }
+#winproductcontenteditor #productContentEditor .sectionbody { width:510px}
+#winproductcontenteditor textarea:last {width:510px;}

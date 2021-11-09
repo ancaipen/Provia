@@ -1,0 +1,8 @@
+﻿#wineditaudio .fmaEditor{ width:540px; }
+#wineditaudio .fmaEditor div { margin:0 0 10px 0; }
+#wineditaudio .fmaEditor div input[type=text] { width:250px; }
+#wineditaudio .fmaEditor div h2 { margin:0 0 5px 0; }
+#wineditaudio .fmaEditor li { margin:0 10px 5px 0; clear: both; height: 25px; }
+#wineditaudio .fmaEditor li .field,
+#wineditaudio .fmaEditor li label { float: left; margin: 0 10px 0 0; }
+#wineditaudio .fmaEditor li label { width: 100px; }

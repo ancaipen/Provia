@@ -1,0 +1,36 @@
+/* CSS Document */
+  header h1 {margin-top:145px; display:none;}
+  header {margin-top:145px;}
+  
+ @media (min-width: 768px)  {
+    header {margin-top:255px;}
+  }
+  
+  @media (min-width: 992px)  {
+    header {margin-top:145px;}
+  }
+table#cnt-tabbed-content { clear:both; padding:0; border:3px solid #6B8C21; margin:0; }
+table#cnt-tabbed-content .btn { width:70px; }
+table { border:0; margin:0; }
+th { font-family:'Open Sans', arial, sans-serif; font-weight:600; font-size:.6em; padding:16px; text-align:left; }
+td { vertical-align:top; padding:16px; margin:0; }
+td h2 { font-size:1.3em; margin-bottom:.2em; }
+#col-business { width:30%; }
+#col-contact { width:25%; }
+#col-products { width:25%; }
+#col-certifications { width:15%; }
+tr.featured-listing { background-color:#6B8C21; }
+tr.featured-listing td { padding-top:24px; padding-bottom:24px; }
+tr.featured-listing td * { color:white; }
+table#cnt-tabbed-content .btn { width:70px; }
+tr.featured-listing .btn { background-color:#F7F9F4; color:black; }
+tr.featured-listing .btn:hover { background-color:#FFFFFF; }
+
+#sec-form h2 { font-size:.8em; font-weight:600; }
+#sec-form label { font-size:.7em; cursor:pointer; }
+#sec-form fieldset { float:left; padding-right:25px; }
+#fs-product div { float:left; padding-right:25px; }
+#fs-action { padding-right:0; }
+#sec-form .btn { padding:14px 34px 14px 14px; font-size:.9em; }
+
+#map-canvas { width:99.4%; height:418px; border:3px solid #6B8C21; border-bottom:none; }

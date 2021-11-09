@@ -1,0 +1,67 @@
+@charset "utf-8";
+/* Custom CSS for Wufoo forms based on custom2.css and bootstrap */
+
+body {
+ font-family:'Open Sans',Arial,Helvetica,sans-serif;
+ font-size:14px;
+ line-height:1.42857143;
+ color:#333;
+ background-color:#fff
+}
+
+
+   
+input,
+button,
+select,
+textarea {
+ font-family:inherit;
+ font-size:inherit;
+ line-height:inherit
+}
+
+.btn {
+    background-color: #9c9c9c;
+    border: medium none;
+    color: #000;
+  	text-transform: uppercase;
+}
+  
+.btn:hover {background-color:#83b234; color:#fff;}
+  
+input.btTxt {
+    background-color: #9c9c9c !important; 
+    border: none !important;
+}
+
+input.btTxt:hover {
+        background-color: #78a22f !important; 
+    
+}
+
+div#navbar > ul > li > ul > div > li > a.btn:hover {
+    background-color: #777;
+    color: #fff;
+}
+
+input[type=text] {
+    padding:5px; 
+    border:2px solid #ccc; 
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+input[type=text]:focus {
+    border-color:#ccc;
+}
+
+input[type=submit] {
+    padding:10px 30px; 
+    background:#78a22f; 
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+  color:#fff;
+  text-transform:uppercase;
+}

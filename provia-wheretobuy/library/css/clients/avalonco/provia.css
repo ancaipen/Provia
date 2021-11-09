@@ -1,0 +1,28 @@
+#cnt-main-default ul.aside-nav a {
+    background-color: #1170AD;
+    color: #FFF;
+}
+
+#cnt-main-default a {
+    color: #015BA8;
+    outline: medium none;
+}
+
+.secondary-caption {
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    padding-top: 80px;
+    margin: 0px 0px 0px 30px;
+}
+
+@media (max-width: 797px) {
+.carousel .item {
+    display: block;
+    height: 125px;
+}
+
+article section {
+    padding: 0px 30px 30px 30px;
+}
+}

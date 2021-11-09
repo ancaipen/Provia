@@ -1,0 +1,18 @@
+/* CSS Document */
+.frm fieldset label {display:block; font-size:.9em; font-weight:600; padding:4px 0 4px 0; }
+.frm fieldset input, .frm fieldset select, .frm fieldset textarea { display:block; width:60%; padding:4px; font-size:1.1em; }
+.frm fieldset textarea { height:200px; }
+.frm input.btn { font-size:1.2em; margin-top:24px; padding:14px 30px 14px 14px; -webkit-box-shadow:0 0 8px #333333; -moz-box-shadow: 0 0 8px #333333; box-shadow:0 0 8px #333333; }
+.frm fieldset label.error { display:block; margin-top:8px; padding:8px; width:60%; color:#FFF; background-color:#6B8C21; -moz-border-radius: 8px; -webkit-border-radius: 8px; -khtml-border-radius: 8px; border-radius: 8px; }
+.frm fieldset input.error { border-color:#6B8C21; }
+.frm fieldset .optiongrp { padding-top:8px; }
+.frm fieldset .optiongrp input, .frm fieldset .optiongrp select, .frm fieldset .optiongrp textarea { float:left; display:block; width:auto; }
+.frm fieldset .optiongrp label { float:left; display:block; padding:0 8px 8px 8px; margin:0; font-size:.7em; cursor:pointer; }
+.frm fieldset .optiongrp br { display:block; clear:both; }
+.frm fieldset .two-column label { width:40%; }
+#grp-left { float:left; width:60%; }
+#grp-right { float:right; width:38%; }
+.fldgrp fieldset input, .fldgrp fieldset select, .fldgrp fieldset textarea { display:block; width:95%; padding:4px; font-size:1.1em; }
+.frm fieldset label.hide { display:none; }
+footer { position:inherit; }
+footer { position:inherit; }

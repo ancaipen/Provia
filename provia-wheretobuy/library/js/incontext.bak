@@ -1,0 +1,138 @@
+﻿
+$(function () {
+    $('#dialog').dialog({
+        autoOpen: false,
+        width: 600,
+        resizable: false,
+        title: 'Edit Item',
+        url: "",
+        modal: true,
+        position: [null, 100],
+        buttons: {
+            "Save": function () {
+
+                if ($('#parentrelator').html() != null) {
+                    saveParentRelationship();
+                } else if ($('#relator').html() != null) {
+                    saveRelationship();
+                } else {
+
+                    if (typeof tinyMCE != 'undefined')
+                        tinyMCE.triggerSave();
+
+                    $("#dialog form").submit();
+
+                }
+            },
+            //            "Save & Publish": function () {
+            //                $("#publish").val(true);
+            //                $("#dialog form").submit();
+            //            },
+            "Close": function () {
+                $('.html').each(function (i) {
+                    tinyMCE.execCommand("mceRemoveControl", false, $(this).attr("id"));
+                });
+                $(this).html("");
+                $(this).dialog("close");
+            }
+        },
+        close: function (event, ui) {
+            $('.html').each(function (i) {
+                tinyMCE.execCommand("mceRemoveControl", false, $(this).attr("id"));
+            });
+            $(this).html("");
+        }
+    });
+
+
+});
+
+$(function () {
+    if ($('.editor-image img').attr('src') == '')
+        $('.editor-image img').css('display', 'none');
+
+    $('#imgselector').dialog({
+        autoOpen: false,
+        width: 600,
+        resizable: false,
+        title: 'Asset Manager',
+        url: "",
+        modal: false,
+        position: [null, 120],
+        stack: true,
+        zIndex: 9999,
+        buttons: {
+            "Save & Close": function () {
+                $(this).dialog("close");
+            },
+           
+            "Close": function () {
+               
+                $(this).dialog("close");
+            }
+        }
+    });
+});
+
+$(function () {
+    $('#uploader').dialog({
+        autoOpen: false,
+        width: 600,
+        resizable: false,
+        title: 'Asset Uploader',
+        url: "",
+        modal: true,
+        position: [null, 120],
+        stack: true,
+        zIndex: 9999
+        
+    });
+});
+$(".incontext-upload").live("click", function () {
+    $('#uploader').load($(this).attr("rel"));
+    $('#uploader').dialog('open');
+});
+var callbackInput;
+$(".selectorlink").live("click", function () {
+    callbackInput = $(this).attr("name");
+    $('#imgselector').load($(this).attr("rel"));
+    if ($('#imgselector').html() != "") {
+        $('#imgselector').html("");
+    }
+    $('#imgselector').dialog('open');
+
+
+
+})
+$(".img-selector").live("click", function () {
+
+    $(".img-selector").removeClass('ui-selected');
+    $(this).addClass('ui-selected');
+
+    $("#" + callbackInput).val($(this).attr("rel"));
+    $("[name=QuickView_" + callbackInput + "]").attr("src", $(this).attr("rel")).css('display', '');
+});
+
+function LoadTinyMCE() {
+    tinyMCE.init({
+        mode: "specific_textareas",
+        editor_selector: "html",
+        plugins: "advlink,inlinepopups,imagemanager,fullscreen,table,contextmenu",
+        theme: "advanced",
+        convert_urls: false,
+        theme_advanced_toolbar_location: "top",
+        theme_advanced_statusbar_location: "bottom",
+        theme_advanced_toolbar_align: "left",
+        add_form_submit_trigger: false,
+        external_link_list_url: "/library/js/tiny_mce/pages.js",
+        theme_advanced_buttons1: "bold,italic,underline,justifyleft,justifycenter,justifyright,justifyfull,formatselect,fontselect,fontsizeselect,forecolor,backcolor",
+        theme_advanced_buttons2: "table,bullist,numlist,outdent,indent,undo,redo,link,unlink,anchor,image,cleanup,code,hr,removeformat,visualaid,sub,sup,fullscreen",
+        theme_advanced_buttons3: "",
+        valid_children : "+body[style]",
+        extended_valid_elements: "style[dir<ltr?rtl|lang|media|title|type]"
+        
+    });
+//    $('.html').each(function (i) {
+//        tinyMCE.execCommand("mceAddControl", false, $(this).attr("id"));
+//    });
+}

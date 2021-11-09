@@ -1,0 +1,39 @@
+#tblUsers { margin-bottom: 10px; }
+#tblUsers td { padding: 2px; }
+#plhUsers div.name {margin-top:2px;}
+#tblUsers .enabledHolder {
+	width:60px;
+	text-align:center;
+}
+
+#tblUsers .header {border-bottom: 1px solid #000000;}
+
+#tblUsers .lineItemEven td {
+	background:#eaeaea;
+	border-top:1px solid #dddddd;
+	border-bottom:1px solid #dddddd;
+}
+
+#tblUsers td a.editUser,
+#tblUsers td a.deleteUser
+{
+	margin: 0 auto;
+	display: block;
+	background: url('/incontext/assets/image/incontext_icons.gif') -32px 0px;
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	overflow:hidden;
+	text-decoration: none;
+	float: left;
+}
+
+#tblUsers td a.deleteUser 
+{
+	background-position:-48px center;
+	margin-left: 5px;
+}
+
+#tblUsers .action { width: 45px; }
+
+.newTopBtn { margin-bottom: 10px; }

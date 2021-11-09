@@ -1,0 +1,8 @@
+/* CSS for the article editor modal*/
+
+#articleEditor { }
+#articleEditor div { margin:0 0 15px 0; }
+#articleEditor div input[type="text"] { width:400px;}
+#articleEditor div textarea { width:400px; }
+#articleEditor div textarea #txtArticleBody { width:400px; height:200px; }
+#articleEditor div h2 { margin:0 0 5px 0; }

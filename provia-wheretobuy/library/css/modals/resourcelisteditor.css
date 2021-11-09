@@ -1,0 +1,21 @@
+﻿#resourceListEditor .top { border-bottom: 1px solid #AAA; margin-bottom: 5px; padding-bottom: 10px; }
+#resourceListEditor .top input#catName { margin-right: 10px; width: 210px; }
+#resourceListEditor .top select#catList { margin-right: 10px; width: 184px; }
+#resourceListEditor .top select#placement { margin-right: 10px; width: 125px; }
+#resourceListEditor .top a { float: right; margin-top: 2px; }
+
+#resourceListEditor .middle { margin-bottom: 20px; }
+#resourceListEditor .middle .adminList { float: left; margin: 0 10px 0 0; }
+#resourceListEditor .middle .adminList p { font-weight: bold; padding: 5px 0; }
+#resourceListEditor .middle .adminList ul { border:1px solid #323031; height:250px; width:190px; margin:0; padding:0 2px; position:static; overflow:auto; }
+#resourceListEditor .middle .adminList ul li { overflow:hidden; font-weight:bold; background-color:#9F9FA0; display:block; border:1px solid #323031; color:#323031; margin-top: 2px; }
+#resourceListEditor ul li .handle { background-image:url("/incontext/assets/image/incontext_icons.gif"); width: 16px; height: 83%; cursor: move; float: left; margin-top: 4px; position:absolute; z-index:10; }
+#resourceListEditor ul li .edit { background-image:url("/incontext/assets/image/incontext_icons.gif");background-position:-32px 0;float:right;margin:3px 2px;width:16px; text-decoration: none; height: 16px; }
+#resourceListEditor ul li .delete { background-image:url("/incontext/assets/image/incontext_icons.gif");background-position:-48px 0;float:right;margin:3px 2px;width:16px; text-decoration: none; height: 16px; }
+#resourceListEditor ul li .text { cursor:default; width:128px; float:left; padding:3px 3px 3px 20px; }
+#resourceListEditor ul li .text p { padding: 0 !important; }
+#resourceListEditor ul li .text p.resourceCat { font-style: italic; font-weight: normal !important; }
+#resourceListEditor ul li .text span { background-color: #FF9900; padding: 0 3px 0 2px; }
+#resourceListEditor .middle .adminList.last { margin-right: 0; }
+
+.ui-state-highlight { height: 44px; line-height: 1.2em; background-color:White !important; border:dashed 2px gray !important; }

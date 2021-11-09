@@ -1,0 +1,92 @@
+@charset "utf-8";
+
+header {
+     position: relative;
+}
+
+.cnt-article-photo {
+     margin: -99px 0px 0px -30px;
+     overflow: visible;
+}
+
+.cell-right {
+     border: medium none;
+     padding: 0px;
+     width: 31%;
+  position:absolute;
+  right:30px;
+}
+
+.cell-left {
+     width: 65%;
+}
+
+h3 {
+     border-bottom: 1px solid #666666;
+     margin-bottom: 10px;
+     padding-bottom: 5px;
+}
+
+h4 {
+     border-bottom: 1px solid #cccccc;
+     font-size: 0.8em;
+     font-weight: bold;
+     margin: 0px 0px 5px;
+     padding-bottom: 5px;
+}
+
+.feature-menu li {
+     display: inline;
+     float: left;
+     margin-left: 11px;
+}
+
+.feature-menu ul li a {
+     color: #ffffff;
+     display: block;
+     font-size: 11px;
+     height: 8px;
+     padding-top: 97px;
+     text-align: center;
+     text-decoration: none;
+     width: 100px;
+}
+
+.feature-menu > ul > li:first-child {
+     margin: 0px 0px 0px -1px;
+}
+
+.full {
+     float: left;
+}
+
+.full ul.aside-nav { margin-left:0px;}
+
+
+ul.product-image-gallery {
+     font-size: 12px;
+     list-style: none outside none;
+     margin: 0px;
+}
+
+ul.product-image-gallery > li.cell {
+     float: left;
+     margin: 0px 9px 4px 0px;
+}
+
+a.current {
+     color: #000000;
+     cursor: default;
+     margin-left: -10px;
+     opacity: 1;
+}
+
+.coastal {
+     background-image: url("/images/aws/products/coastal-icon.png");
+     display: block;
+     height: 25px;
+     margin: -3px;
+     position: absolute;
+     width: 25px;
+}
+

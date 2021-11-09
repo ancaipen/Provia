@@ -1,0 +1,12 @@
+﻿#tabEditor { width: 510px; }
+
+#tabEditor .row { clear: both; float: none; margin-bottom: 5px; }
+
+#tabEditor .row input.radio { margin-top: 3px; }
+
+#tabEditor .row label { display:block; line-height: 20px; }
+
+#tabEditor .row input { width: 500px; }
+#tabEditor .row .datePicker { width: 125px; }
+
+#tabEditor .fields { margin-bottom: 10px; }

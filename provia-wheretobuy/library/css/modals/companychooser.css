@@ -1,0 +1,51 @@
+﻿/* CSS for the company chooser modal*/
+
+#companyChooserContent
+{
+    width: 300px;
+}
+
+#companyChooserContent #companys 
+{
+	overflow: auto;
+}
+
+#companyChooserContent .company
+{
+    background-color: #EAEAEA;
+}
+
+#companyChooserContent .company_alternative
+{
+    background-color: #FFFFFF;
+}
+
+#companyChooserContent #addcompany
+{
+    padding-bottom: 10px;
+}
+
+#companyChooserContent #companys {height: 400px;}
+
+#companyChooserContent .row
+{
+    padding: 5px;
+    margin-bottom: 0;
+}
+
+#companyChooserContent #companyHeader
+{
+    text-transform: uppercase;
+    border-bottom: 1px solid #000000;
+}
+
+#companyChooserContent .companyName span { padding: 0 3px 0 2px; }
+
+#companyChooserContent #addCompany { padding: 0px 0px 10px 0px; }
+
+#companyChooserContent #companyHeader
+{
+    text-transform: uppercase;
+    border-bottom: 1px solid #000000;
+}
+

@@ -1,0 +1,39 @@
+﻿#incontext-header 
+{
+    height: 38px;
+    z-index: 99999;
+}
+
+#incontext-header li ul 
+{
+    position:relative;
+    z-index:99999;
+}
+#incontext-header li > ul {
+top: 0;
+left: 0;
+}
+
+.rich-dd li span 
+{
+    position:absolute;
+}
+
+#sec-listings table { position: relative; top: -24px; }
+
+#sec-form fieldset { float:left; margin-left:15px; padding-left:15px; }
+#fs-product div { float:left; padding-right:20px; }
+#sec-form #fs-filter li{ width: 150px; float: left; margin-right: 15px;}
+#sec-form #fs-filter { width: 660px; }
+
+#asset-list { position:relative; }
+
+#asset-list { position:relative; }
+#list-cnt { position:relative; }
+table.item-list { width: 550px; position: relative; }
+
+#butAddNewItem { position: relative; }
+
+/*.selectproducts { width:260px; } */
+#fld-prod-col2 { width:191px; }
+#option-products-desc-bottom, #option-products-desc-bottom p { width:643px; position: relative;  }
