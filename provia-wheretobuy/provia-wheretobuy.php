@@ -2,7 +2,7 @@
  
 /*
  
-Plugin Name: Provia Where to Buy
+Plugin Name: Provia - Where to Buy
  
 Plugin URI: https://provia.com/
  

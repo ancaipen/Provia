@@ -2,7 +2,7 @@
  
 /*
  
-Plugin Name: Provia My Projects
+Plugin Name: Provia - My Projects
  
 Plugin URI: https://provia.com/
  

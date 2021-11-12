@@ -2,7 +2,7 @@
  
 /*
  
-Plugin Name: Provia APIs
+Plugin Name: Provia - APIs
  
 Plugin URI: https://provia.com/
  
@@ -47,8 +47,15 @@ add_action( 'rest_api_init', function () {
 function provia_saveimage($data) {
 
 	$userid = 0;
+	$image_name = '';
 	$tags = '';
 	$source = '';
+	$product = '';
+	$series = '';
+	$style = '';
+	$color = '';
+	$session = 0;
+	$password = '';
 	
 	//echo var_dump($data['tags']);
 
@@ -62,13 +69,23 @@ function provia_saveimage($data) {
 		return new WP_Error( 'no_source', 'Source not found', array( 'status' => 404 ));
 	}
 
-	if(!isset($_FILES))
+	if(!isset($data['image']))
 	{
 		return new WP_Error( 'no_image', 'Invalid image, not found', array( 'status' => 404 ) );
 	}
 	
+	if(!isset($data['session']))
+	{
+		return new WP_Error( 'no_session', 'Invalid session, not found', array( 'status' => 404 ) );
+	}
+	
+	if(!isset($data['password']))
+	{
+		return new WP_Error( 'no_password', 'Invalid password, not found', array( 'status' => 404 ) );
+	}
+	
 	$userid = filter_var($data['id'], FILTER_SANITIZE_NUMBER_INT);
-	$image_name = filter_var($_FILES['image']['name'], FILTER_SANITIZE_STRING);
+	$image_name = filter_var($data['image'], FILTER_SANITIZE_STRING);
 	
 	if($userid <= 0)
 	{
@@ -88,19 +105,43 @@ function provia_saveimage($data) {
 		$tags = filter_var($data['tags'], FILTER_SANITIZE_STRING);
 	}
 	
+	if(isset($data['product']))
+	{
+		$product = filter_var($data['product'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['series']))
+	{
+		$series = filter_var($data['series'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['style']))
+	{
+		$style = filter_var($data['style'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['color']))
+	{
+		$color = filter_var($data['color'], FILTER_SANITIZE_STRING);
+	}
+	
 	if(isset($data['source']))
 	{
 		$source = filter_var($data['source'], FILTER_SANITIZE_STRING);
 	}
-	
-	//really basic auth check
-	if($source != "EntryLink")
+
+	if(isset($data['session']))
 	{
-		return new WP_Error( 'source_error', 'Source Error', array( 'status' => 404 ));		
+		$session = filter_var($data['session'], FILTER_SANITIZE_NUMBER_INT);
+	}
+	
+	if(isset($data['password']))
+	{
+		$password = filter_var($data['password'], FILTER_SANITIZE_STRING);
 	}
 	
 	//validate & save image
-	$image_name = save_image($userid, $image_name);
+	$image_name = save_image_url($userid, $image_name);
 	$curr_date = date('Y-m-d H:i:s');
 	$ip_address = $_SERVER['REMOTE_ADDR'];
 	
@@ -111,17 +152,27 @@ function provia_saveimage($data) {
 		$GLOBALS['wpdb']->query(
 		   $GLOBALS['wpdb']->prepare(
 			  "
-			  INSERT INTO wp_provia_images (userid, image_name, image_tags, source, ip_address, created_date)
-			  VALUES ( %d, %s, %s, %s, %s, %s )
+			  INSERT INTO wp_provia_images (userid, image_name, image_tags, source, product, series, style, color, session, password, ip_address, created_date)
+			  VALUES ( %d, %s, %s, %s, %s, %s, %s, %s, %d, %s, %s, %s )
 			  ",
 			  $userid,
 			  $image_name,
 			  $tags,
 			  $source,
+			  $product, 
+			  $series, 
+			  $style, 
+			  $color, 
+			  $session, 
+			  $password,
 			  $ip_address,
 			  $curr_date
 		   )
 		);
+	}
+	else
+	{
+		return new WP_Error( 'image_error', 'Image save error: allowed image types jpg, gif or png', array( 'status' => 500 ));
 	}
 	
 	//return successful response
@@ -129,7 +180,77 @@ function provia_saveimage($data) {
 
 }
 
-function save_image($userid, $name)
+function save_image_url($userid, $image_url)
+{
+	
+	$path = provia_saveimage_path.'images/'.$userid.'/';
+	$dir_exists = file_exists($path);
+	
+	if($dir_exists == FALSE)
+	{
+		mkdir($path);
+	}
+	
+	$image = basename($image_url);
+	
+	if(isset($image) && $image != "")
+	{
+		$saveto = $path.$image;	
+		$typeok = check_image_type($image_url);
+		
+		if($typeok)
+		{
+			$ch = curl_init($image_url);
+			$fp = fopen($saveto, 'wb');
+			curl_setopt($ch, CURLOPT_FILE, $fp);
+			curl_setopt($ch, CURLOPT_HEADER, 0);
+			curl_exec($ch);
+			curl_close($ch);
+			fclose($fp);
+			return $image;
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	return null;
+	
+}
+
+function check_image_type($image_path)
+{
+	$typeString = null;
+	$typeInt = exif_imagetype($image_path);
+	$allow_type = TRUE;
+	
+	switch($typeInt) {
+	  case IMAGETYPE_GIF:
+		$typeString = 'image/gif';
+		break;
+	  case IMAGETYPE_JPEG:
+		$typeString = 'image/jpeg';
+		break;
+	  case IMAGETYPE_PNG:
+		$typeString = 'image/png';
+		break;
+	  default: 
+		$typeString = 'unknown';
+	}
+	
+	//echo IMG_PNG.':'.$typeInt.':'.$typeString;
+	
+	if($typeString == 'unknown')
+	{
+		$allow_type = FALSE;
+	}
+	
+	return $allow_type;
+	
+}
+
+function save_image_post($userid, $name)
 {
 	
 	if(!isset($userid))
@@ -146,7 +267,7 @@ function save_image($userid, $name)
 		mkdir($path);
 		
 		$saveto = $path.$name;
-		move_uploaded_file($_FILES['image']['tmp_name'], $saveto);
+		
 		$typeok = TRUE;
 		switch($_FILES['image']['type'])
 		{
@@ -158,6 +279,9 @@ function save_image($userid, $name)
 		}
 		if ($typeok)
 		{
+			
+			move_uploaded_file($_FILES['image']['tmp_name'], $saveto);
+			
 			list($w, $h) = getimagesize($saveto);
 			$max = 250;
 			$tw = $w;
