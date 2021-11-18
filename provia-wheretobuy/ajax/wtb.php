@@ -1,7 +1,7 @@
 <?php
 
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
+//error_reporting(E_ALL);
+//ini_set('display_errors', '1');
 
 //if ( ! defined( 'ABSPATH' ) ) exit;
 //require_once( ABSPATH.'wp-admin/includes/plugin.php' );
@@ -479,6 +479,8 @@ function get_result_html($child, $rowCount, $type = 'all', $idx_count = 0)
 	{
 		$html .= '<a class="text_connectme" href="javascript:void(0);" rel="'.$child->ID.'" lang="'.$child->Name.'">Connect Me</a><br/>';
 	}
+	
+	$html .= '<a href="javascript:void(0);" class="preferred-dealer" rel="'.$child->ID.'">Set as Preferred Dealer</a><br/>';
 	
 	//get product oferring
 	$product_offering = "";

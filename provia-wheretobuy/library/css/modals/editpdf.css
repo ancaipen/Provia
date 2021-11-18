@@ -1,8 +1,0 @@
-﻿#wineditpdf .fmaEditor{ width:540px; }
-#wineditpdf .fmaEditor div { margin:0 0 10px 0; }
-#wineditpdf .fmaEditor div input[type=text] { width:250px; }
-#wineditpdf .fmaEditor div h2 { margin:0 0 5px 0; }
-#wineditpdf .fmaEditor li { margin:0 10px 5px 0; clear: both; height: 25px; }
-#wineditpdf .fmaEditor li .field,
-#wineditpdf .fmaEditor li label { float: left; margin: 0 10px 0 0; }
-#wineditpdf .fmaEditor li label { width: 100px; }

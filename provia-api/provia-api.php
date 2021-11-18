@@ -40,9 +40,95 @@ add_action( 'rest_api_init', function () {
   ));
 });
 
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'provia/v1/savepreferreddealer', '/save/', array(
+    'methods' => 'POST',
+    'callback' => 'provia_savepreferreddealer',
+  ));
+});
+
 //--------------------------------------------------
 // FUNCTIONS
 //--------------------------------------------------
+
+function provia_savepreferreddealer($data) 
+{
+	
+	$userid = 0;
+	$dealerid = 0;
+	$user = wp_get_current_user();
+	
+	//we only allow logged in users to save a preferred dealer
+	
+	//echo var_dump($user);
+	
+    if(isset($user->ID))
+	{
+		$userid = $user->ID;	
+	}
+	
+	if(!isset($data['dealerid']))
+	{
+		return new WP_Error( 'no_dealer', 'Dealer not found', array( 'status' => 404 ));
+	}
+	
+	$dealerid = filter_var($data['dealerid'], FILTER_SANITIZE_STRING);
+	$ip_address = trim($_SERVER['REMOTE_ADDR']);
+	$curr_date = date('Y-m-d H:i:s');
+	$preferreddealer_id = 0;
+	
+	//now lookup if preferred dealer already exists
+	if($userid > 0)
+	{
+		$sql = "SELECT preferreddealer_id FROM wp_provia_preferreddealers where userid=".$userid." and dealerid=".$dealerid;
+		$dealers = $GLOBALS['wpdb']->get_results($sql);
+		$preferreddealer_id = $dealers[0]->preferreddealer_id;
+	}
+	else
+	{
+		$sql = "SELECT preferreddealer_id FROM wp_provia_preferreddealers where ip_address='".$ip_address."' and dealerid=".$dealerid;
+		$dealers = $GLOBALS['wpdb']->get_results($sql);
+		$preferreddealer_id = $dealers[0]->preferreddealer_id;
+	}
+	
+	if(isset($preferreddealer_id) && $preferreddealer_id > 0)
+	{
+		//update association
+		$GLOBALS['wpdb']->query(
+		   $GLOBALS['wpdb']->prepare(
+			  "
+			  UPDATE wp_provia_preferreddealers 
+			  SET dealerid=%d, ip_address=%s ,date_modified=%s 
+			  WHERE preferreddealer_id=%d 
+			  ",
+			  $dealerid,
+			  $ip_address,
+			  $curr_date,
+			  $preferreddealer_id
+		   )
+		);
+	}
+	else
+	{
+		//insert association
+		$GLOBALS['wpdb']->query(
+		   $GLOBALS['wpdb']->prepare(
+			  "
+			  INSERT INTO wp_provia_preferreddealers (dealerid, userid, ip_address, date_created)
+			  VALUES ( %d, %d, %s, %s )
+			  ",
+			  $dealerid,
+			  $userid,
+			  $ip_address,
+			  $curr_date
+		   )
+		);
+	}
+	
+	//return successful response
+	return new WP_REST_Response('success', 200);
+	
+}
 
 function provia_saveimage($data) {
 

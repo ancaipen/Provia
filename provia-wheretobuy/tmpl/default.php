@@ -1,27 +1,5 @@
 <?php 
 
-/*
-defined('_JEXEC') or die('Restricted access');
-
-$jinput = JFactory::getApplication()->input;
-$document = JFactory::getDocument();
-
-//add includes
-$document->addCustomTag( '<link href="/templates/provia/library/css/simple_v2.css" rel="stylesheet" type="text/css" />' );
-$document->addCustomTag( '<link href="/templates/provia/library/css/custom2.css" rel="stylesheet" type="text/css" />' );
-$document->addCustomTag( '<link href="/templates/provia/library/js/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" type="text/css" media="all" />' );
-$document->addCustomTag( '<link href="/templates/provia/assets/library/js/jquery-ui-1.11.4/jquery-ui.structure.min.css" rel="stylesheet" type="text/css" media="all" />' );
-$document->addCustomTag( '<link rel="stylesheet" type="text/css" href="/modules/mod_provia_wtb/scripts/tooltipster-master/dist/css/tooltipster.bundle.min.css" />' );
-
-$document->addCustomTag( '<script type="text/javascript" src="/templates/provia/library/js/jquery-ui-1.11.4/jquery-ui.min.js"></script>' );
-$document->addCustomTag( '<script type="text/javascript" src="/templates/provia/library/js/jquery.validate.min.js"></script>' );
-$document->addCustomTag( '<script type="text/javascript" src="/templates/provia/library/js/jquery.validate.unobtrusive.min.js"></script>' );
-$document->addCustomTag( '<script type="text/javascript" src="/templates/provia/library/js/jquery.form.min.js"></script>' );
-$document->addCustomTag( '<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBBNzHIIdHxWk68i_x0iPmcu3mz-iAu28I" type="text/javascript"></script>' );
-$document->addCustomTag( '<script type="text/javascript" src="/modules/mod_provia_wtb/scripts/tooltipster-master/dist/js/tooltipster.bundle.min.js"></script>' );
-$document->addCustomTag( '<script type="text/javascript" src="/modules/mod_provia_wtb/scripts/wheretobuy.js?version='.$randnum.'"></script>' );
-
-*/
 
 $randnum = rand();
 $audience = get_query_var('audience');
@@ -49,13 +27,15 @@ if(isset($_GET['audience']))
 }
 
 ?>
-<link href="/wp-content/plugins/provia-wheretobuy/library/css/where-to-buy.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/library/js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/library/js/jquery.validate.min.js"></script>
-<script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/library/js/jquery.validate.unobtrusive.min.js"></script>
-<script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/library/js/jquery.form.min.js"></script>
+<link href="/wp-content/plugins/provia-wheretobuy/css/where-to-buy.css" rel="stylesheet" type="text/css" />
+<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBBNzHIIdHxWk68i_x0iPmcu3mz-iAu28I" type="text/javascript"></script>
+<script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/scripts/jquery-ui-1.11.4/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/scripts/jquery-validate/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/scripts/jquery-validate/jquery.validate.unobtrusive.min.js"></script>
+<script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/scripts/jquery-validate/jquery.form.min.js"></script>
 <script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/scripts/tooltipster-master/dist/js/tooltipster.bundle.min.js"></script>
 <script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/scripts/wheretobuy.js?version=<?php echo  $randnum; ?>"></script>
+<script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/scripts/preferreddealer.js?version=<?php echo  $randnum; ?>"></script>
 <style type="text/css">
     .ui-dialog {
         z-index: 1002 !important;

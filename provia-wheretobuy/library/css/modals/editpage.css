@@ -1,6 +1,0 @@
-﻿.pageEditor{ width:540px; }
-.pageEditor div { margin:0 0 10px 0; }
-.pageEditor div textarea { width:250px; }
-.pageEditor div h2 { margin:0 0 5px 0; }
-.pageEditor .pageProps li, .pageEditor .pageInfo li { float:left !important; margin:0 10px 0 0; }
-.pageEditor #txtName, .pageEditor #txtShortName { width:255px; }

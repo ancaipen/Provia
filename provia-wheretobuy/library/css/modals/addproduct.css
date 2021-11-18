@@ -1,6 +1,0 @@
-﻿#addProduct .pageEditor{ }
-#addProduct .pageEditor div { margin:0 0 10px 0; }
-#addProduct .pageEditor div textarea { width:250px; }
-#addProduct .pageEditor div h2 { margin:0 0 5px 0; }
-#addProduct .pageEditor .pageProps li, .pageEditor .pageInfo li { float:left !important; margin:0 10px 0 0; }
-#addProduct .pageEditor #txtName, .pageEditor #txtShortName { width:255px; }
