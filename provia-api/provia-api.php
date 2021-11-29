@@ -33,6 +33,8 @@ define( 'provia_saveimage_path', plugin_dir_path( __FILE__ ) );
 // ACTIONS
 //--------------------------------------------------
 
+add_action('init','provia_set_user');
+
 add_action( 'rest_api_init', function () {
   register_rest_route( 'provia/v1/saveimage', '/uid/(?P<id>\d+)', array(
     'methods' => 'POST',
@@ -47,25 +49,194 @@ add_action( 'rest_api_init', function () {
   ));
 });
 
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'provia/v1/savezip', '/full/', array(
+    'methods' => 'POST',
+    'callback' => 'provia_savezipfull',
+  ));
+});
+
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'provia/v1/savezip', '/simple/', array(
+    'methods' => 'POST',
+    'callback' => 'provia_savezip',
+  ));
+});
+
 //--------------------------------------------------
 // FUNCTIONS
 //--------------------------------------------------
 
+function provia_set_user()
+{
+	$user = wp_get_current_user();
+	$userid = 0;
+
+	if(isset($user))
+	{
+		$userid = $user->ID;
+	}
+	
+	$GLOBALS['provia']['userid'] = $userid;
+	
+}
+
+function provia_savezipfull($data)
+{
+	
+	$userid = $GLOBALS['provia']['userid'];
+	$email = '';
+	$name = '';
+	$zipcode = '';
+	$country = '';
+	$state = '';
+	$city = '';
+	$ipaddress = trim($_SERVER['REMOTE_ADDR']);
+	
+	if(isset($data['email']))
+	{
+		$email = filter_var($data['email'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['name']))
+	{
+		$name = filter_var($data['name'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['zipcode']))
+	{
+		$zipcode = filter_var($data['zipcode'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['country']))
+	{
+		$country = filter_var($data['country'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['state']))
+	{
+		$state = filter_var($data['state'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['city']))
+	{
+		$city = filter_var($data['city'], FILTER_SANITIZE_STRING);
+	}
+	
+	//make sure values are found
+	if($email == null || trim($email) == "")
+	{
+		return new WP_Error( 'error_email', 'Email not found', array( 'status' => 500 ));
+	}
+	
+	//make sure values are found
+	if($name == null || trim($name) == "")
+	{
+		return new WP_Error( 'error_name', 'Name not found', array( 'status' => 500 ));
+	}
+	
+	if($zipcode == null || trim($zipcode) == "")
+	{
+		return new WP_Error( 'error_zip', 'Zip Code not found', array( 'status' => 500 ));
+	}
+			
+	if($ipaddress == null || trim($ipaddress) == "")
+	{
+		return new WP_Error( 'error_ip', 'IP Address not found', array( 'status' => 500 ));
+	}
+	
+	$valid_email = filter_var($email, FILTER_VALIDATE_EMAIL);
+	
+	if($valid_email == false)
+	{
+		return new WP_Error( 'error_invalid', 'Email is Invalid', array( 'status' => 500 ));
+	}
+	
+	$curr_date = date("Y-m-d H:i:s");
+
+	//insert log
+	$GLOBALS['wpdb']->query(
+	   $GLOBALS['wpdb']->prepare(
+		  "
+		  INSERT INTO wp_provia_zipcode_log (zipcode,userid,ip_address,country_code,email_address,name,date_created)
+		  VALUES (%s,%d,%s,%s,%s,%s,%s)
+		  ",
+		  $zipcode,
+		  $userid,
+		  $ipaddress,
+		  $country,
+		  $email,
+		  $name,
+		  $curr_date
+	   )
+	);
+	
+	//return successful response
+	return new WP_REST_Response('success', 200);
+
+}
+
+function provia_savezip($data)
+{
+	
+	$userid = $GLOBALS['provia']['userid'];
+	$zipcode = '';
+	$country = '';
+	$ipaddress = trim($_SERVER['REMOTE_ADDR']);
+	
+	if(isset($data['zipcode']))
+	{
+		$zipcode = filter_var($data['zipcode'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['country']))
+	{
+		$country = filter_var($data['country'], FILTER_SANITIZE_STRING);
+	}
+		
+	if($zipcode == null || trim($zipcode) == "")
+	{
+		return new WP_Error( 'error_zipcode', 'Zipcode is Invalid', array( 'status' => 500 ));
+	}
+			
+	if($ipaddress == null || trim($ipaddress) == "")
+	{
+		return new WP_Error( 'error_aip', 'Ip Address is Invalid', array( 'status' => 500 ));
+	}
+			
+	$curr_date = date("Y-m-d H:i:s");
+	
+	//insert log
+	$GLOBALS['wpdb']->query(
+	   $GLOBALS['wpdb']->prepare(
+		  "
+		  INSERT INTO wp_provia_zipcode_log (zipcode,userid,ip_address,date_created)
+		  VALUES (%s,%s,%s,%s)
+		  ",
+		  $zipcode,
+		  $userid,
+		  $ipaddress,
+		  $curr_date
+	   )
+	);
+	
+	//return successful response
+	return new WP_REST_Response('success', 200);
+	
+}
+
 function provia_savepreferreddealer($data) 
 {
 	
-	$userid = 0;
+	$userid = $GLOBALS['provia']['userid'];
 	$dealerid = 0;
-	$user = wp_get_current_user();
-	
-	//we only allow logged in users to save a preferred dealer
-	
-	//echo var_dump($user);
-	
-    if(isset($user->ID))
-	{
-		$userid = $user->ID;	
-	}
+	$dealer_name = "";
+	$dealer_phone = "";
+	$dealer_website = "";
+	$dealer_address = "";
+	$dealer_lat = "";
+	$dealer_long = "";
+	$dealer_zipcode = "";
 	
 	if(!isset($data['dealerid']))
 	{
@@ -77,16 +248,52 @@ function provia_savepreferreddealer($data)
 	$curr_date = date('Y-m-d H:i:s');
 	$preferreddealer_id = 0;
 	
+	//get dealer attributes if found
+	if(isset($data['dealer_name']))
+	{
+		$dealer_name = filter_var($data['dealer_name'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['dealer_phone']))
+	{
+		$dealer_phone = filter_var($data['dealer_phone'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['dealer_website']))
+	{
+		$dealer_website = filter_var($data['dealer_website'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['dealer_address']))
+	{
+		$dealer_address = filter_var($data['dealer_address'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['dealer_lat']))
+	{
+		$dealer_lat = filter_var($data['dealer_lat'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['dealer_long']))
+	{
+		$dealer_long = filter_var($data['dealer_long'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['dealer_zipcode']))
+	{
+		$dealer_zipcode = filter_var($data['dealer_zipcode'], FILTER_SANITIZE_STRING);
+	}
+	
 	//now lookup if preferred dealer already exists
 	if($userid > 0)
 	{
-		$sql = "SELECT preferreddealer_id FROM wp_provia_preferreddealers where userid=".$userid." and dealerid=".$dealerid;
+		$sql = "SELECT preferreddealer_id FROM wp_provia_preferreddealers where userid=".$userid;
 		$dealers = $GLOBALS['wpdb']->get_results($sql);
 		$preferreddealer_id = $dealers[0]->preferreddealer_id;
 	}
 	else
 	{
-		$sql = "SELECT preferreddealer_id FROM wp_provia_preferreddealers where ip_address='".$ip_address."' and dealerid=".$dealerid;
+		$sql = "SELECT preferreddealer_id FROM wp_provia_preferreddealers where ip_address='".$ip_address."'";
 		$dealers = $GLOBALS['wpdb']->get_results($sql);
 		$preferreddealer_id = $dealers[0]->preferreddealer_id;
 	}
@@ -98,11 +305,29 @@ function provia_savepreferreddealer($data)
 		   $GLOBALS['wpdb']->prepare(
 			  "
 			  UPDATE wp_provia_preferreddealers 
-			  SET dealerid=%d, ip_address=%s ,date_modified=%s 
+			  SET userid=%d, 
+			  dealerid=%d, 
+			  ip_address=%s,
+			  dealer_name=%s,
+			  dealer_phone=%s,
+			  dealer_website=%s,
+			  dealer_address=%s,
+			  dealer_lat=%s,
+			  dealer_long=%s,
+			  dealer_zipcode=%s,
+			  date_modified=%s 
 			  WHERE preferreddealer_id=%d 
 			  ",
+			  $userid,
 			  $dealerid,
 			  $ip_address,
+			  $dealer_name,
+			  $dealer_phone,
+			  $dealer_website,
+			  $dealer_address,
+			  $dealer_lat,
+			  $dealer_long,
+			  $dealer_zipcode,
 			  $curr_date,
 			  $preferreddealer_id
 		   )
@@ -114,12 +339,19 @@ function provia_savepreferreddealer($data)
 		$GLOBALS['wpdb']->query(
 		   $GLOBALS['wpdb']->prepare(
 			  "
-			  INSERT INTO wp_provia_preferreddealers (dealerid, userid, ip_address, date_created)
-			  VALUES ( %d, %d, %s, %s )
+			  INSERT INTO wp_provia_preferreddealers (dealerid, userid, ip_address, dealer_name, dealer_phone, dealer_website, dealer_address, dealer_lat, dealer_long, dealer_zipcode, date_created)
+			  VALUES ( %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s )
 			  ",
 			  $dealerid,
 			  $userid,
 			  $ip_address,
+			  $dealer_name,
+			  $dealer_phone,
+			  $dealer_website,
+			  $dealer_address,
+			  $dealer_lat,
+			  $dealer_long,
+			  $dealer_zipcode,
 			  $curr_date
 		   )
 		);
@@ -132,7 +364,7 @@ function provia_savepreferreddealer($data)
 
 function provia_saveimage($data) {
 
-	$userid = 0;
+
 	$image_name = '';
 	$tags = '';
 	$source = '';
@@ -403,5 +635,3 @@ function save_image_post($userid, $name)
 	return null;
 	
 }
-
-

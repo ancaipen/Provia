@@ -2,10 +2,7 @@
 
 //error_reporting(E_ALL);
 //ini_set('display_errors', '1');
-
 //defined( '_JEXEC' ) or die( 'Restricted access' );
-
-require('../../../configuration.php');
 
 //set header 
 header('Cache-Control: no-cache, must-revalidate');

@@ -97,156 +97,6 @@ if($_SERVER["REQUEST_METHOD"] == 'GET')
 		
 	}
 	
-	//capture zipcode submission
-	if(isset($_GET['zipcodesave']))
-	{
-		$zipcode = $_GET['zipcode'];
-		$country = $_GET['country'];
-		$ipaddress = $_GET['ipaddress'];
-		
-		$zipcode = trim($zipcode);
-		
-		//santize input
-		$zipcode = filter_var($zipcode, FILTER_SANITIZE_STRING);
-		$country = filter_var($country, FILTER_SANITIZE_STRING);
-		$ipaddress = filter_var($ipaddress, FILTER_SANITIZE_STRING);
-			
-		if($zipcode == null || trim($zipcode) == "")
-		{
-			echo 'ERROR ZIP';
-			return;
-		}
-				
-		if($ipaddress == null || trim($ipaddress) == "")
-		{
-			echo 'ERROR IP';
-			return;
-		}
-				
-		$curr_date = date("Y-m-d H:i:s");
-		
-		$c = new JConfig();
-		
-		//make sure email is unique
-		$query = "SELECT * FROM v1tp0_prv_zipcode_log ";
-		$query .= "WHERE email_address = 'noemail@provia.com' AND zipcode = '".$zipcode."' ";
-
-		//make connection to db
-		$hostDb='mysql:host=127.0.0.1;dbname='.$c->db;
-		$connection = new PDO($hostDb, $c->user, $c->password);
-		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		
-		$result = $connection->query($query);
-		
-		$result_count = 0;
-		foreach($result as $row)
-		{
-			$result_count++;
-		}
-		
-		//insert record
-		if($result_count == 0)
-		{
-			$query = "INSERT INTO v1tp0_prv_zipcode_log (zipcode,ip_address,country_code,email_address,date_created) ";
-			$query .= "VALUES ('".$zipcode."','".$ipaddress."','".$country."','noemail@provia.com','".$curr_date."')";
-			
-			$result = $connection->query($query);
-		}
-		
-	}
-	
-	//capture zipcode submission
-	if(isset($_GET['zipcodesavefull']))
-	{
-		$email = $_GET['email'];
-		$name = $_GET['name'];
-		$zipcode = $_GET['zipcode'];
-		$country = $_GET['country'];
-		$state = $_GET['state'];
-		$city = $_GET['city'];
-		$ipaddress = $_GET['ipaddress'];
-		
-		$email = trim($email);
-		$name = trim($name);
-		$zipcode = trim($zipcode);
-		
-		//santize input
-		$email = filter_var($email, FILTER_SANITIZE_STRING);
-		$name = filter_var($name, FILTER_SANITIZE_STRING);
-		$zipcode = filter_var($zipcode, FILTER_SANITIZE_STRING);
-		$country = filter_var($country, FILTER_SANITIZE_STRING);
-		$state = filter_var($state, FILTER_SANITIZE_STRING);
-		$city = filter_var($city, FILTER_SANITIZE_STRING);
-		$ipaddress = filter_var($ipaddress, FILTER_SANITIZE_STRING);
-		
-		//make sure values are found
-		if($email == null || trim($email) == "")
-		{
-			echo 'ERROR EMAIL';
-			return;
-		}
-		
-		//make sure values are found
-		if($name == null || trim($name) == "")
-		{
-			echo 'ERROR NAME';
-			return;
-		}
-		
-		if($zipcode == null || trim($zipcode) == "")
-		{
-			echo 'ERROR ZIP';
-			return;
-		}
-				
-		if($ipaddress == null || trim($ipaddress) == "")
-		{
-			echo 'ERROR IP';
-			return;
-		}
-		
-		$valid_email = filter_var($email, FILTER_VALIDATE_EMAIL);
-		
-		if($valid_email == false)
-		{
-			echo 'ERROR INVALID EMAIL';
-			return;
-		}
-		
-		$curr_date = date("Y-m-d H:i:s");
-		
-		$c = new JConfig();
-		
-		//make sure email is unique
-		$query = "SELECT * FROM v1tp0_prv_zipcode_log ";
-		$query .= "WHERE email_address = '".$email."' ";
-
-		//make connection to db
-		$hostDb='mysql:host=127.0.0.1;dbname='.$c->db;
-		$connection = new PDO($hostDb, $c->user, $c->password);
-		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		
-		$result = $connection->query($query);
-		
-		$result_count = 0;
-		foreach($result as $row)
-		{
-			$result_count++;
-		}
-		
-		//insert record
-		if($result_count == 0)
-		{
-			$query = "INSERT INTO v1tp0_prv_zipcode_log (zipcode,ip_address,country_code,email_address,name,date_created) ";
-			$query .= "VALUES ('".$zipcode."','".$ipaddress."','".$country."','".$email."','".$name."','".$curr_date."')";
-			
-			$result = $connection->query($query);
-		}
-		
-		//sendRoofingEmail($name, $ipaddress, $zipcode, $email, $state, $city);
-		
-	}
-	
 	//capture lead
 	if(isset($_GET['capturelead']))
 	{
@@ -423,13 +273,12 @@ function get_result_html($child, $rowCount, $type = 'all', $idx_count = 0)
 	{
 		$css_row = "listing even";
 	}
-	
 
-	$html .= '<tr class="'.$css_row.'" rel="'.$child->ID.'" lang="'.$child->Name.'" connectme="'.$child->ConnectMe.'" lat="'.$child->Latitude.'" long="'.$child->Longitude.'" platclub="'.$child->PlatinumClub.'" displaygroup="'.$child->DisplayGroup.'">';
+	$html .= '<tr class="'.$css_row.'" id="tr-dealers-'.$child->ID.'" rel="'.$child->ID.'" lang="'.$child->Name.'" connectme="'.$child->ConnectMe.'" lat="'.$child->Latitude.'" long="'.$child->Longitude.'" platclub="'.$child->PlatinumClub.'" displaygroup="'.$child->DisplayGroup.'">';
 	$html .= '<td>';
-	$html .= '<h2>'.$child->Name.'</h2>';
+	$html .= '<h2 rel="'.$child->ID.'" id="dealer-name-'.$child->ID.'">'.$child->Name.'</h2>';
 	//$html .= '<h3>'.$child->DisplayGroup.'</h2>';
-	$html .= '<p><span>'.$child->Add1.'<br/>'; 
+	$html .= '<p><span id="dealer-address-'.$child->ID.'">'.$child->Add1.'<br/>'; 
 	
 	if(trim($child->Add2) != "")
 	{
@@ -461,13 +310,13 @@ function get_result_html($child, $rowCount, $type = 'all', $idx_count = 0)
 	
 	if(trim($child->Phone) != "")
 	{
-		$html .= '<label><a href="tel:'.$child->Phone.'">' . $child->Phone . '</a></label><br/><br />';
+		$html .= '<label><a href="tel:'.$child->Phone.'" rel="'.$child->ID.'" id="phone-'.$child->ID.'">' . $child->Phone . '</a></label><br/><br />';
 		$html .= '<a href="javascript:void(0);" class="open-info open-info-2" idx="'.$idx_count.'">View on map</a><br/>';
 	}
 	
 	if(trim($child->Website) != "")
 	{
-		$html .= '<a href="'.$child->Website.'" target="_blank">Visit Website</a><br/>';
+		$html .= '<a href="'.$child->Website.'" target="_blank" rel="'.$child->ID.'" id="website-'.$child->ID.'">Visit Website</a><br/>';
 	}
 	
 	if(trim($child->ShowroomURL) != "")
