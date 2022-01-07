@@ -163,6 +163,13 @@ function provia_loginuser($username, $password, $remember_me)
 		}
 		
 	}
+	else
+	{
+		//redirect to homepage
+		$redirect_to = user_admin_url();
+		wp_safe_redirect( $redirect_to );
+		exit();
+	}
 	
 }
 

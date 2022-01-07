@@ -1,1 +1,132 @@
-#map-perferred-dealer-map { width:99.4%; height:418px; border:3px solid #6B8C21; border-bottom:none; }
+#perferred-dealer-map { width:99.4%; height:auto; }
+
+#perferred-dealer-map-mobile { width:99.4%; height: 300px; }
+
+.perferred-dealer-map-container{
+	position: relative;
+}
+
+#perferred-dealer-map{
+	position: initial !important;
+	overflow: visible !important;
+}
+
+#perferred-dealer-map-mobile{
+	position: relative !important;
+	overflow: visible !important;
+}
+
+#perferred-dealer-map-mobile div{
+	top: 175px;
+}
+
+ .perferred-dealer-text{
+	
+}
+
+
+
+
+/*Design Center Preferred Dealer*/
+
+.perferred-dealer-container{
+  display: -ms-grid;
+display: grid;
+overflow: hidden;
+height: 100%;
+-webkit-box-orient: horizontal;
+-webkit-box-direction: normal;
+-webkit-flex-direction: row;
+-ms-flex-direction: row;
+flex-direction: row;
+-webkit-box-pack: start;
+-webkit-justify-content: flex-start;
+-ms-flex-pack: start;
+justify-content: flex-start;
+-webkit-box-align: stretch;
+-webkit-align-items: stretch;
+-ms-flex-align: stretch;
+align-items: stretch;
+grid-auto-columns: 1fr;
+grid-column-gap: 0px;
+grid-row-gap: 0px;
+-ms-grid-columns: auto 1fr;
+grid-template-columns: auto 1fr;
+-ms-grid-rows: auto;
+grid-template-rows: auto;
+border-radius: 15px;
+background-color: rgba(0, 0, 0, 0.5); 
+padding: 20px;
+}
+
+
+.perferred-dealer-container
+.preferred-dealer-label {
+    display: inline-block;
+    margin-top: 0px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    padding-right: 15px;
+    padding-left: 15px;
+    background-color: #78a22f;
+    color: #fff !important;
+    font-size: 16px;
+    line-height: 28px;
+    font-weight: 400;
+    text-transform: none;
+}
+
+.perferred-dealer-container h2.preferred-dealer-heading {
+    color: #fff !important;
+    font-size: 28px;
+    line-height: 36px;
+    font-weight: 400;
+	font-family: acumin-pro, sans-serif;
+	margin: 0;
+	text-transform: none;
+}
+
+.perferred-dealer-container .preferred-dealer-contact, .perferred-dealer-container .preferred-dealer-contact a {
+    display: inline-block;
+    color: #fff;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 400;
+}
+
+ .perferred-dealer-map-container{
+	 display: none;
+ }
+
+
+@media only screen and (min-width: 1025px) {
+ .perferred-dealer-container{
+  display: -ms-grid;
+display: grid;
+ }
+ 
+ 
+ .perferred-dealer-map-container-mobile{
+	 display: none;
+ }
+ 
+  .perferred-dealer-map-container{
+	  display: block;
+  }
+  
+ .perferred-dealer-text{
+	margin-right: 80px;
+	padding-bottom: 0;
+}
+
+
+
+
+#perferred-dealer-map div{
+	width: 50%;
+	right: 0 !important;
+	position: absolute;
+}
+
+
+}

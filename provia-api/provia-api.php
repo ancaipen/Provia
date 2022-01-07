@@ -30,6 +30,14 @@ $plugin_data = get_plugin_data( __FILE__ );
 define( 'provia_saveimage_path', plugin_dir_path( __FILE__ ) );
 
 //--------------------------------------------------
+// SHORTCODE
+//--------------------------------------------------
+
+add_shortcode('provia_user_firstname', 'provia_user_firstname_load');
+
+add_shortcode('provia_user_avatar', 'provia_user_avatar_load');
+
+//--------------------------------------------------
 // ACTIONS
 //--------------------------------------------------
 
@@ -79,6 +87,75 @@ function provia_set_user()
 	}
 	
 	$GLOBALS['provia']['userid'] = $userid;
+	
+}
+
+function provia_user_firstname_load()
+{
+	
+	//check for duplicate elementor preview loading
+	$request_url = $_SERVER['REQUEST_URI'];
+	if (str_contains($request_url, 'elementor-preview')) {
+		return;
+	}
+	
+	$user = wp_get_current_user();
+	$user_text = 'User';
+	
+	if($user)
+	{
+		if(isset($user->ID))
+		{
+			$first_name = get_user_meta( $user->ID, 'first_name', true );
+		
+			//var_dump(get_user_meta($user->ID));
+			
+			if($first_name != null && $first_name != "")
+			{
+				$user_text = $first_name;
+			}
+			else
+			{
+				$user_text = $user->display_name;
+			}
+		}
+		
+	}
+	
+	if($user_text == "")
+	{
+		$user_text = 'User';
+	}
+	
+	echo '<h2 class="user-text-title" style="color:#fff">'.$user_text.'</h2>';
+	
+}
+
+function provia_user_avatar_load()
+{
+	
+	//check for duplicate elementor preview loading
+	$request_url = $_SERVER['REQUEST_URI'];
+	if (str_contains($request_url, 'elementor-preview')) {
+		return;
+	}
+	
+	$user = wp_get_current_user();
+	$img_src = '<img src="/wp-content/uploads/2021/12/Male-placeholder.jpeg" />';
+	
+	if($user)
+	{
+		if(isset($user->ID))
+		{
+			$avatar_url = get_avatar_url( $user->ID );
+			if($avatar_url)
+			{
+				$img_src = '<img src="'.$avatar_url.'" />';
+			}
+		}
+	}
+	
+	echo $img_src;
 	
 }
 

@@ -1,48 +1,53 @@
 
 <link href="/wp-content/plugins/provia-wheretobuy/css/preferred-dealer.css" rel="stylesheet" type="text/css" />
-<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBBNzHIIdHxWk68i_x0iPmcu3mz-iAu28I" type="text/javascript"></script>
 
 <div class="perferred-dealer-container">
-<div class="perferred-dealer-text">
-   <h1 class="preferred-dealer-label">Preferred Dealer</h1>
+
+
+
+	<div class="perferred-dealer-text">
+		<h1 class="preferred-dealer-label">Preferred Dealer</h1>
    
-   <a href="/where-to-buy-2">
-	<img src="https://assets.website-files.com/6129234d13126814a210bb20/612cdfa3e2a6ba1a7897b8d0_002-pencil.png" loading="lazy" alt="">
-   </a>
-   <h2 class="preferred-dealer-heading"><?php echo $dealer_name; ?></h2>
-   <h3 class="preferred-dealer-contact">
-   <?php echo $dealer_phone; ?> 
-   <?php
-	if(isset($dealer_website) && $dealer_website != "")
-	{
-		echo ' | '. '<a href="'.$dealer_website.'" target="_blank">'.$dealer_website.'</a>';
-	}
-   ?>
-   </h3>
-</div>
-<div class="perferred-dealer-map-container">
-	<div id="perferred-dealer-map"></div>
-</div>
+		<a href="/where-to-buy-2">
+			<img src="https://assets.website-files.com/6129234d13126814a210bb20/612cdfa3e2a6ba1a7897b8d0_002-pencil.png" loading="lazy" alt="">
+		</a>
+		<h2 class="preferred-dealer-heading"><?php echo $dealer_name; ?></h2>
+		<h3 class="preferred-dealer-contact">
+		<?php echo $dealer_phone; ?> 
+		<?php
+			if(isset($dealer_website) && $dealer_website != "")
+			{
+				echo ' | '. '<a href="'.$dealer_website.'" target="_blank">'.$dealer_website.'</a>';
+			}
+		?>
+		</h3>
+	</div>
+
+	<div class="perferred-dealer-map-container">
+		<div id="perferred-dealer-map"></div>
+	</div>
+	
+</div> 
+
 <div class="perferred-dealer-hidden" style="display:none;">
-<div id="perferred-dealer-zipcode"><?php echo $user_zipcode; ?></div>
-<div id="perferred-dealer-name"><?php echo $dealer_name; ?></div>
-<div id="perferred-dealer-phone"><?php echo $dealer_phone; ?></div>
-<div id="perferred-dealer-website"><?php echo $dealer_website; ?></div>
-<div id="perferred-dealer-address"><?php echo $dealer_address; ?></div>
-<div id="perferred-dealer-lat"><?php echo $dealer_lat; ?></div>
-<div id="perferred-dealer-long"><?php echo $dealer_long; ?></div>
-
+	<div id="perferred-dealer-zipcode"><?php echo $user_zipcode; ?></div>
+	<div id="perferred-dealer-name"><?php echo $dealer_name; ?></div>
+	<div id="perferred-dealer-phone"><?php echo $dealer_phone; ?></div>
+	<div id="perferred-dealer-website"><?php echo $dealer_website; ?></div>
+	<div id="perferred-dealer-address"><?php echo $dealer_address; ?></div>
+	<div id="perferred-dealer-lat"><?php echo $dealer_lat; ?></div>
+	<div id="perferred-dealer-long"><?php echo $dealer_long; ?></div>
 </div>
 
-</div>
-
+<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBBNzHIIdHxWk68i_x0iPmcu3mz-iAu28I" type="text/javascript"></script>
 <script type="text/javascript">
 
+
 jQuery(document).ready(function () {
-	loadPreferredMap();
+	loadPreferredMap('perferred-dealer-map');
 });
 
-function loadPreferredMap() 
+function loadPreferredMap(id) 
 {
 	
 	var zipCode = jQuery('#perferred-dealer-zipcode').html();
@@ -50,6 +55,11 @@ function loadPreferredMap()
 	if(zipCode == null || zipCode == "")
 	{
 		return;
+	}
+	
+	if(id == null || id == "")
+	{
+		return;		
 	}
 	
 	var geocoder = new google.maps.Geocoder();
@@ -64,14 +74,16 @@ function loadPreferredMap()
 			var latitude = jQuery('#perferred-dealer-lat').html();
 			var longitude = jQuery('#perferred-dealer-long').html();
 			
-			//load map
+			//load map into id div
 			var map = new google.maps.Map(
-			document.getElementById('perferred-dealer-map'), {
+			document.getElementById(id), {
 			  center: new google.maps.LatLng(latitude, longitude),
 			  zoom: 8,
 			  mapTypeId: google.maps.MapTypeId.ROADMAP,
 			  mapTypeControl: false,
-			  streetViewControl: false
+			  streetViewControl: false,
+			  draggable: false,
+			  fullscreenControl: false
 			});
 			
 			//create marker
@@ -111,5 +123,6 @@ function loadPreferredMap()
 		}
 	});
 }
+
 
 </script>

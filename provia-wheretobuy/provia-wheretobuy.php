@@ -60,13 +60,32 @@ function provia_wheretobuy_admin_load(){
 
 function provia_wheretobuy_load()
 {
+	
+	$request_url = $_SERVER['REQUEST_URI'];
+	if (str_contains($request_url, 'elementor-preview')) {
+		return;
+	}
+	
 	//load form template
-	require_once provia_wheretobuy_path . 'tmpl/default.php';	
+	require provia_wheretobuy_path . 'tmpl/default.php';	
 }
 
 function provia_preferreddealer_load()
 {
-
+		
+	//do not display in admin mode
+	/*
+	if (is_admin()) 
+	{
+		return;
+	}
+	*/
+	
+	$request_url = $_SERVER['REQUEST_URI'];
+	if (str_contains($request_url, 'elementor-preview')) {
+		return;
+	}
+	
 	//get preferred dealer
 	$userid = $GLOBALS['provia']['userid'];
 	$user_zipcode = "44681";
@@ -110,8 +129,11 @@ function provia_preferreddealer_load()
 		}
 	}
 	
+	//add script to head
+	//wp_register_script('googlemaps', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBBNzHIIdHxWk68i_x0iPmcu3mz-iAu28I', array(), '', true);
+		
 	//load preferred dealer template
-	require_once provia_wheretobuy_path . 'tmpl/preferred-dealer.php';
+	require provia_wheretobuy_path . 'tmpl/preferred-dealer.php';
 	
 }
 
