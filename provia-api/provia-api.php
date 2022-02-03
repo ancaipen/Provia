@@ -71,6 +71,20 @@ add_action( 'rest_api_init', function () {
   ));
 });
 
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'provia/v1/provia_saveproject', '/default/', array(
+    'methods' => 'POST',
+    'callback' => 'provia_saveproject',
+  ));
+});
+
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'provia/v1/provia_saveproject', '/image/', array(
+    'methods' => 'POST',
+    'callback' => 'provia_saveproject_image',
+  ));
+});
+
 
 //--------------------------------------------------
 // FUNCTIONS
@@ -87,6 +101,122 @@ function provia_set_user()
 	}
 	
 	$GLOBALS['provia']['userid'] = $userid;
+	
+}
+
+function provia_saveproject_image($data)
+{
+	provia_set_user();
+		
+	$userid = $GLOBALS['provia']['userid'];
+	
+	if(isset($data['user_id']))
+	{
+		$userid = filter_var($data['user_id'], FILTER_SANITIZE_NUMBER_INT);
+	}
+	
+	if(!isset($userid))
+	{
+		return new WP_Error( 'error_user', 'UserId is Invalid', array( 'status' => 500 ));
+	}
+	
+	$image = $data['project_image']; 
+	
+	if(!isset($image) || $image == "")
+	{
+		return new WP_Error( 'error_image', 'Image is Invalid', array( 'status' => 500 ));
+	}
+	
+    $image_save = explode('base64,',$image); 
+	$image_path = getcwd() . '/wp-content/uploads/provia-myprojects/' . $userid . '/';
+	$curr_date = date("YmdHis");
+	$image_full = $image_path . $curr_date . '.png';
+	
+	mkdir($image_path);
+	
+	//echo $image_full;
+	
+	//save images to uploads
+    file_put_contents($image_full, base64_decode($image_save[1]));
+	
+	return new WP_REST_Response('success', 200);
+	
+}
+
+function provia_saveproject($data)
+{
+	
+	provia_set_user();
+		
+	$userid = $GLOBALS['provia']['userid'];
+	$project_name = '';
+	$ipaddress = trim($_SERVER['REMOTE_ADDR']);
+	
+	if(isset($data['project_name']))
+	{
+		$project_name = filter_var($data['project_name'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(!isset($userid))
+	{
+		return new WP_Error( 'error_user', 'UserId is Invalid', array( 'status' => 500 ));
+	}
+	
+	if($userid == 0 || $userid == "0")
+	{
+		return new WP_Error( 'error_user', 'UserId is Invalid', array( 'status' => 500 ));
+	}
+		
+	if($project_name == null || trim($project_name) == "")
+	{
+		return new WP_Error( 'error_project_name', 'Project Name is Invalid', array( 'status' => 500 ));
+	}
+			
+	if($ipaddress == null || trim($ipaddress) == "")
+	{
+		return new WP_Error( 'error_aip', 'Ip Address is Invalid', array( 'status' => 500 ));
+	}
+			
+	$curr_date = date("Y-m-d H:i:s");
+	
+	//make sure project name is not already created for user
+	$sql = "SELECT ID FROM select * from wp_tinvwl_lists where title = '".trim($project_name)."' author=".$userid;
+	$lists = $GLOBALS['wpdb']->get_results($sql);
+	$list_id = -1;
+	
+	if(isset($lists) && count($lists) > 0)
+	{
+		$list_id = $lists[0]->ID;
+	}
+	
+	$share_key = randString(6);
+	
+	//insert log
+	$GLOBALS['wpdb']->query(
+	   $GLOBALS['wpdb']->prepare(
+		  "
+		  INSERT INTO wp_tinvwl_lists (author,date,title,status,type,share_key)
+		  VALUES (%s,%s,%s,%s)
+		  ",
+		  $userid,
+		  $curr_date,
+		  $project_name,
+		  'share',
+		  'list',
+		  $share_key
+	   )
+	);
+	
+	$sql = "SELECT ID FROM select * from wp_tinvwl_lists where title = '".trim($project_name)."' author=".$userid;
+	$lists = $GLOBALS['wpdb']->get_results($sql);
+	
+	if(isset($lists) && count($lists) > 0)
+	{
+		$list_id = $lists[0]->ID;
+	}
+	
+	//return successful response
+	return new WP_REST_Response($list_id, 200);
 	
 }
 

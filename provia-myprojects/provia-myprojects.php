@@ -28,12 +28,6 @@ $plugin_data = get_plugin_data( __FILE__ );
 define( 'provia_myprojects_path', plugin_dir_path( __FILE__ ) );
 
 //--------------------------------------------------
-// ACTIONS
-//--------------------------------------------------
-
-add_action('admin_menu', 'provia_myprojects_admin');
-
-//--------------------------------------------------
 // SHORTCODE
 //--------------------------------------------------
 
@@ -43,14 +37,14 @@ add_shortcode('provia_myprojects', 'provia_myprojects_load');
 // FUNCTIONS
 //--------------------------------------------------
 
-
-function provia_myprojects_admin()
-{
-    add_menu_page( 'Provia Where to Buy', 'Provia Where to Buy', 'manage_options', 'provia-wheretobuy', 'provia_wheretobuy_admin_load' );
-}
-
 function provia_myprojects_load()
 {
+	//prevents duplicate previews in admin
+	$request_url = $_SERVER['REQUEST_URI'];
+	if (str_contains($request_url, 'elementor-preview')) {
+		return;
+	}
+
 	//load form template
 	require_once provia_myprojects_path . 'tmpl/default.php';
 	

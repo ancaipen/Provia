@@ -1,0 +1,61 @@
+
+#my-projects-container
+{
+	height: 640px;
+	height: 440px;
+	background-image: url('/wp-content/plugins/provia-myprojects/images/Provia_Background.png');
+	overflow: none;
+	position: relative;
+}
+
+#project-lists
+{
+	width: 25%;
+}
+
+#myproject-name
+{
+	width: 50%;
+}
+
+#my-projects-save
+{
+	padding: 5px;
+}
+
+.myprojects-image
+{
+	max-width:100%;
+}
+
+.dropzone {
+  border: dashed 4px transparent;
+  border-radius: 4px;
+  margin: 10px auto 30px;
+  padding: 10px;
+  width: 100%;
+}
+
+.drop-active {
+  border-color: #aaa;
+}
+
+.drop-target {
+  border-color: #fff;
+  border-style: solid;
+}
+
+.drag-drop {
+  position: absolute;
+  touch-action: none;
+  transform: translate(0px, 0px);
+  transition: background-color 0.3s;
+  width: 100px;
+  height: 100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.drag-drop-hidden {
+  display: none;
+}
