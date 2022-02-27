@@ -152,7 +152,7 @@ function provia_getproject_images($data)
 	
 	if(isset($list_id) && $list_id > 0)
 	{
-		$sql .= " and ti_i.ID=".$list_id;
+		$sql .= " and ti_i.wishlist_id=".$list_id;
 	}
 	
 	//echo $sql;
@@ -180,7 +180,7 @@ function provia_getproject_images($data)
 			if(isset($list_id) && $list_id > 0)
 			{
 				$query_file = "SELECT pm.meta_value, pi.image_style, pi.datax, pi.datay FROM wp_postmeta pm ";
-				$query_file .= "LEFT JOIN wp_provia_projects_images pi on REPLACE(pi.image_name, '/wp-content/uploads/', '')=pm.meta_value and pi.user_id=%d ";
+				$query_file .= "LEFT JOIN wp_provia_projects_images pi on pi.wishlist_id=%d and REPLACE(pi.image_name, '/wp-content/uploads/', '')=pm.meta_value and pi.user_id=%d ";
 				$query_file .= "WHERE pm.meta_key ='_wp_attached_file' AND pm.post_id = %d";
 				$sql_result = $GLOBALS['wpdb']->prepare($query_file,$wishlist_id,$userid,$thumb_post_id);
 				$result_query = $GLOBALS['wpdb']->get_results($sql_result);	
@@ -302,7 +302,7 @@ function provia_saveproject_image($data)
 		$GLOBALS['wpdb']->query(
 		   $GLOBALS['wpdb']->prepare(
 			  "
-			  INSERT INTO wp_tinvwl_lists (wishlist_id,product_id,variation_id,formdata,author,date,quantity,price,in_stock)
+			  INSERT INTO wp_tinvwl_items (wishlist_id,product_id,variation_id,formdata,author,date,quantity,price,in_stock)
 			  VALUES (%d,%d,%d,%s,%d,%s,%d,%s,%d)
 			  ",
 			  $list_id,
@@ -318,7 +318,7 @@ function provia_saveproject_image($data)
 		);
 	}
 	
-	$sql_statment = 'select image_id from wp_provia_projects_images WHERE wishlist_id=%d AND user_id=d% AND image_name=%s;';
+	$sql_statment = "select image_id from wp_provia_projects_images WHERE wishlist_id=%d AND user_id=%d AND image_name=%s;";
 	$sql = $GLOBALS['wpdb']->prepare($sql_statment,$list_id,$userid,$image_src);
 	$images = $GLOBALS['wpdb']->get_results($sql);
 	$image_id = -1;
@@ -388,9 +388,11 @@ function provia_saveproject($data)
 	$curr_date = date("YmdHis");
 	$image_full = $image_path . $curr_date . '.png';
 	
-	mkdir($image_path);
-	
-	//echo $image_full;
+	//create directory if not found
+	if (!file_exists($image_path)) 
+	{
+		mkdir($image_path);
+	}
 	
 	//save images to uploads
     file_put_contents($image_full, base64_decode($image_save[1]));
@@ -451,7 +453,7 @@ function provia_saveproject_data($data, $image_full, $userid)
 	
 	//make sure project name is not already created for user
 	$list_id = provia_getlistid($project_name, $userid);
-	
+		
 	//insert project to ti wishlist
 	if($list_id == -1)
 	{

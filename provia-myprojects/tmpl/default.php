@@ -58,8 +58,15 @@
 		loadProjectImages();
 		
 		jQuery("#project-lists").change(function () {
-			filterImages(this);
-			loadProjectImages();
+			
+			var allowUpdate =  confirm("Are you sure you want to change the project?  Any unsaved changes maybe lost!");
+			
+			if(allowUpdate)
+			{
+				filterImages(this);
+				loadProjectImages();
+			}
+			
 		});
 		
 		jQuery("#save-project").click(function () {
@@ -123,6 +130,10 @@
 		}
 		
 		jQuery.get( url, function(result) {
+			
+			//clear existing html with replacement
+			jQuery('#my-projects-container').html('');
+			
 			var image_html = result;
 			if(image_html != null && image_html != "")
 			{
@@ -133,10 +144,16 @@
 		
 	}
 	
-	function saveProject()
+	function saveProject(socialMediaType)
 	{
 		
 		//debugger;
+		
+		//set defaults		
+		if(socialMediaType == null)
+		{
+			socialMediaType = '';
+		}
 		
 		var project = jQuery('#myproject-name').val();
 		var list_id = jQuery('#list_id').val();
@@ -171,9 +188,27 @@
 				var id = parseInt(result);
 				if(id > 0)
 				{
+					
+					//set as current list
 					jQuery('#list_id').val(id);
+					
+					//save individual images in the background
 					saveProjectImages();
+					
 					showHideLoading(false);
+					
+					if(socialMediaType != '')
+					{
+						if(socialMediaType == 'facebook')
+						{
+							//shareToFacebook(imagePath);
+						}
+						else if(socialMediaType == 'twitter')
+						{
+							//shareToTwitter(imagePath);
+						}
+					}
+					
 				}
 			}).fail(function(xhr, status, error) {
 				showHideLoading(false);
@@ -282,6 +317,37 @@
 			
 		});
 		
+	}
+	
+	function shareToTwitter(imagePath)
+	{
+		
+		if(imagePath == null || imagePath == "")
+		{
+			return;
+		}
+		
+		var text = encodeURIComponent("Follow JavaScript Jeep form Amazing JavaScript Tutorial");
+		var url = "https://medium.com/@jagathishsaravanan/";
+		var user_id = "jagathish1123";
+		var hash_tags = "JS,JavaScript,100DaysOfCode,Programming";
+
+		var params = "menubar=no,toolbar=no,status=no,width=570,height=570"; // for window
+		var Shareurl = 'https://twitter.com/intent/tweet?url=' + imagePath + '&text=${text}&via=${user_id}&hashtags=${hash_tags}';
+		window.open(Shareurl,"NewWindow" , params);  
+	}
+	
+	function shareToFacebook(imagePath)
+	{
+		
+		if(imagePath == null || imagePath == "")
+		{
+			return;
+		}
+		
+		var params = "menubar=no,toolbar=no,status=no,width=570,height=570";
+		var ShareUrl = 'https://www.facebook.com/sharer.php?u=https://provia.com?imageurl=' + imagePath;
+		window.open(Shareurl,"NewWindow" , params);  
 	}
 	
 	interact('.drag-drop').draggable({
