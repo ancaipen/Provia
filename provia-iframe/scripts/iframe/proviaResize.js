@@ -1,7 +1,7 @@
 if (typeof jQuery == 'undefined') {
 	var script = document.createElement('script');
 	script.type = "text/javascript";
-	script.src = "https://proviasandbox.oxbowserver.com/wp-content/plugins/provia-iframe/scripts/iframe/jquery-3.3.1.min.js";
+	script.src = "https://provia.proviaserver-v2.com/wp-content/plugins/provia-iframe/scripts/iframe/jquery-3.3.1.min.js";
 	script.onreadystatechange= function () {//This is for IE
 	   if (this.readyState == 'complete'){ includeResize(); };
 	}
@@ -22,7 +22,7 @@ function includeResize()
 	//add resize script
 	var scriptResize = document.createElement('script');
 	scriptResize.type = "text/javascript";
-	scriptResize.src = "https://proviasandbox.oxbowserver.com/wp-content/plugins/provia-iframe/scripts/iframe/iframeResizer.min.js";
+	scriptResize.src = "https://provia.proviaserver-v2.com/wp-content/plugins/provia-iframe/scripts/iframe/iframeResizer.min.js";
 	scriptResize.onreadystatechange= function () {
 	   if (this.readyState == 'complete'){ loadProviaIframe(); };
 	}

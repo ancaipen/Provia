@@ -1,0 +1,48 @@
+----------------------------
+-- go live updates
+----------------------------
+
+*only for local DNS*
+- update name servers
+ns1037278175.a2dns.com
+ns1037278176.a2dns.com
+
+1. update base urls
+- update wp_option table site urls.
+- once in the wp admin, click the button to save the site urls in the general settings
+
+2. run database updates
+update `wp_posts` 
+set post_content=REPLACE(post_content, 'proviasandbox.oxbowserver.com', 'provia.proviaserver-v2.com')
+WHERE post_content like '%proviasandbox.oxbowserver.com%'
+
+update `wp_options` 
+set option_value=REPLACE(option_value, 'proviasandbox.oxbowserver.com', 'provia.proviaserver-v2.com')
+WHERE option_value like '%proviasandbox.oxbowserver.com%'
+
+3. update site licenses
+
+- associate elementor to the new site URL
+https://my.elementor.com/login
+u: ncaipen@enetohio.com
+p: 2UPM4BeSBKcFtcp
+
+--clear elementor cache
+WP Admin -> Tools -> General
+	- Regenerate CSS & Data
+	- Sync Library
+	- replace URL tab, update URL
+
+--update ultimate member subscription URL
+
+--update elementor "the plus" subscription URL
+
+--update ti project subscription URL
+	- reactivate plugin
+	
+4. Update robots.txt to remove line:
+
+Disallow: /
+
+5. Update iframe links in code to point to correct urls.  Current code is using test URLs 
+	- File Location: C:\SITES\polysort\provia\provia_v3\Provia\provia-iframe\scripts\iframe

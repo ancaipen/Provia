@@ -30,41 +30,6 @@
 	}
 	$project_html .= '</select>';
 	
-	//load images from all projects
-	$sql = "SELECT ti_i.ID wishlistitem_id, ti_i.wishlist_id, u.ID as user_id, p.ID as product_id  ";
-	$sql .= "FROM wp_tinvwl_items ti_i ";
-	$sql .= "inner join wp_users u on u.ID = ti_i.author ";
-	$sql .= "inner join wp_posts p on p.ID=ti_i.product_id ";
-	$sql .= "where p.post_status = 'publish' and p.post_type='product' and ti_i.author = ".$userid;
-	
-	$result = $GLOBALS['wpdb']->get_results($sql);
-
-	foreach ( $result as $product )
-	{
-		$product_id = $product->product_id;
-		$wishlist_id = $product->wishlist_id;
-		
-		$query_thumb = "SELECT meta_value FROM wp_postmeta WHERE meta_key ='_thumbnail_id' AND post_id = ".$product_id;
-		$result_query = $GLOBALS['wpdb']->get_results($query_thumb);
-		$thumb_post_id = $result_query[0]->meta_value;
-		
-		if($thumb_post_id != "")
-		{
-		
-			$query_file = "SELECT meta_value FROM wp_postmeta WHERE meta_key ='_wp_attached_file' AND post_id = ".$thumb_post_id;
-			$result_query = $GLOBALS['wpdb']->get_results($query_file);
-			$attached_file_path = $result_query[0]->meta_value;
-			
-			if($attached_file_path != "")
-			{
-				$image_html .= '<div class="drag-drop" wishlist-id="'.$wishlist_id.'">';
-				$image_html .= '<img src="/wp-content/uploads/'.$attached_file_path.'" class="myprojects-image" />';
-				$image_html .= '</div>';
-			}
-		
-		}
-		
-	}
 
 ?>
 <link href="/wp-content/plugins/provia-myprojects/css/myprojects.css" rel="stylesheet" type="text/css" />
@@ -73,21 +38,28 @@
 
 <div id="my-projects-save">
 	<?php echo $project_html; ?>
-	<input type="text" name="myproject-name" id="myproject-name" value="My New Project" />
+	<input type="text" name="myproject-name" id="myproject-name" value="" />
 	<input type="hidden" name="list_id" id="list_id" value="" />
 	<a href="javascript::void(0);" id="save-project"><img src="/wp-content/plugins/provia-myprojects/images/pencil.svg" width="25"/></a>
 </div>
 
+<div id="my-projects-overlay" style="display:none;">
+	
+</div>
+
 <div id="my-projects-container">
-	<?php echo $image_html; ?>
+	
 </div>
 
 <script>
 	
 	jQuery(document).ready(function() {
 		
+		loadProjectImages();
+		
 		jQuery("#project-lists").change(function () {
 			filterImages(this);
+			loadProjectImages();
 		});
 		
 		jQuery("#save-project").click(function () {
@@ -96,10 +68,88 @@
 		
 	});
 	
-	function saveProject()
+	function showHideLoading(showDiv, displayText)
+	{
+		
+		if(displayText == null)
+		{
+			displayText = '<img src="/wp-content/plugins/provia-myprojects/images/load-icon-png-7952.png" width="25" /> <span class="my-projects-overlay-text">Loading....</span>';
+		}
+		
+		if(showDiv == null)
+		{
+			showDiv = false;
+		}
+		
+		if(showDiv == true)
+		{
+			//show loading text
+			jQuery('#my-projects-overlay').html(displayText);
+			jQuery('#my-projects-overlay').attr('style', 'display:block;');
+			
+			//lock project fields
+			jQuery("#project-lists").prop('disabled', true);
+			jQuery("#myproject-name").prop('disabled', true);
+			jQuery("#save-project").prop('disabled', true);
+			
+		}
+		else
+		{
+			jQuery('#my-projects-overlay').html(displayText);
+			jQuery('#my-projects-overlay').attr('style', 'display:none;');
+			
+			//unlock project fields
+			jQuery("#project-lists").prop('disabled', false);
+			jQuery("#myproject-name").prop('disabled', false);
+			jQuery("#save-project").prop('disabled', false);
+			
+		}
+	}
+	
+	function loadProjectImages()
 	{
 		
 		debugger;
+		
+		showHideLoading(true);
+		var list_id = jQuery('#project-lists').val();
+		
+		//get images and write html to div
+		var url = "/wp-json/provia/v1/provia_getproject/getimages/?uid=<?php echo $userid; ?>";
+		
+		if(list_id != null && parseInt(list_id)  > 0)
+		{
+			url += '&list_id=' + list_id;
+		}
+		
+		jQuery.get( url, function(result) {
+			var image_html = result;
+			if(image_html != null && image_html != "")
+			{
+				jQuery('#my-projects-container').html(image_html);
+			}
+			showHideLoading(false);
+		});
+		
+	}
+	
+	function saveProject()
+	{
+		
+		//debugger;
+		
+		var project = jQuery('#myproject-name').val();
+		var list_id = jQuery('#list_id').val();
+		
+		//validate input
+		if(project == "" || project == "")
+		{
+			alert('Project name is missing, please enter to continue save');
+			return;
+		}
+		
+		//show loading overlay
+		showHideLoading(true);
 		
 		//create snapshot of canvas
 		html2canvas(document.querySelector("#my-projects-container")).then(canvas => {
@@ -107,20 +157,86 @@
 			var img = canvas.toDataURL();
 
 			// Send the screenshot to PHP to save it on the server
-			var url = '/provia/v1/provia_saveproject/image/';
-			jQuery.ajax({ 
-				type: "POST", 
-				url: url,
-				dataType: 'text',
-				data: {
+			var url = '/wp-json/provia/v1/provia_saveproject/default/';
+			
+			var data = 
+			{
 					project_image : img,
-					user_id : <?php echo $userid; ?>
+					project_name : project,
+					list_id: list_id,
+					user_id : "<?php echo base64_encode($userid); ?>"
+			};
+			
+			jQuery.post( url, data, function(result) {
+				var id = parseInt(result);
+				if(id > 0)
+				{
+					jQuery('#list_id').val(id);
+					saveProjectImages();
+					showHideLoading(false);
 				}
+			}).fail(function(xhr, status, error) {
+				showHideLoading(false);
 			});
 			
 		});
+
+	}
+	
+	function saveProjectImages()
+	{
 		
-		//attempt to save or update project first
+		//debugger;
+		
+		var project = jQuery('#myproject-name').val();
+		var list_id = jQuery('#list_id').val();
+		
+		//validate input
+		if(project == "" || project == "")
+		{
+			alert('Project name is missing, please enter to continue save');
+		}
+		
+		//loop through all images 
+		jQuery('#my-projects-container .drag-drop:not(.drag-drop-hidden)').each(function() {
+			
+			var imgStyle = jQuery(this).attr('style');
+			var imgDataX = jQuery(this).attr('data-x');
+			var imgDataY = jQuery(this).attr('data-y');
+			var imgProductId = jQuery(this).attr('product_id');
+			var imgSrc = jQuery(this).children().attr('src');
+			
+			var url = '/wp-json/provia/v1/provia_saveproject/image/';
+			
+			var data = 
+			{
+					project_name : project,
+					image_style : imgStyle,
+					image_x : imgDataX,
+					image_y: imgDataY,
+					image_src: imgSrc,
+					image_product: imgProductId,
+					user_id : "<?php echo base64_encode($userid); ?>"
+			};
+			
+			try
+			{
+				jQuery.post( url, data, function(result) {
+					var id = parseInt(result);
+					if(id > 0)
+					{
+						//assign to image
+						jQuery(this).children().attr('image-id', id);
+					}
+				});
+			}
+			catch(e)
+			{
+				alert('saveProjectImages() ERROR: ' + e);
+			}
+			
+		});
+		
 	}
 	
 	function filterImages(dropdown)
@@ -129,10 +245,22 @@
 		//debugger;
 		
 		//get selected project
-		var projectId = jQuery(dropdown).val(); 
+		var projectId = parseInt(jQuery(dropdown).val()); 
+		var projectName = jQuery("#project-lists option:selected" ).text();
 		
 		//set selected projectid
 		jQuery('#list_id').val(projectId);
+		
+		//set project name to textbox
+		if(projectName != null && projectName != "" && projectId > 0)
+		{
+			jQuery('#myproject-name').val(projectName);
+		}
+		
+		if(projectId == -1)
+		{
+			jQuery('#myproject-name').val('');
+		}
 		
 		//loop through all images
 		jQuery('div', '#my-projects-container').each(function () {
@@ -153,6 +281,7 @@
 			}
 			
 		});
+		
 	}
 	
 	interact('.drag-drop').draggable({

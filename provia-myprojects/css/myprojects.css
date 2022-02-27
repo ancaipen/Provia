@@ -1,3 +1,9 @@
+#my-projects-overlay {
+	padding: 10px;
+	background-color: #ffffed;
+	border: solid 1px #ccc;
+	font-weight: bold;
+}
 
 #my-projects-container
 {
