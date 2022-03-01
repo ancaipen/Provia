@@ -28,6 +28,7 @@ include_once( ABSPATH."wp-includes/wp-db.php" );
 
 $plugin_data = get_plugin_data( __FILE__ );
 define( 'provia_saveimage_path', plugin_dir_path( __FILE__ ) );
+define( 'provia_default_url', 'https://provia.proviaserver-v2.com/' );
 
 //--------------------------------------------------
 // SHORTCODE
@@ -120,6 +121,7 @@ function provia_getproject_images($data)
 	$image_html = '';
 	$project_html = '';
 	$list_id = 0;
+	$toolset = false;
 	
 	//check for userid in post 
 	if(isset($data['uid']))
@@ -138,21 +140,39 @@ function provia_getproject_images($data)
 		}
 	}
 	
+	//used to strip out styles for project images
+	if(isset($data['toolset']))
+	{
+		if($data['toolset'] = "true")
+		{
+			$toolset = true;
+		}
+	}
+	
 	if(!isset($userid))
 	{
 		return new WP_Error( 'no_user', 'Invalid user, not found', array( 'status' => 404 ));
 	}
 	
 	//load images from all projects
-	$sql = "SELECT ti_i.ID as wishlistitem_id, ti_i.wishlist_id, u.ID as user_id, p.ID as product_id  ";
-	$sql .= "FROM wp_tinvwl_items ti_i ";
-	$sql .= "inner join wp_users u on u.ID = ti_i.author ";
-	$sql .= "inner join wp_posts p on p.ID=ti_i.product_id ";
-	$sql .= "where p.post_status = 'publish' and p.post_type='product' and ti_i.author = ".$userid;
+	
 	
 	if(isset($list_id) && $list_id > 0)
 	{
+		$sql = "SELECT ti_i.ID as wishlistitem_id, ti_i.wishlist_id, u.ID as user_id, p.ID as product_id  ";
+		$sql .= "FROM wp_tinvwl_items ti_i ";
+		$sql .= "inner join wp_users u on u.ID = ti_i.author ";
+		$sql .= "inner join wp_posts p on p.ID=ti_i.product_id ";
+		$sql .= "where p.post_status = 'publish' and p.post_type='product' and ti_i.author = ".$userid;
 		$sql .= " and ti_i.wishlist_id=".$list_id;
+	}
+	else
+	{
+		$sql = "SELECT DISTINCT -1 as wishlistitem_id, -1 as wishlist_id, u.ID as user_id, p.ID as product_id  ";
+		$sql .= "FROM wp_tinvwl_items ti_i ";
+		$sql .= "inner join wp_users u on u.ID = ti_i.author ";
+		$sql .= "inner join wp_posts p on p.ID=ti_i.product_id ";
+		$sql .= "where p.post_status = 'publish' and p.post_type='product' and ti_i.author = ".$userid;
 	}
 	
 	//echo $sql;
@@ -205,9 +225,20 @@ function provia_getproject_images($data)
 			
 			if($attached_file_path != "")
 			{
-				$image_html .= '<div class="drag-drop" product_id="'.$product_id.'" wishlist-id="'.$wishlist_id.'" style="'.$image_style.'" data-x="'.$datax.'" data-y="'.$datay.'">';
-				$image_html .= '<img src="/wp-content/uploads/'.$attached_file_path.'" class="myprojects-image" />';
-				$image_html .= '</div>';
+				if(isset($list_id) && $list_id > 0 && $toolset == false)
+				{
+					$image_html .= '<div class="drag-drop" product_id="'.$product_id.'" wishlist-id="'.$wishlist_id.'" style="'.$image_style.'" data-x="'.$datax.'" data-y="'.$datay.'">';
+					$image_html .= '<a href="javascript:void(0);" class="myprojects-close-image" product_id="'.$product_id.'" style="display:none;"><img src="/wp-content/plugins/provia-myprojects/images/close.png" width="25" /></a>';
+					$image_html .= '<img src="/wp-content/uploads/'.$attached_file_path.'" class="myprojects-image" />';
+					$image_html .= '</div>';
+				}
+				else
+				{
+					$image_html .= '<div class="drag-drop toolset-image" product_id="'.$product_id.'">';
+					$image_html .= '<img src="/wp-content/uploads/'.$attached_file_path.'" class="myprojects-drag-image" />';
+					$image_html .= '</div>';
+				}
+				
 			}
 		
 		}
@@ -404,7 +435,14 @@ function provia_saveproject($data)
 	if($err_msg == "")
 	{
 		$list_id = provia_getlistid($project_name, $userid, $list_id);
-		return new WP_REST_Response($list_id, 200);
+		
+		//update image path to be URL
+		$image_full = str_replace('/home/proviav2/public_html/provia.com/', provia_default_url, $image_full);
+		
+		$response_array = array($list_id, $image_full);
+		$response = json_encode($response_array);
+		
+		return new WP_REST_Response($response, 200);
 	}
 	else
 	{

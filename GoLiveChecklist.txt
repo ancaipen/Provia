@@ -46,3 +46,6 @@ Disallow: /
 
 5. Update iframe links in code to point to correct urls.  Current code is using test URLs 
 	- File Location: C:\SITES\polysort\provia\provia_v3\Provia\provia-iframe\scripts\iframe
+
+6. Update provia-api plugin code to point to proper url
+	- provia-api.php

@@ -10,18 +10,47 @@
 	height: 640px;
 	height: 440px;
 	background-image: url('/wp-content/plugins/provia-myprojects/images/Provia_Background.png');
-	overflow: none;
+	overflow: hidden;
 	position: relative;
+	overflow:hidden;
+	background-size: contain;
+	width: 100%;
+}
+
+#my-projects-images
+{
+	position: relative;
+	width: 100%;
+	background-color: #fff;
+	padding: 10px 15px 0 15px;
+	overflow: auto;
+	border-radius: 15px;
+	box-shadow: inset 1px 0 10px 0 rgba(0, 0, 0, 0.16);
+	margin: 0 0 15px 0;
 }
 
 #project-lists
 {
-	width: 25%;
+	width: 100%;
+	margin-bottom: 15px;
+	border: 0px solid #000;
+	border-radius: 19px;
+	box-shadow: inset 1px 0 10px 0 rgba(0, 0, 0, 0.16);
+	-webkit-transition: all 200ms ease;
+	transition: all 200ms ease;
+	background-color: #fff;
 }
 
 #myproject-name
 {
-	width: 50%;
+	max-width: 100%;
+	margin-bottom: 15px;
+	border: 0px solid #000;
+	border-radius: 19px;
+	box-shadow: inset 1px 0 10px 0 rgba(0, 0, 0, 0.16);
+	-webkit-transition: all 200ms ease;
+	transition: all 200ms ease;
+
 }
 
 #my-projects-save
@@ -51,12 +80,38 @@
   border-style: solid;
 }
 
+.toolset-image
+{
+	display: block;
+	float: left;
+	position: relative !important; 
+	padding: 3px;
+	height: 85px;
+}
+
+.toolset-image img
+{
+	width: 70px;
+	height: 70px;
+	border-radius: 5px;
+	box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.3);
+	-o-object-fit: cover;
+	object-fit: cover;
+}
+
+.myprojects-close-image
+{
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+
 .drag-drop {
   position: absolute;
   touch-action: none;
   transform: translate(0px, 0px);
   transition: background-color 0.3s;
-  width: 100px;
+  width: 85px;
   height: 100%;
   margin-right: auto;
   margin-left: auto;
@@ -64,4 +119,28 @@
 
 .drag-drop-hidden {
   display: none;
+}
+
+@media (min-width: 480px){
+#project-lists
+{
+	width: 25%;
+	margin-bottom: 0;
+}
+
+#myproject-name
+{
+	max-width: 50%;
+
+}
+
+#my-projects-container
+{
+	width: 98%;
+}
+
+#my-projects-images
+{
+	width: 98%;
+}	
 }
