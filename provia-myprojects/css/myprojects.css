@@ -3,12 +3,18 @@
 	background-color: #ffffed;
 	border: solid 1px #ccc;
 	font-weight: bold;
+	width: 100%;
+	margin: 0 0 15px 0;
+	border-radius: 10px;
+	box-shadow: inset 1px 0 10px 0 rgba(0, 0, 0, 0.16);
+	-webkit-transition: all 200ms ease;
+	transition: all 200ms ease;
 }
 
 #my-projects-container
 {
 	height: 640px;
-	height: 440px;
+	height: 540px;
 	background-image: url('/wp-content/plugins/provia-myprojects/images/Provia_Background.png');
 	overflow: hidden;
 	position: relative;

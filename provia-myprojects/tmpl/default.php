@@ -5,51 +5,51 @@
 	$userid = 0;
 	$image_html = '';
 	$project_html = '';
+	$showcanvas = false;
 	
 	if(isset($user))
 	{
 		$userid = $user->ID;
 	}
 	
-	if($userid == 0)
+	if($userid > 0)
 	{
-		return;
+		//create project dropdown
+		$sql = "SELECT ID, author, title FROM wp_tinvwl_lists ";
+		$sql .= "where title <> '' and author = ".$userid;
+		
+		$result = $GLOBALS['wpdb']->get_results($sql);
+		
+		$project_html = '<select name="project-lists" id="project-lists">';
+		$project_html .= '<option value="-1">All Project Items</option>';
+		foreach ( $result as $list )
+		{
+			$project_html .= '<option value="'.$list->ID.'">'.$list->title.'</option>';
+		}
+		$project_html .= '</select>';
+		$showcanvas = true;
 	}
-	
-	//create project dropdown
-	$sql = "SELECT ID, author, title FROM wp_tinvwl_lists ";
-	$sql .= "where title <> '' and author = ".$userid;
-	
-	$result = $GLOBALS['wpdb']->get_results($sql);
-	
-	$project_html = '<select name="project-lists" id="project-lists">';
-	$project_html .= '<option value="-1">All Items</option>';
-	foreach ( $result as $list )
-	{
-		$project_html .= '<option value="'.$list->ID.'">'.$list->title.'</option>';
-	}
-	$project_html .= '</select>';
 	
 
 ?>
+
 <link href="/wp-content/plugins/provia-myprojects/css/myprojects.css" rel="stylesheet" type="text/css" />
 <script src="/wp-content/plugins/provia-myprojects/js/interact.min.js"></script>
 <script src="/wp-content/plugins/provia-myprojects/js/html2canvas.min.js"></script>
+
+<?php if($showcanvas == true) { ?>
 
 <div id="my-projects-save">
 	<?php echo $project_html; ?>
 	<input type="text" name="myproject-name" id="myproject-name" value="" placeholder="Enter Project Name Here" />
 	<input type="hidden" name="list_id" id="list_id" value="" />
 	<a href="javascript:void(0);" id="save-project"><img src="/wp-content/plugins/provia-myprojects/images/save.png" width="35"/></a>
-	<a href="javascript:void(0);" id="refresh-project"><img src="/wp-content/plugins/provia-myprojects/images/refresh3.png" width="35"/></a>
+	<a href="javascript:void(0);" id="refresh-project"><img src="/wp-content/plugins/provia-myprojects/images/refresh5.png" width="35"/></a>
 	<a href="javascript:void(0);" id="save-facebook"><img src="/wp-content/plugins/provia-myprojects/images/facebook.png" width="35"/></a>
 	<a href="javascript:void(0);" id="save-twitter"><img src="/wp-content/plugins/provia-myprojects/images/twitter.png" width="35"/></a>
 </div>
 
-<div id="my-projects-overlay" style="display:none;">
-	
-</div>
-
+<div id="my-projects-overlay" style="display:none;"></div>
 <div id="my-projects-images"></div>
 <div id="my-projects-container"></div>
 
@@ -142,7 +142,11 @@
 		
 		if(displayText == null)
 		{
-			displayText = '<img src="/wp-content/plugins/provia-myprojects/images/load-icon-png-7952.png" width="25" /> <span class="my-projects-overlay-text">Loading....</span>';
+			displayText = '<img src="/wp-content/plugins/provia-myprojects/images/loading-buffering.gif" width="25" /> <span class="my-projects-overlay-text">Loading....</span>';
+		}
+		else
+		{
+			displayText = '<img src="/wp-content/plugins/provia-myprojects/images/loading-buffering.gif" width="25" /> <span class="my-projects-overlay-text">' + displayText + '</span>';
 		}
 		
 		if(showDiv == null)
@@ -262,6 +266,9 @@
 		
 		//debugger;
 		
+		//show loading overlay
+		showHideLoading(true, 'Saving...');
+		
 		//set defaults		
 		if(socialMediaType == null)
 		{
@@ -275,11 +282,9 @@
 		if(project == "" || project == "")
 		{
 			alert('Project name is missing, please enter to continue save');
+			showHideLoading(false);
 			return;
 		}
-		
-		//show loading overlay
-		showHideLoading(true);
 		
 		//create snapshot of canvas
 		html2canvas(document.querySelector("#my-projects-container")).then(canvas => {
@@ -579,3 +584,8 @@
 	
 
 </script>
+
+<?php } else { ?>
+<div id="my-projects-overlay">To begin using the Project Builder <a href="/login">Sign-in or Register for an account here</a></div>
+<div id="my-projects-container"></div>
+<?php } ?>
