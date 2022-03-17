@@ -8,6 +8,25 @@ body, html
 
 }
 
+.ui-dialog {
+  width: 80% !important;
+  left: 60% !important;
+  top: 24% !important;
+  margin: 0 -50%;
+  min-height: 0%;
+  position: absolute !important;
+  background: #fff;
+  padding: 15px;
+  border-radius: 15px;
+}
+
+.wishlist-name
+{
+	padding: 3px;
+}
+
+
+
 .grout-color-container{
 	position: absolute;
 	bottom: 0;
@@ -152,7 +171,7 @@ body, html
 
 .col1-header-mobile{
 	text-align: left;
-	padding: 0 0 0 0;
+	padding: 5px 0 0 0;
 }
 
 .magnify{
@@ -219,6 +238,9 @@ div#main-menu ul.product-type li.media-item a.media-none  {
 	font-weight: lighter;
 	line-height: 100%;
 }
+
+
+
 
 
 }
@@ -344,7 +366,7 @@ div#main-menu ul.product-type li.media-item a.media-none  {
 	font-size: 16px;
 }
 
- }
+
  
  
 /* 992px and up*/
@@ -364,5 +386,28 @@ div#main-menu ul.product-type li.media-item a.media-none  {
 }
 
 
+}
+
+/*Grout Selector Sizing*/
+
+.fancybox-iframe{
+	width: 100% !important;
+	height: 300px !important;
+}
+
+/* 480px and up */
+@media only screen and (min-width: 480px){
+  .fancybox-iframe{
+	width: 100% !important;
+	height: 400px !important;
+}  
+}
+
+/* 768px and up */
+@media only screen and (min-width: 768px){
+  .fancybox-iframe{
+	width: 100% !important;
+	height: 500px !important;
+}  
 }
 

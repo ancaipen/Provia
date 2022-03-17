@@ -28,6 +28,27 @@
 		}
 		$project_html .= '</select>';
 		$showcanvas = true;
+				
+		$sql = "SELECT * FROM wp_provia_preferreddealers where userid=".$userid;
+		$dealers = $GLOBALS['wpdb']->get_results($sql);		
+		
+		if(isset($dealers) && count($dealers) > 0)
+		{
+			$dealer_name = $dealers[0]->dealer_name;
+			$dealer_phone = $dealers[0]->dealer_phone;
+			$dealer_website = $dealers[0]->dealer_website;
+			$dealer_address = $dealers[0]->dealer_address;
+			$dealer_lat = $dealers[0]->dealer_lat;
+			$dealer_long = $dealers[0]->dealer_long;
+			$user_zipcode = $dealers[0]->dealer_zipcode;
+			
+			//use user ip address to find zip code
+			if($user_zipcode == "")
+			{
+				$user_zipcode = provia_getzipcode();
+			}
+		}
+		
 	}
 	
 
@@ -45,6 +66,7 @@
 	<input type="hidden" name="list_id" id="list_id" value="" />
 	<a href="javascript:void(0);" id="save-project"><img src="/wp-content/plugins/provia-myprojects/images/save.png" width="35"/></a>
 	<a href="javascript:void(0);" id="refresh-project"><img src="/wp-content/plugins/provia-myprojects/images/refresh5.png" width="35"/></a>
+	<a href="javascript:void(0);" id="save-file"><img src="/wp-content/plugins/provia-myprojects/images/download.png" width="35"/></a>
 	<a href="javascript:void(0);" id="save-facebook"><img src="/wp-content/plugins/provia-myprojects/images/facebook.png" width="35"/></a>
 	<a href="javascript:void(0);" id="save-twitter"><img src="/wp-content/plugins/provia-myprojects/images/twitter.png" width="35"/></a>
 </div>
@@ -106,6 +128,10 @@
 		
 		jQuery("#save-twitter").click(function () {
 			saveProject('twitter');
+		});
+		
+		jQuery("#save-file").click(function () {
+			saveProject('file');
 		});
 		
 		jQuery('body').on('click', 'a.myprojects-close-image', function() {
@@ -332,6 +358,10 @@
 							{
 								shareToTwitter(imagePath);
 							}
+							else if(socialMediaType == 'file')
+							{
+								downloadFile(imagePath);
+							}
 						}
 						
 						setTimeout("hideShowImagesInToolset();", 500);
@@ -489,6 +519,11 @@
 		window.open(ShareUrl,"NewWindow" , params);  
 	}
 	
+	function downloadFile(imagePath) 
+	{
+		window.location.href = '/wp-content/plugins/provia-myprojects/tmpl/downloadfile.php?f=' + imagePath;
+    }
+	
 	interact('.drag-drop').draggable({
 		// enable inertial throwing
 		inertia: true,
@@ -535,6 +570,22 @@
 			closeLink.style = 'display:none;';
 			clone.prepend(closeLink);
 			
+			var positionCont = document.querySelector('#my-projects-container').getBoundingClientRect().left;
+			var positionEvent = event.clientX;
+			var position = parseInt(positionEvent) - parseInt(positionCont) - 25;
+			
+			if(position < 0)
+			{
+				position = 0;
+			}
+			
+			//debugger;
+			
+			clone.style.position = 'absolute';
+			clone.style.left = position + 'px';
+			clone.style.top = '0px';
+			clone.style.width = '25%';
+			
 			// insert the clone to the page
 			// TODO: position the clone appropriately
 			document.getElementById("my-projects-container").appendChild(clone);
@@ -563,6 +614,17 @@
 		  }
 		}
 	});
+
+	function getOffset( el ) {
+		var _x = 0;
+		var _y = 0;
+		while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+			_x += el.offsetLeft - el.scrollLeft;
+			_y += el.offsetTop - el.scrollTop;
+			el = el.offsetParent;
+		}
+		return { top: _y, left: _x };
+	}
 
 	function dragMoveListener (event) {
 	  var target = event.target

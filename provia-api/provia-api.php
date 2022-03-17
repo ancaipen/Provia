@@ -87,6 +87,21 @@ add_action( 'rest_api_init', function () {
 });
 
 add_action( 'rest_api_init', function () {
+  register_rest_route( 'provia/v1/provia_tiwishlist', '/saveimage/', array(
+    'methods' => 'POST',
+    'callback' => 'provia_savetiwishlist_image',
+  ));
+});
+
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'provia/v1/provia_tiwishlist', '/getimage/', array(
+    'methods' => 'POST',
+    'callback' => 'provia_gettiwishlist_image',
+  ));
+});
+
+
+add_action( 'rest_api_init', function () {
   register_rest_route( 'provia/v1/provia_getproject', '/getimages/', array(
     'methods' => 'GET',
     'callback' => 'provia_getproject_images',
@@ -359,6 +374,139 @@ function provia_saveproject_image($data)
 		$image_id = $images[0]->image_id;
 	}
 	
+	//return result
+	return new WP_REST_Response($image_id, 200);
+	
+}
+
+function provia_savetiwishlist_image($data)
+{
+	
+	provia_set_user();
+	
+	$list_id = 5;
+	$product_id = 0;
+	$userid = 1;
+	$curr_date = date("Y-m-d H:i:s");
+	
+	if(isset($GLOBALS['provia']['userid']))
+	{
+		$userid = $GLOBALS['provia']['userid'];
+	}
+	
+	//echo 'userid:'.$userid;
+	
+	if(isset($data['user_id']))
+	{
+		if($data['user_id'] != "")
+		{
+			$userid = filter_var(base64_decode($data['user_id']), FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	//check for listid
+	if(isset($data['list_id']))
+	{
+		if($data['list_id'] != "")
+		{
+			$list_id = filter_var($data['list_id'], FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	if(isset($data['product_id']))
+	{
+		if($data['product_id'] != "")
+		{
+			$product_id = filter_var($data['product_id'], FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	$sql_statment = "select ID from wp_tinvwl_items WHERE wishlist_id=%d AND author=%d AND product_id=%s;";
+	$sql = $GLOBALS['wpdb']->prepare($sql_statment,$list_id,$userid,$product_id);
+	$images = $GLOBALS['wpdb']->get_results($sql);
+	$image_id = -1;
+	
+	if(isset($images) && count($images) > 0)
+	{
+		$image_id = $images[0]->ID;
+	}
+	
+	if($image_id <= 0 && $product_id > 0)
+	{
+		$GLOBALS['wpdb']->query(
+		   $GLOBALS['wpdb']->prepare(
+			  "
+			  INSERT INTO wp_tinvwl_items (wishlist_id,product_id,variation_id,formdata,author,date,quantity,price,in_stock)
+			  VALUES (%d,%d,%d,%s,%d,%s,%d,%s,%d)
+			  ",
+			  $list_id,
+			  $product_id,
+			  0,
+			  '',
+			  $userid,
+			  $curr_date,
+			  1,
+			  '',
+			  1
+		   )
+		);
+	}
+	
+	//return result
+	return new WP_REST_Response($product_id, 200);
+	
+}
+
+function provia_gettiwishlist_image($data)
+{
+	
+	provia_set_user();
+	
+	$list_id = 5;
+	$product_id = 0;
+	$userid = 1;
+	$curr_date = date("Y-m-d H:i:s");
+	
+	if(isset($GLOBALS['provia']['userid']))
+	{
+		$userid = $GLOBALS['provia']['userid'];
+	}
+	
+	if(isset($data['user_id']))
+	{
+		if($data['user_id'] != "")
+		{
+			$userid = filter_var(base64_decode($data['user_id']), FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	//check for listid
+	if(isset($data['list_id']))
+	{
+		if($data['list_id'] != "")
+		{
+			$list_id = filter_var($data['list_id'], FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	if(isset($data['product_id']))
+	{
+		if($data['product_id'] != "")
+		{
+			$product_id = filter_var($data['product_id'], FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	$sql_statment = "select ID from wp_tinvwl_items WHERE wishlist_id=%d AND author=%d AND product_id=%s;";
+	$sql = $GLOBALS['wpdb']->prepare($sql_statment,$list_id,$userid,$product_id);
+	$images = $GLOBALS['wpdb']->get_results($sql);
+	$image_id = -1;
+	
+	if(isset($images) && count($images) > 0)
+	{
+		$image_id = $images[0]->ID;
+	}
+		
 	//return result
 	return new WP_REST_Response($image_id, 200);
 	

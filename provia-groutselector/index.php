@@ -6,6 +6,7 @@ require(Config::$home_dir.'/wp-content/plugins/provia-groutselector/data.php');
 //check for product id
 $product_id = '';
 $ver = rand(1, 1000000);
+//$user = wp_get_current_user();
 
 if(isset($_GET['product_id']))
 {
@@ -93,9 +94,6 @@ if($products != null)
 	<script src="/wp-content/plugins/provia-groutselector/js/jquery.min.js?8e295d9a2745a1ae1e87fc3b8ba05e38" type="text/javascript"></script>
 	<script src="/wp-content/plugins/provia-groutselector/js/jquery-noconflict.js?8e295d9a2745a1ae1e87fc3b8ba05e38" type="text/javascript"></script>
 	<script src="/wp-content/plugins/provia-groutselector/js/jquery-migrate.min.js?8e295d9a2745a1ae1e87fc3b8ba05e38" type="text/javascript"></script>
-	
-	<script src="/wp-content/plugins/provia-groutselector/js/jquery-ui.min.js" type="text/javascript"></script>
-	<link href="/wp-content/plugins/provia-groutselector/js/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" type="text/css">
 			
 	<link href="/wp-content/plugins/provia-groutselector/js/bootstrap.css" rel="stylesheet" type="text/css">
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100' rel='stylesheet' type='text/css'>
@@ -104,10 +102,10 @@ if($products != null)
     <script type="text/javascript" src="/wp-content/plugins/provia-groutselector/js/jquery.magnify.js"></script>
 
 	<link href="/wp-content/plugins/provia-groutselector/product_selector.css?ver=<?php echo $ver; ?>" rel="stylesheet" type="text/css">
-
+	<script src="https://kit.fontawesome.com/81446b4acc.js" crossorigin="anonymous"></script>
+	
 </head>
 <body>
-
 
 
 <div id="main-container">
@@ -127,7 +125,8 @@ if($products != null)
 <div class="row">
 	<div class="col-md-12">			
 		<div class="col1-header-mobile">
-				<span class="product-type"><span class="product-name"><?php echo $name_default; ?></span>
+				<span class="product-name"><?php echo $name_default; ?></span>
+				<span class="wishlist-name"><a href="javascript:void(0);" id="add-to-wishlist" product-id="<?php echo $product_id; ?>" style="disply:none;"><i id="heart-icon" class="far fa-heart fa-lg fa-fw" style="font-size: 25px;padding-bottom:6px;"></i></a></span>
 		</div>
 	</div>
 	<div class="col-md-12">
@@ -144,24 +143,8 @@ if($products != null)
 	
 <div class="col-md-12">	
 	
-	</div>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+</div>
+		
 	
 </div>
 <div class="grout-color-container">
@@ -171,7 +154,8 @@ if($products != null)
 	<div class="col-sm-6 grout-color-<?php echo $product_media_count; ?><?php echo $product_enhanced; ?><?php echo $product_enhanced_premium; ?>"<?php echo $product_enhanced_link; ?><?php echo $product_enhanced_premium_link; ?>>	
 		<div class="color-text-container">
 			<div class="col1-header">
-				<span class="product-type"><span class="product-name"><?php echo $name_default; ?></span>
+				<span class="product-name"><?php echo $name_default; ?></span>
+				<span class="wishlist-name"><a href="javascript:void(0);" id="add-to-wishlist" product-id="<?php echo $product_id; ?>" style="disply:none;"><i id="heart-icon" class="far fa-heart fa-lg fa-fw" style="font-size: 25px;padding-bottom:6px;"></i></a></span>
 			</div>
 			<div class="col2-header">
 				<span class="align-text-bottom media-title">Color: </span> <span id="media-type"><?php echo $type_default; ?></span>
@@ -339,6 +323,9 @@ top:40% !important;
 		});
 		*/
 		
+		var product_id = jQuery("#add-to-wishlist").attr('product-id');
+		getWishlistImage(product_id);
+		
 		var dialogCookie = getCookie("productSelector");
 		
 		if(dialogCookie == null)
@@ -357,6 +344,11 @@ top:40% !important;
 		jQuery("#important-btn").click(function () {
 			jQuery("#dialog").dialog();
             jQuery("#dialog").dialog('close');
+        });
+		
+		jQuery("#add-to-wishlist").click(function () {
+			var product_id = jQuery(this).attr('product-id');
+			saveWishlistImage(product_id);
         });
 			
 		<?php
@@ -381,6 +373,80 @@ top:40% !important;
 		
 		
 	});
+	
+	function getWishlistImage(product_id)
+	{
+		
+		//debugger;
+		
+		if(product_id == null || product_id == "")
+		{
+			return;
+		}
+
+		var url = '/wp-json/provia/v1/provia_tiwishlist/getimage/';
+			
+		var data = 
+		{
+			product_id : product_id
+		};
+		
+		try
+		{
+			jQuery.post( url, data, function(result) {
+				var imageId = result;
+				
+				if(imageId > 0)
+				{
+					jQuery('#heart-icon').attr('class', 'fa-solid fa-heart');
+				}
+				
+				//show icon
+				jQuery('#add-to-wishlist').attr('style', '');
+				
+			}).fail(function(xhr, status, error) {
+				console.log(status);
+			});
+		}
+		catch(e)
+		{
+			alert('saveWishlistImage() ERROR: ' + e);
+		}
+		
+	}
+	
+	function saveWishlistImage(product_id)
+	{
+		
+		//debugger;
+		
+		if(product_id == null || product_id == "")
+		{
+			return;
+		}
+
+		var url = '/wp-json/provia/v1/provia_tiwishlist/saveimage/';
+			
+		var data = 
+		{
+				product_id : product_id
+		};
+		
+		try
+		{
+			jQuery.post( url, data, function(result) {
+				var errMsg = result;
+				jQuery('#heart-icon').attr('class', 'fa-solid fa-heart');
+			}).fail(function(xhr, status, error) {
+				console.log(status);
+			});
+		}
+		catch(e)
+		{
+			alert('saveWishlistImage() ERROR: ' + e);
+		}
+		
+	}
 	
 	function openPremiumEnhancedLink()
 	{

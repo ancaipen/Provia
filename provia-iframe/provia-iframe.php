@@ -60,6 +60,11 @@ function provia_add_iframe_files()
 function provia_iframe_load()
 {
 	
+	$request_url = $_SERVER['REQUEST_URI'];
+	if (str_contains($request_url, 'elementor-preview')) {
+		return;
+	}
+	
 	//load form template
 	require_once provia_iframe_path . 'tmpl/default.php';
 	

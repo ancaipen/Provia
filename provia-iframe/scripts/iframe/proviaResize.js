@@ -41,7 +41,10 @@ function loadProviaIframe()
 {
 	//console.log('iframe code run');
 	jQuery("#provia_iframe").iFrameResize({
-        heightCalculationMethod : 'lowestElement',
-        inPageLinks             : true
+        inPageLinks: true,
+		checkOrigin:false,
+		minHeight:1500,
+		heightCalculationMethod:'lowestElement'
+		//log:true,
      });
 }

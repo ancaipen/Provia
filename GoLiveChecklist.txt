@@ -8,17 +8,28 @@ ns1037278175.a2dns.com
 ns1037278176.a2dns.com
 
 1. update base urls
+
+**CREATE MANUAL DATABASE BACKUP**
+
 - update wp_option table site urls.
 - once in the wp admin, click the button to save the site urls in the general settings
 
 2. run database updates
+
+SET @Find = 'proviasandbox.oxbowserver.com';
+SET @Replace = 'provia.proviaserver-v2.com';
+
 update `wp_posts` 
-set post_content=REPLACE(post_content, 'proviasandbox.oxbowserver.com', 'provia.proviaserver-v2.com')
-WHERE post_content like '%proviasandbox.oxbowserver.com%'
+set post_content=REPLACE(post_content, @Find, @Replace);
 
 update `wp_options` 
-set option_value=REPLACE(option_value, 'proviasandbox.oxbowserver.com', 'provia.proviaserver-v2.com')
-WHERE option_value like '%proviasandbox.oxbowserver.com%'
+set option_value=REPLACE(option_value, @Find, @Replace);
+
+update `wp_postmeta` 
+set meta_value=REPLACE(meta_value, @Find, @Replace); 
+
+update `wp_posts` 
+set guid=REPLACE(guid, @Find, @Replace);
 
 3. update site licenses
 
@@ -49,3 +60,7 @@ Disallow: /
 
 6. Update provia-api plugin code to point to proper url
 	- provia-api.php
+	
+7. update provia-iframe plugin URL to point to provia.com from test URL.  
+	
+

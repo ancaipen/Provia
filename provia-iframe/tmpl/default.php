@@ -1,6 +1,5 @@
 <?php       
 
-
 $dealertype = '';
 $username = '';
 $aeris = true;
@@ -43,7 +42,7 @@ if(isset($_GET['embarq']))
     <div id="iframe-container" style="padding:0 115px;">
 	
 	<div class="row">
-	   <div class="col-xs-12"><h2 style="border-bottom:1px solid #666">Welcome: <?php echo $username; ?></h2></div>
+	   	   
 		<div class="col-lg-8">
 		 
      <!-- form data here --> 
@@ -172,7 +171,7 @@ if(isset($_GET['embarq']))
 <script language="javascript" type="text/javascript">
 	
 	var base_protocol = location.protocol.toString();
-	var base_url = base_protocol + "//proviasandbox.oxbowserver.com"
+	var base_url = base_protocol + "//provia.proviaserver-v2.com"
 	//var base_url = base_protocol + "//www.provia.com"
 	
 	jQuery("#show_advanced_options").click(function () {
@@ -212,53 +211,57 @@ if(isset($_GET['embarq']))
 
         if (_sel == 'Doors - Entry Doors') {
             <?php if($embarq) { ?>
-                jQuery('#drpProductPages').append('<option value="/doors">Embarq</option>');
+                jQuery('#drpProductPages').append('<option value="/doors/brands/embarq">Embarq</option>');
             <?php } ?>                        
-            jQuery('#drpProductPages').append('<option value="/doors">Signet</option>');
-            jQuery('#drpProductPages').append('<option value="/doors">Heritage</option>');
-            jQuery('#drpProductPages').append('<option value="/doors">Legacy</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/brands/signet">Signet</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/brands/heritage">Heritage</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/brands/legacy">Legacy</option>');
         }
         else if (_sel == 'Doors - Storm Doors') {
-            jQuery('#drpProductPages').append('<option value="/storm-doors/spectrum">Spectrum</option>');
-            jQuery('#drpProductPages').append('<option value="/storm-doors/decorator">Decorator</option>');
-            jQuery('#drpProductPages').append('<option value="/storm-doors/deluxe">Deluxe</option>');
-            jQuery('#drpProductPages').append('<option value="/storm-doors/duraguard">Duraguard</option>');
-            jQuery('#drpProductPages').append('<option value="/storm-doors/superview">Superview</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/brands/spectrum">Spectrum</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/brands/decorator">Decorator</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/brands/deluxe">Deluxe</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/brands/duraguard">Duraguard</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/brands/superview">Superview</option>');
         }
         else if (_sel == 'Doors - Patio Doors') {            
             <?php if($aeris) { ?>
-                jQuery('#drpProductPages').append('<option value="/patio-doors/aeris">Aeris&#8482; Patio Doors</option>');
+                jQuery('#drpProductPages').append('<option value="/doors/brands/aeris">Aeris&#8482; Patio Doors</option>');
             <?php } ?>
-            jQuery('#drpProductPages').append('<option value="/patio-doors/endure">Endure&#8482; Patio Doors</option>');
-            jQuery('#drpProductPages').append('<option value="/patio-doors/aspect">Aspect&#8482; Patio Doors</option>');
-            jQuery('#drpProductPages').append('<option value="/patio-doors/designer">Designer&#8482; Patio Doors</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/brands/endure">Endure&#8482; Patio Doors</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/brands/aspect">Aspect&#8482; Patio Doors</option>');
+			jQuery('#drpProductPages').append('<option value="/doors/brands/duraguard">Duraguard&#8482; Patio Doors</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/hinged-patio-doors">Designer&#8482; Patio Doors</option>');
+			jQuery('#drpProductPages').append('<option value="/doors/brands/ecolite">Ecolite&#8482; Patio Doors</option>');
         }
         else if (_sel == 'Doors - Door Glass') {
-            jQuery('#drpProductPages').append('<option value="/glass/inspirations-art">Inspirations&#8482; Art Glass</option>');
-            jQuery('#drpProductPages').append('<option value="/glass/decorative">Decorative Glass</option>');
-            jQuery('#drpProductPages').append('<option value="/glass/internal-blinds">Internal Blinds</option>');
-            jQuery('#drpProductPages').append('<option value="/glass/privacy">Privacy Collection</option>');
-            jQuery('#drpProductPages').append('<option value="/glass/clear-and-grids">Clear Glass and Grids</option>');
+            //jQuery('#drpProductPages').append('<option value="/glass/inspirations-art">Inspirations&#8482; Art Glass</option>');
+            jQuery('#drpProductPages').append('<option value="/windows/decorative-glass">Decorative Glass</option>');
+            //jQuery('#drpProductPages').append('<option value="/glass/internal-blinds">Internal Blinds</option>');
+            //jQuery('#drpProductPages').append('<option value="/glass/privacy">Privacy Collection</option>');
+            //jQuery('#drpProductPages').append('<option value="/glass/clear-and-grids">Clear Glass and Grids</option>');
         }
         else if (_sel == 'Windows') {
             <?php if($aeris) { ?>
-				jQuery('#drpProductPages').append('<option value="/windows/aeris">Aeris&#8482; Windows</option>');
+				jQuery('#drpProductPages').append('<option value="/windows/brands/aeris">Aeris&#8482; Windows</option>');
             <?php } ?>
-            jQuery('#drpProductPages').append('<option value="/vinyl-windows/endure">Endure&#8482; Windows</option>');
-            jQuery('#drpProductPages').append('<option value="/vinyl-windows/aspect">Aspect&#8482; Windows</option>');
-            jQuery('#drpProductPages').append('<option value="/vinyl-windows/ecolite">ecoLite&#8482; Windows</option>');
-            jQuery('#drpProductPages').append('<option value="/aluminum-storm-windows">Storm Windows</option>');
+            jQuery('#drpProductPages').append('<option value="/windows/brands/endure">Endure&#8482; Windows</option>');
+            jQuery('#drpProductPages').append('<option value="/windows/brands/aspect">Aspect&#8482; Windows</option>');
+            jQuery('#drpProductPages').append('<option value="/windows/brands/ecolite">ecoLite&#8482; Windows</option>');
+            //jQuery('#drpProductPages').append('<option value="/aluminum-storm-windows">Storm Windows</option>');
         }
         else if (_sel == 'Vinyl Siding') {
-            jQuery('#drpProductPages').append('<option value="/vinyl-siding/cedarmax">CedarMAX</option>');
-            jQuery('#drpProductPages').append('<option value="/vinyl-siding/cedar-peaks">Cedar Peaks</option>');
-            jQuery('#drpProductPages').append('<option value="/vinyl-siding/hearttech">HeartTech</option>');
-            jQuery('#drpProductPages').append('<option value="/vinyl-siding/autumnwood">Autumnwood</option>');
-            jQuery('#drpProductPages').append('<option value="/vinyl-siding/arbor-glen">Arbor Glen</option>');
-            jQuery('#drpProductPages').append('<option value="/vinyl-siding/ultra">Ultra</option>');
-            jQuery('#drpProductPages').append('<option value="/vinyl-siding/traditional">Traditional</option>');
-            jQuery('#drpProductPages').append('<option value="/vinyl-siding/timberbay">Timberbay</option>');
-            jQuery('#drpProductPages').append('<option value="/vinyl-siding/willowbrook">Willowbrook</option>');
+            jQuery('#drpProductPages').append('<option value="/siding/cedarmax">CedarMAX</option>');
+            jQuery('#drpProductPages').append('<option value="/siding/cedar-peaks">Cedar Peaks</option>');
+            jQuery('#drpProductPages').append('<option value="/siding/hearttech">HeartTech</option>');
+            //jQuery('#drpProductPages').append('<option value="/vinyl-siding/autumnwood">Autumnwood</option>');
+            //jQuery('#drpProductPages').append('<option value="/vinyl-siding/arbor-glen">Arbor Glen</option>');
+			jQuery('#drpProductPages').append('<option value="/siding/vinyl-soffit">Vinyl Soffit</option>');
+			
+            jQuery('#drpProductPages').append('<option value="/siding/ultra">Ultra</option>');
+            //jQuery('#drpProductPages').append('<option value="/vinyl-siding/traditional">Traditional</option>');
+            jQuery('#drpProductPages').append('<option value="/siding/timberbay">Timberbay</option>');
+            jQuery('#drpProductPages').append('<option value="/siding/willowbrook">Willowbrook</option>');
         }
         else if (_sel == 'Vinyl Soffit') {
             jQuery('#drpProductPages').append('<option value="/soffit/woodhaven">Woodhaven</option>');
@@ -267,22 +270,22 @@ if(isset($_GET['embarq']))
             jQuery('#drpProductPages').append('<option value="/soffit/universal">Universal</option>');
         }
         else if (_sel == 'Manufactured Stone') {
-            jQuery('#drpProductPages').append('<option value="/manufactured-stone/ridge-cut">Ridge Cut</option>');
-            jQuery('#drpProductPages').append('<option value="/manufactured-stone/edge-cut">Edge Cut</option>');
-            jQuery('#drpProductPages').append('<option value="/manufactured-stone/chisel-cut">Chisel Cut</option>');
-			jQuery('#drpProductPages').append('<option value="/manufactured-stone/drystack">Dry Stack</option>');
-			jQuery('#drpProductPages').append('<option value="/manufactured-stone/terra-cut">Terra Cut</option>');
-			jQuery('#drpProductPages').append('<option value="/manufactured-stone/ledgestone">Ledgestone</option>');
-			jQuery('#drpProductPages').append('<option value="/manufactured-stone/limestone">Limestone</option>');
-			jQuery('#drpProductPages').append('<option value="/manufactured-stone/fieldstone">Field Stone</option>');
-			jQuery('#drpProductPages').append('<option value="/manufactured-stone/riverrock">River Rock</option>');
-			jQuery('#drpProductPages').append('<option value="/manufactured-stone/natural-cut">Natural Cut</option>');
-			jQuery('#drpProductPages').append('<option value="/manufactured-stone/precisionfit">Precision Fit</option>');
-			jQuery('#drpProductPages').append('<option value="/grout-visualizer">Grout Visualizer</option>');
-			jQuery('#drpProductPages').append('<option value="/stone-calculator">Stone Calculator</option>');
+            jQuery('#drpProductPages').append('<option value="/stone/ridge-cut">Ridge Cut</option>');
+            jQuery('#drpProductPages').append('<option value="/stone/edge-cut">Edge Cut</option>');
+            jQuery('#drpProductPages').append('<option value="/stone/chisel-cut">Chisel Cut</option>');
+			jQuery('#drpProductPages').append('<option value="/stone/dry-stack">Dry Stack</option>');
+			jQuery('#drpProductPages').append('<option value="/stone/terra-cut">Terra Cut</option>');
+			jQuery('#drpProductPages').append('<option value="/stone/ledgestone">Ledgestone</option>');
+			jQuery('#drpProductPages').append('<option value="/stone/limestone">Limestone</option>');
+			jQuery('#drpProductPages').append('<option value="/stone/fieldstone">Field Stone</option>');
+			jQuery('#drpProductPages').append('<option value="/stone/river-rock">River Rock</option>');
+			jQuery('#drpProductPages').append('<option value="/stone/natural-cut-stone">Natural Cut</option>');
+			jQuery('#drpProductPages').append('<option value="/stone/precision-fit">Precision Fit</option>');
+			jQuery('#drpProductPages').append('<option value="/stone/grout-visualizer">Grout Visualizer</option>');
+			//jQuery('#drpProductPages').append('<option value="/stone-calculator">Stone Calculator</option>');
         }
 		else if (_sel == 'Metal Roofing') {
-            jQuery('#drpProductPages').append('<option value="/metal-roofing">Metal Roofing</option>');
+            jQuery('#drpProductPages').append('<option value="/roofing">Metal Roofing</option>');
         }
         else if (_sel == 'ProVia Visualizer') {
 		    jQuery('#drpProductPages').append('<option value="/design-it/visualizer">ProVia Visualizer</option>');
