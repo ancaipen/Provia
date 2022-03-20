@@ -92,8 +92,7 @@ if($products != null)
 	<link href="/wp-content/plugins/provia-groutselector/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 
 	<script src="/wp-content/plugins/provia-groutselector/js/jquery.min.js?8e295d9a2745a1ae1e87fc3b8ba05e38" type="text/javascript"></script>
-	<script src="/wp-content/plugins/provia-groutselector/js/jquery-noconflict.js?8e295d9a2745a1ae1e87fc3b8ba05e38" type="text/javascript"></script>
-	<script src="/wp-content/plugins/provia-groutselector/js/jquery-migrate.min.js?8e295d9a2745a1ae1e87fc3b8ba05e38" type="text/javascript"></script>
+	<script src="/wp-content/plugins/provia-groutselector/js/jquery.lazyload.js" type="text/javascript"></script>
 			
 	<link href="/wp-content/plugins/provia-groutselector/js/bootstrap.css" rel="stylesheet" type="text/css">
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100' rel='stylesheet' type='text/css'>
@@ -132,7 +131,7 @@ if($products != null)
 	<div class="col-md-12">
 		<div id="main-body">
 			<div class="media-main">
-				<img src="<?php echo $media_full_default; ?>" id="main-image" data-magnify-src="<?php echo $media_full_default; ?>" />
+				<img src="<?php echo $media_full_default; ?>" id="main-image" data-magnify-src="<?php echo $media_full_default; ?>" class="lazy" />
 			</div>
 			<div class="media-desciption">
 				<?php  echo $description_default; ?>
@@ -322,6 +321,9 @@ top:40% !important;
 		  jQuery('#main-header').html(displaySize);
 		});
 		*/
+		
+		//lazy load image(s)
+		//jQuery("img.lazy").lazyload();
 		
 		var product_id = jQuery("#add-to-wishlist").attr('product-id');
 		getWishlistImage(product_id);

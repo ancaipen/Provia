@@ -76,10 +76,10 @@ if(isset($_GET['embarq']))
            
 </td>
           </tr>
-        <tr>
+        <tr style="display:none;">
             <td>
 			
-			<div id="advanced-features-container" style="display:none;">
+			<div id="advanced-features-container">
 			
 			<a href="javascript:void(0);" id="show_advanced_options" style="font-size:14px; width:60%;">Advanced Options</a>
 			<p>(Customize your iFrame to complement your website width, colors, font size and style.)</p>
@@ -211,28 +211,28 @@ if(isset($_GET['embarq']))
 
         if (_sel == 'Doors - Entry Doors') {
             <?php if($embarq) { ?>
-                jQuery('#drpProductPages').append('<option value="/doors/brands/embarq">Embarq</option>');
+                jQuery('#drpProductPages').append('<option value="/doors/entry-doors/embarq">Embarq</option>');
             <?php } ?>                        
-            jQuery('#drpProductPages').append('<option value="/doors/brands/signet">Signet</option>');
-            jQuery('#drpProductPages').append('<option value="/doors/brands/heritage">Heritage</option>');
-            jQuery('#drpProductPages').append('<option value="/doors/brands/legacy">Legacy</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/entry-doors/signet">Signet</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/entry-doors/heritage">Heritage</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/entry-doors/legacy">Legacy</option>');
         }
         else if (_sel == 'Doors - Storm Doors') {
-            jQuery('#drpProductPages').append('<option value="/doors/brands/spectrum">Spectrum</option>');
-            jQuery('#drpProductPages').append('<option value="/doors/brands/decorator">Decorator</option>');
-            jQuery('#drpProductPages').append('<option value="/doors/brands/deluxe">Deluxe</option>');
-            jQuery('#drpProductPages').append('<option value="/doors/brands/duraguard">Duraguard</option>');
-            jQuery('#drpProductPages').append('<option value="/doors/brands/superview">Superview</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/storm-doors/spectrum">Spectrum</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/storm-doors/decorator">Decorator</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/storm-doors/deluxe">Deluxe</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/storm-doors/duraguard">Duraguard</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/storm-doors/superview">Superview</option>');
         }
         else if (_sel == 'Doors - Patio Doors') {            
             <?php if($aeris) { ?>
-                jQuery('#drpProductPages').append('<option value="/doors/brands/aeris">Aeris&#8482; Patio Doors</option>');
+                jQuery('#drpProductPages').append('<option value="/doors/patio-doors/aeris">Aeris&#8482; Patio Doors</option>');
             <?php } ?>
-            jQuery('#drpProductPages').append('<option value="/doors/brands/endure">Endure&#8482; Patio Doors</option>');
-            jQuery('#drpProductPages').append('<option value="/doors/brands/aspect">Aspect&#8482; Patio Doors</option>');
-			jQuery('#drpProductPages').append('<option value="/doors/brands/duraguard">Duraguard&#8482; Patio Doors</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/patio-doors/endure">Endure&#8482; Patio Doors</option>');
+            jQuery('#drpProductPages').append('<option value="/doors/patio-doors/aspect">Aspect&#8482; Patio Doors</option>');
+			jQuery('#drpProductPages').append('<option value="/doors/storm-doors/duraguard">Duraguard&#8482; Patio Doors</option>');
             jQuery('#drpProductPages').append('<option value="/doors/hinged-patio-doors">Designer&#8482; Patio Doors</option>');
-			jQuery('#drpProductPages').append('<option value="/doors/brands/ecolite">Ecolite&#8482; Patio Doors</option>');
+			jQuery('#drpProductPages').append('<option value="/doors/patio-doors/ecolite">Ecolite&#8482; Patio Doors</option>');
         }
         else if (_sel == 'Doors - Door Glass') {
             //jQuery('#drpProductPages').append('<option value="/glass/inspirations-art">Inspirations&#8482; Art Glass</option>');
