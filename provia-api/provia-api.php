@@ -108,6 +108,15 @@ add_action( 'rest_api_init', function () {
   ));
 });
 
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'provia/v1/provia_admin', '/updatelinks/', array(
+    'methods' => 'GET',
+    'callback' => 'provia_admin_updatelinks',
+  ));
+});
+
+
+
 
 //--------------------------------------------------
 // FUNCTIONS
@@ -1393,5 +1402,81 @@ function save_image_post($userid, $name)
 		}
 	}
 	return null;
+	
+}
+
+function provia_admin_updatelinks()
+{
+	provia_set_user();
+		
+	$userid = $GLOBALS['provia']['userid'];
+	
+	if($userid == "")
+	{
+		return new WP_Error( 'error_user', 'UserId '.$userid.' is Invalid', array( 'status' => 500 ));
+	}
+	
+	//create array of find replace text
+	$findText = '/roofing/';
+	$replaceText = '/metal-roofing/';
+	
+	if($findText == "")
+	{
+		return new WP_Error( 'error_findtext', 'findText is Invalid', array( 'status' => 500 ));
+	}
+	
+	if($replaceText == "")
+	{
+		return new WP_Error( 'error_replacetext', 'replaceText is Invalid', array( 'status' => 500 ));
+	}
+	
+	//update post content
+	$GLOBALS['wpdb']->query(
+	   $GLOBALS['wpdb']->prepare(
+		  "
+			update wp_posts 
+			set post_content=REPLACE(post_content, '".$findText."', '".$replaceText."')
+			where post_content like ('%".$findText."%');
+		  "
+	   )
+	);
+	
+	//update options
+	$GLOBALS['wpdb']->query(
+	   $GLOBALS['wpdb']->prepare(
+		  "
+			update wp_options 
+			set option_value=REPLACE(option_value, '".$findText."', '".$replaceText."') 
+			where option_value like ('%".$findText."%');
+		  "
+	   )
+	);
+	
+	//update post meta
+	$GLOBALS['wpdb']->query(
+	   $GLOBALS['wpdb']->prepare(
+		  "
+			update wp_postmeta 
+			set meta_value=REPLACE(meta_value, '".$findText."', '".$replaceText."') 
+			where meta_value like ('%".$findText."%');
+		  "
+	   )
+	);
+	
+	//update terms meta
+	$GLOBALS['wpdb']->query(
+	   $GLOBALS['wpdb']->prepare(
+		  "
+			update wp_termmeta 
+			set meta_value=REPLACE(meta_value, '".$findText."', '".$replaceText."') 
+			where meta_value like ('%".$findText."%');
+		  "
+	   )
+	);
+	
+	
+	
+	//return result
+	return new WP_REST_Response($findText.':'.$replaceText.' SUCCESS', 200);
 	
 }

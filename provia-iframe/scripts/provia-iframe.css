@@ -1,0 +1,5 @@
+.iframe-hide,
+.elementor-location-header,
+.elementor-location-footer{
+	display:none !important;
+}

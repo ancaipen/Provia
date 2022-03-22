@@ -16,11 +16,15 @@ ns1037278176.a2dns.com
 
 2. run database updates
 
-SET @Find = 'proviasandbox.oxbowserver.com';
+//RUN SCRIPT
+https://provia.proviaserver-v2.com/wp-json/provia/v1/provia_admin/updatelinks/
+
+SET @Find = 'proviasandbox.oxbowserver.com', 
 SET @Replace = 'provia.proviaserver-v2.com';
 
 update `wp_posts` 
-set post_content=REPLACE(post_content, @Find, @Replace);
+set post_content=REPLACE(post_content, @Find, @Replace)
+where post_content like ('%' + @Find + '%')
 
 update `wp_options` 
 set option_value=REPLACE(option_value, @Find, @Replace);
@@ -30,6 +34,13 @@ set meta_value=REPLACE(meta_value, @Find, @Replace);
 
 update `wp_posts` 
 set guid=REPLACE(guid, @Find, @Replace);
+
+//find orphaned post meta
+SELECT * 
+FROM wp_postmeta as pm 
+LEFT JOIN wp_posts as p
+  ON pm.post_id = p.ID
+WHERE p.ID IS NULL
 
 3. update site licenses
 
