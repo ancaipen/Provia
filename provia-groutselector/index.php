@@ -125,7 +125,7 @@ if($products != null)
 	<div class="col-md-12">			
 		<div class="col1-header-mobile">
 				<span class="product-name"><?php echo $name_default; ?></span>
-				<span class="wishlist-name"><a href="javascript:void(0);" id="add-to-wishlist" product-id="<?php echo $product_id; ?>" style="disply:none;"><i id="heart-icon" class="far fa-heart fa-lg fa-fw" style="font-size: 25px;padding-bottom:6px;"></i></a></span>
+				<span class="wishlist-name"><a href="javascript:void(0);" class="add-to-wishlist" product-id="<?php echo $product_id; ?>" style="disply:none;"><i class="far fa-heart fa-lg fa-fw heart-icon" style="font-size: 25px;padding-bottom:6px;"></i></a></span>
 		</div>
 	</div>
 	<div class="col-md-12">
@@ -154,7 +154,7 @@ if($products != null)
 		<div class="color-text-container">
 			<div class="col1-header">
 				<span class="product-name"><?php echo $name_default; ?></span>
-				<span class="wishlist-name"><a href="javascript:void(0);" id="add-to-wishlist" product-id="<?php echo $product_id; ?>" style="disply:none;"><i id="heart-icon" class="far fa-heart fa-lg fa-fw" style="font-size: 25px;padding-bottom:6px;"></i></a></span>
+				<span class="wishlist-name"><a href="javascript:void(0);" product-id="<?php echo $product_id; ?>" class="add-to-wishlist" style="disply:none;"><i class="far fa-heart fa-lg fa-fw heart-icon" style="font-size: 25px;padding-bottom:6px;"></i></a></span>
 			</div>
 			<div class="col2-header">
 				<span class="align-text-bottom media-title">Color: </span> <span id="media-type"><?php echo $type_default; ?></span>
@@ -325,11 +325,13 @@ top:40% !important;
 		//lazy load image(s)
 		//jQuery("img.lazy").lazyload();
 		
-		var product_id = jQuery("#add-to-wishlist").attr('product-id');
+		var product_id = jQuery(".add-to-wishlist").attr('product-id');
 		getWishlistImage(product_id);
 		
+		//message has been hidden permentally (for now)
+		/*
 		var dialogCookie = getCookie("productSelector");
-		
+				
 		if(dialogCookie == null)
 		{
 			//show dialog
@@ -342,13 +344,14 @@ top:40% !important;
 			//set cookie for pop-up
 			setCookie("productSelector","1",30); 
 		}
+		*/
 		
 		jQuery("#important-btn").click(function () {
 			jQuery("#dialog").dialog();
             jQuery("#dialog").dialog('close');
         });
 		
-		jQuery("#add-to-wishlist").click(function () {
+		jQuery(".add-to-wishlist").click(function () {
 			var product_id = jQuery(this).attr('product-id');
 			saveWishlistImage(product_id);
         });
@@ -400,11 +403,11 @@ top:40% !important;
 				
 				if(imageId > 0)
 				{
-					jQuery('#heart-icon').attr('class', 'fa-solid fa-heart');
+					jQuery('.heart-icon').attr('class', 'fa-solid fa-heart heart-icon');
 				}
 				
 				//show icon
-				jQuery('#add-to-wishlist').attr('style', '');
+				jQuery('.add-to-wishlist').attr('style', '');
 				
 			}).fail(function(xhr, status, error) {
 				console.log(status);
@@ -420,7 +423,7 @@ top:40% !important;
 	function saveWishlistImage(product_id)
 	{
 		
-		//debugger;
+		debugger;
 		
 		if(product_id == null || product_id == "")
 		{
@@ -438,7 +441,7 @@ top:40% !important;
 		{
 			jQuery.post( url, data, function(result) {
 				var errMsg = result;
-				jQuery('#heart-icon').attr('class', 'fa-solid fa-heart');
+				jQuery('.heart-icon').attr('class', 'fa-solid fa-heart heart-icon');
 			}).fail(function(xhr, status, error) {
 				console.log(status);
 			});

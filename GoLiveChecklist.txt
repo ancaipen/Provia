@@ -7,16 +7,15 @@
 ns1037278175.a2dns.com
 ns1037278176.a2dns.com
 
-1. update base urls
+1. PRE GO-LIVE BACKUPS: BACKUP SITE!!!
 
 **CREATE MANUAL DATABASE BACKUP**
+- Database export
+- Amazon S3 archive latest snapshot
 
-- update wp_option table site urls.
-- once in the wp admin, click the button to save the site urls in the general settings
+2. Site link update: run database updates
 
-2. run database updates
-
-//RUN SCRIPT
+//RUN SCRIPT as NEEDED
 https://provia.proviaserver-v2.com/wp-json/provia/v1/provia_admin/updatelinks/
 
 SET @Find = 'proviasandbox.oxbowserver.com', 
@@ -68,10 +67,17 @@ Disallow: /
 
 5. Update iframe links in code to point to correct urls.  Current code is using test URLs 
 	- File Location: C:\SITES\polysort\provia\provia_v3\Provia\provia-iframe\scripts\iframe
-
+	- provia-iframe plugin
+	
 6. Update provia-api plugin code to point to proper url
 	- provia-api.php
-	
-7. update provia-iframe plugin URL to point to provia.com from test URL.  
-	
 
+7. update provia where to buy links to use proper URL (provia.com)
+
+8. Update google analytics for new site
+
+9. Update failover/dev site hosting? - need discussion	
+
+10. Update DNS, Sucuri firewall settings
+
+11. Group walkthrough after go-live to ensure that everything looks ok.

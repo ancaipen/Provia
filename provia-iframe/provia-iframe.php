@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( ABSPATH.'wp-admin/includes/plugin.php' );
 
 $plugin_data = get_plugin_data( __FILE__ );
-define( 'provia_iframe_path', plugin_dir_path( __FILE__ ) );
+define( 'provia_iframe_gen_path', plugin_dir_path( __FILE__ ) );
 
 //--------------------------------------------------
 // ACTIONS
@@ -66,7 +66,7 @@ function provia_iframe_load()
 	}
 	
 	//load form template
-	require_once provia_iframe_path . 'tmpl/default.php';
+	require_once provia_iframe_gen_path . 'tmpl/default.php';
 	
 }
 

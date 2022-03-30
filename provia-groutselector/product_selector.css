@@ -3,7 +3,7 @@ body, html
 	margin: 0;
 	padding: 0;
 	width: 100%;
-	background-color: #F9F9F9;
+	background-color: #FFF;
 	overflow: hidden;
 
 }
@@ -31,7 +31,7 @@ body, html
 	position: absolute;
 	bottom: 0;
 	left: 0;
-    background-color: #F9F9F9;
+    background-color: #FFF;
 	width: 100% !important;
 	display: block !important;
 	z-index: 1000 !important;
@@ -74,7 +74,7 @@ body, html
 .product-enhanced-premium .product-type
 {
 	padding-left: 45px;
-	background-color: #F9F9F9;
+	background-color: #FFF;
 	background-image: url("/images/product-selector-icon-star.png");
 	background-repeat: no-repeat;
 	background-position: center left;
@@ -84,7 +84,7 @@ body, html
 .product-enhanced .product-type
 {
 	padding-left: 45px;
-	background-color: #F9F9F9;
+	background-color: #FFF;
 	background-image: url("/images/product-selector-icon-2.png");
 	background-repeat: no-repeat;
 	background-position: center left;
@@ -166,7 +166,7 @@ body, html
 
 .color-info{
 	padding: 0px 0 0px 0;
-	background-color: #F9F9F9 !important;
+	background-color: #ffffff !important;
 }
 
 .col1-header-mobile{
@@ -188,11 +188,11 @@ body, html
 }
 
 #main-menu .product-type {
-    background-color: #F9F9F9;
+    background-color: #ffffff;
 }
 
 .grout-color-4 .col2-header:nth-child(2){
-	background-color: #F9F9F9;
+	background-color: #ffffff;
 	
 }
 

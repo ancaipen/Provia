@@ -56,7 +56,6 @@ if(isset($_GET['embarq']))
                     <option value="Doors - Entry Doors">Doors - Entry Doors</option>
                     <option value="Doors - Storm Doors">Doors - Storm Doors</option>
                     <option value="Doors - Patio Doors">Doors - Patio Doors</option>
-                    <option value="Doors - Door Glass">Doors - Door Glass</option>
                     <option value="Windows">Windows</option>
                     <option value="Vinyl Siding">Vinyl Siding</option>
                     <option value="Vinyl Soffit">Vinyl Soffit</option>
@@ -234,6 +233,7 @@ if(isset($_GET['embarq']))
             jQuery('#drpProductPages').append('<option value="/doors/hinged-patio-doors">Designer&#8482; Patio Doors</option>');
 			jQuery('#drpProductPages').append('<option value="/doors/patio-doors/ecolite">Ecolite&#8482; Patio Doors</option>');
         }
+		/*
         else if (_sel == 'Doors - Door Glass') {
             //jQuery('#drpProductPages').append('<option value="/glass/inspirations-art">Inspirations&#8482; Art Glass</option>');
             jQuery('#drpProductPages').append('<option value="/windows/decorative-glass">Decorative Glass</option>');
@@ -241,6 +241,7 @@ if(isset($_GET['embarq']))
             //jQuery('#drpProductPages').append('<option value="/glass/privacy">Privacy Collection</option>');
             //jQuery('#drpProductPages').append('<option value="/glass/clear-and-grids">Clear Glass and Grids</option>');
         }
+		*/
         else if (_sel == 'Windows') {
             <?php if($aeris) { ?>
 				jQuery('#drpProductPages').append('<option value="/windows/brands/aeris">Aeris&#8482; Windows</option>');
@@ -264,10 +265,10 @@ if(isset($_GET['embarq']))
             jQuery('#drpProductPages').append('<option value="/siding/willowbrook">Willowbrook</option>');
         }
         else if (_sel == 'Vinyl Soffit') {
-            jQuery('#drpProductPages').append('<option value="/soffit/woodhaven">Woodhaven</option>');
-            jQuery('#drpProductPages').append('<option value="/soffit/hearttech">HeartTech</option>');
-            jQuery('#drpProductPages').append('<option value="/soffit/beaded">Beaded / Wainscot</option>');
-            jQuery('#drpProductPages').append('<option value="/soffit/universal">Universal</option>');
+            jQuery('#drpProductPages').append('<option value="/siding/vinyl-soffit/">Vinyl Soffit</option>');
+            //jQuery('#drpProductPages').append('<option value="/soffit/hearttech">HeartTech</option>');
+            //jQuery('#drpProductPages').append('<option value="/soffit/beaded">Beaded / Wainscot</option>');
+            //jQuery('#drpProductPages').append('<option value="/soffit/universal">Universal</option>');
         }
         else if (_sel == 'Manufactured Stone') {
             jQuery('#drpProductPages').append('<option value="/stone/ridge-cut">Ridge Cut</option>');
@@ -285,10 +286,10 @@ if(isset($_GET['embarq']))
 			//jQuery('#drpProductPages').append('<option value="/stone-calculator">Stone Calculator</option>');
         }
 		else if (_sel == 'Metal Roofing') {
-            jQuery('#drpProductPages').append('<option value="/roofing">Metal Roofing</option>');
+            jQuery('#drpProductPages').append('<option value="/metal-roofing">Metal Roofing</option>');
         }
         else if (_sel == 'ProVia Visualizer') {
-		    jQuery('#drpProductPages').append('<option value="/design-it/visualizer">ProVia Visualizer</option>');
+		    jQuery('#drpProductPages').append('<option value="https://provia.renoworks.com/">ProVia Visualizer</option>');
             //append additional text
 		    var _html_additional = '<p style="font-size:14px; color:red;"><b>**NOTE:</b> The Visualizer is designed for wider format website widths, at a minimum of 1065 pixels.  If the Visualizer does not render properly on your website within the iFrame code, we recommend linking directly to the Visualizer using this link:  <a href="http://provia.renoworks.com/" target="_blank">http://provia.renoworks.com/</a></p>';
 		    jQuery('#iframe_additionaltext').html(_html_additional);
@@ -341,7 +342,8 @@ if(isset($_GET['embarq']))
 
         var url = urls[0];
         var anchor = null;
-
+		var script_url = base_url; 
+		
         if(urls[1] != null)
         {
             anchor = urls[1];
@@ -363,13 +365,13 @@ if(isset($_GET['embarq']))
             //override with renoworks url
             if(url.indexOf("provia.renoworks.com") > -1)
             {
-                base_url = "https://provia.renoworks.com/en/";
+                script_url = "https://provia.renoworks.com/en/";
                 url = "";
                 querystring_val = "";
             }
 
             //create iframe html, onLoad="alertsize(document.body.scrollHeight);"
-			var src = (base_url + url + querystring_val).replace("'", "&#39;");
+			var src = (script_url + url + querystring_val).replace("'", "&#39;");
             iframe_html = '<iframe id="provia_iframe" src="' + src + '" width="' + width + '" style="overflow:hidden;width:' + width + '" frameborder="0" scrolling="no"></iframe>';
 
             //set preview
@@ -387,7 +389,9 @@ if(isset($_GET['embarq']))
     }
 
     function assignIframeJS(iframe_html) {
-
+		
+		//debugger;
+		
         var the_height = 1200;
         var iframe_html_js = "";
         var base_protocol = location.protocol.toString();
@@ -406,7 +410,7 @@ if(isset($_GET['embarq']))
         }
 
         //add javascript code for height
-        iframe_html_js = "\n" + '<script type="text/javascript" src="' + base_url + '/wp-content//plugins/provia-iframe/scripts/iframe/proviaResize.js">';
+        iframe_html_js = "\n" + '<script type="text/javascript" src="' + base_url + '/wp-content/plugins/provia-iframe/scripts/iframe/proviaResize.js">';
         iframe_html_js = iframe_html_js + '\<\/script\>';
 
         //assign iframe html to textbox and autoselect
@@ -415,6 +419,10 @@ if(isset($_GET['embarq']))
         jQuery('textarea#final_html').select();
         jQuery('textarea#final_html').focus();
 		
+		//set default first
+		jQuery('#provia_iframe').attr('height', the_height);
+		
+		//attempt to resize to exact size
 		jQuery("#provia_iframe").iFrameResize({ log : false });
 		
     }
