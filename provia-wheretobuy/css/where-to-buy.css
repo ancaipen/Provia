@@ -1,13 +1,13 @@
 /* CSS Document */
-  header h1 {margin-top:145px; display:none;}
-  header {margin-top:145px;}
+  header h1 {margin-top:; display:none;}
+  header {margin-top:;}
   
  @media (min-width: 768px)  {
-    header {margin-top:255px;}
+    header {margin-top:;}
   }
   
   @media (min-width: 992px)  {
-    header {margin-top:145px;}
+    header {margin-top:;}
   }
 table#cnt-tabbed-content { clear:both; padding:0; border:3px solid #6B8C21; margin:0; }
 table#cnt-tabbed-content .btn { width:70px; }

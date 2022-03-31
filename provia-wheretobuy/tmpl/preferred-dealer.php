@@ -17,7 +17,7 @@
 		<?php
 			if(isset($dealer_website) && $dealer_website != "")
 			{
-				echo ' | '. '<a href="'.$dealer_website.'" target="_blank">'.$dealer_website.'</a>';
+				echo ' | '. '<a href="'.$dealer_website.'" target="_blank">Visit Dealer Website</a>';
 			}
 		?>
 		</h3>
@@ -94,7 +94,7 @@ function loadPreferredMap(id)
 			var address = jQuery('#perferred-dealer-address').html();
 			
 			var dealer_content = '<div class="googleMapInfoWindow">';
-			dealer_content = dealer_content + '<h2>' + title + '</h2>';
+			dealer_content = dealer_content + '<div>' + title + '</div>';
 			dealer_content = dealer_content + '<div class="google-address">' + address + '</div>';
 			dealer_content = dealer_content + '</div>';
 			

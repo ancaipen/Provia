@@ -1,9 +1,10 @@
-#perferred-dealer-map { width:99.4%; height:auto; }
+#perferred-dealer-map { width: 100%; height: 200px; }
 
-#perferred-dealer-map-mobile { width:99.4%; height: 300px; }
+
 
 .perferred-dealer-map-container{
 	position: relative;
+	margin: 110px 0 0 0;
 }
 
 #perferred-dealer-map{
@@ -21,7 +22,7 @@
 }
 
  .perferred-dealer-text{
-	
+	padding-bottom: 0px;
 }
 
 
@@ -30,8 +31,7 @@
 /*Design Center Preferred Dealer*/
 
 .perferred-dealer-container{
-  display: -ms-grid;
-display: grid;
+
 overflow: hidden;
 height: 100%;
 -webkit-box-orient: horizontal;
@@ -47,11 +47,11 @@ justify-content: flex-start;
 -webkit-align-items: stretch;
 -ms-flex-align: stretch;
 align-items: stretch;
-grid-auto-columns: 1fr;
+grid-auto-columns: 80% 20%;
 grid-column-gap: 0px;
 grid-row-gap: 0px;
--ms-grid-columns: auto 1fr;
-grid-template-columns: auto 1fr;
+-ms-grid-columns:  80% 20%;
+grid-template-columns:  80% 20%;
 -ms-grid-rows: auto;
 grid-template-rows: auto;
 border-radius: 15px;
@@ -94,39 +94,38 @@ padding: 20px;
     font-weight: 400;
 }
 
- .perferred-dealer-map-container{
-	 display: none;
- }
 
 
-@media only screen and (min-width: 1025px) {
+
+@media only screen and (min-width: 1279px) {
  .perferred-dealer-container{
   display: -ms-grid;
 display: grid;
  }
  
- 
- .perferred-dealer-map-container-mobile{
-	 display: none;
- }
- 
-  .perferred-dealer-map-container{
-	  display: block;
-  }
+ .perferred-dealer-map-container{
+
+	margin: 0 0 0 0;
+}
+
   
  .perferred-dealer-text{
-	margin-right: 80px;
+
 	padding-bottom: 0;
+	max-width: 55%;
 }
 
 
 
 
-#perferred-dealer-map div{
+/*#perferred-dealer-map div{
 	width: 50%;
 	right: 0 !important;
 	position: absolute;
+}*/
+
+#perferred-dealer-map { width:99.4%; height: auto; }
+
+
 }
-
-
 }

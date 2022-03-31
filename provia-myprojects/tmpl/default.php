@@ -28,27 +28,6 @@
 		}
 		$project_html .= '</select>';
 		$showcanvas = true;
-				
-		$sql = "SELECT * FROM wp_provia_preferreddealers where userid=".$userid;
-		$dealers = $GLOBALS['wpdb']->get_results($sql);		
-		
-		if(isset($dealers) && count($dealers) > 0)
-		{
-			$dealer_name = $dealers[0]->dealer_name;
-			$dealer_phone = $dealers[0]->dealer_phone;
-			$dealer_website = $dealers[0]->dealer_website;
-			$dealer_address = $dealers[0]->dealer_address;
-			$dealer_lat = $dealers[0]->dealer_lat;
-			$dealer_long = $dealers[0]->dealer_long;
-			$user_zipcode = $dealers[0]->dealer_zipcode;
-			
-			//use user ip address to find zip code
-			if($user_zipcode == "")
-			{
-				$user_zipcode = provia_getzipcode();
-			}
-		}
-		
 	}
 	
 
@@ -526,7 +505,7 @@
 	
 	interact('.drag-drop').draggable({
 		// enable inertial throwing
-		inertia: true,
+		inertia: false,
 		// enable autoScroll
 		autoScroll: true,
 		listeners: {

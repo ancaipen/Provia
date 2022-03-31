@@ -150,13 +150,13 @@
 			jQuery(".professional").attr("style", "display: none;");
 			
 			jQuery("#fs-action").removeClass('shiftLeft'); 
-			jQuery("#instructions").html('Please fill out all required information. Dealer Results will be displayed below. <span style="color:#000; font-style:italic; font-size: 13px;">All fields required</span>'); 
+			//jQuery("#instructions").html('Please fill out all required information. Dealer Results will be displayed below. <span style="color:#000; font-style:italic; font-size: 13px;">All fields required</span>'); 
 		} 
 		 else {
 		    jQuery(".homeOwner").css("display", "none");
 			jQuery(".professional").css("display","inline"); 
 			/*jQuery("#fs-action").addClass('shiftLeft');*/
-			jQuery("#instructions").html('Please complete the information below to be connected with an Account Manager who will help you find a Distributor. <span style="color:#000; font-style:italic; font-size: 13px;">All fields required</span>');
+			//jQuery("#instructions").html('Please complete the information below to be connected with an Account Manager who will help you find a Distributor. <span style="color:#000; font-style:italic; font-size: 13px;">All fields required</span>');
 		}  
 	}
 	
@@ -714,7 +714,7 @@
 			jQuery(".homeOwner").css("display", "inline");
 			jQuery(".professional").css("display", "none");
 			jQuery("#fs-action").removeClass('shiftLeft');
-			jQuery("#instructions").html('Please fill out all required information. Dealer Results will be displayed below. <span style="color:#000; font-style:italic; font-size: 13px;">All fields required</span>');
+			//jQuery("#instructions").html('Please fill out all required information. Dealer Results will be displayed below. <span style="color:#000; font-style:italic; font-size: 13px;">All fields required</span>');
 
 			jQuery("#map_container").attr("style", "background-color:#fff;");
 			jQuery("#sec-listings").attr("style", "background-color:#fff;");
@@ -726,7 +726,7 @@
 			jQuery('#fld-prod-siding-details').attr('style', 'display:none;');
 			jQuery(".professional").css("display", "inline");
 			/*jQuery("#fs-action").addClass('shiftLeft');*/
-			jQuery("#instructions").html('Please complete the information below to be connected with an Account Manager who will help you find a Distributor. <br /><span style="color:#000; font-style:italic; font-size: 13px;">All fields required</span>');
+			//jQuery("#instructions").html('Please complete the information below to be connected with an Account Manager who will help you find a Distributor. <br /><span style="color:#000; font-style:italic; font-size: 13px;">All fields required</span>');
 			jQuery("#map_container").attr("style", "display:none;");
 			jQuery("#sec-listings").attr("style", "display:none;");
 			jQuery("#results_message").html("");

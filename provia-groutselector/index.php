@@ -125,7 +125,7 @@ if($products != null)
 	<div class="col-md-12">			
 		<div class="col1-header-mobile">
 				<span class="product-name"><?php echo $name_default; ?></span>
-				<span class="wishlist-name"><a href="javascript:void(0);" class="add-to-wishlist" product-id="<?php echo $product_id; ?>" style="disply:none;"><i class="far fa-heart fa-lg fa-fw heart-icon" style="font-size: 25px;padding-bottom:6px;"></i></a></span>
+				<span class="wishlist-name"><a href="javascript:void(0);" class="add-to-wishlist" product-id="<?php echo $product_id; ?>"><i class="far fa-heart fa-lg fa-fw heart-icon" style="font-size: 25px;padding-bottom:6px;"></i></a></span>
 		</div>
 	</div>
 	<div class="col-md-12">
@@ -154,7 +154,7 @@ if($products != null)
 		<div class="color-text-container">
 			<div class="col1-header">
 				<span class="product-name"><?php echo $name_default; ?></span>
-				<span class="wishlist-name"><a href="javascript:void(0);" product-id="<?php echo $product_id; ?>" class="add-to-wishlist" style="disply:none;"><i class="far fa-heart fa-lg fa-fw heart-icon" style="font-size: 25px;padding-bottom:6px;"></i></a></span>
+				<span class="wishlist-name"><a href="javascript:void(0);" product-id="<?php echo $product_id; ?>" class="add-to-wishlist"><i class="far fa-heart fa-lg fa-fw heart-icon" style="font-size: 25px;padding-bottom:6px;"></i></a></span>
 			</div>
 			<div class="col2-header">
 				<span class="align-text-bottom media-title">Color: </span> <span id="media-type"><?php echo $type_default; ?></span>

@@ -179,11 +179,9 @@ function provia_getproject_images($data)
 	}
 	
 	//load images from all projects
-	
-	
 	if(isset($list_id) && $list_id > 0)
 	{
-		$sql = "SELECT ti_i.ID as wishlistitem_id, ti_i.wishlist_id, u.ID as user_id, p.ID as product_id  ";
+		$sql = "SELECT ti_i.ID as wishlistitem_id, ti_i.wishlist_id, u.ID as user_id, p.ID as product_id, p.post_title  ";
 		$sql .= "FROM wp_tinvwl_items ti_i ";
 		$sql .= "inner join wp_users u on u.ID = ti_i.author ";
 		$sql .= "inner join wp_posts p on p.ID=ti_i.product_id ";
@@ -192,7 +190,7 @@ function provia_getproject_images($data)
 	}
 	else
 	{
-		$sql = "SELECT DISTINCT -1 as wishlistitem_id, -1 as wishlist_id, u.ID as user_id, p.ID as product_id  ";
+		$sql = "SELECT DISTINCT -1 as wishlistitem_id, -1 as wishlist_id, u.ID as user_id, p.ID as product_id, p.post_title  ";
 		$sql .= "FROM wp_tinvwl_items ti_i ";
 		$sql .= "inner join wp_users u on u.ID = ti_i.author ";
 		$sql .= "inner join wp_posts p on p.ID=ti_i.product_id ";
@@ -208,6 +206,7 @@ function provia_getproject_images($data)
 		
 		$product_id = $product->product_id;
 		$wishlist_id = $product->wishlist_id;
+		$post_title = $product->post_title;
 		
 		$query_thumb = "SELECT meta_value FROM wp_postmeta WHERE meta_key ='_thumbnail_id' AND post_id = ".$product_id;
 		$result_query = $GLOBALS['wpdb']->get_results($query_thumb);
@@ -254,12 +253,14 @@ function provia_getproject_images($data)
 					$image_html .= '<div class="drag-drop" product_id="'.$product_id.'" wishlist-id="'.$wishlist_id.'" style="'.$image_style.'" data-x="'.$datax.'" data-y="'.$datay.'">';
 					$image_html .= '<a href="javascript:void(0);" class="myprojects-close-image" product_id="'.$product_id.'" style="display:none;"><img src="/wp-content/plugins/provia-myprojects/images/close.png" width="25" /></a>';
 					$image_html .= '<img src="/wp-content/uploads/'.$attached_file_path.'" class="myprojects-image" />';
+					$image_html .= '<div class="product-title">'.$post_title.'</div>';
 					$image_html .= '</div>';
 				}
 				else
 				{
 					$image_html .= '<div class="drag-drop toolset-image" product_id="'.$product_id.'">';
 					$image_html .= '<img src="/wp-content/uploads/'.$attached_file_path.'" class="myprojects-drag-image" />';
+					$image_html .= '<div class="product-title">'.$post_title.'</div>';
 					$image_html .= '</div>';
 				}
 				

@@ -62,14 +62,28 @@ if(isset($_GET['audience']))
 	{
 		color:#799915;
 	}
+	
+	.error-msg
+	{
+		color: #D8000C;
+		background-color: #FFD2D2;
+		margin:10px 22px;
+		vertical-align:middle;
+		padding: 15px;
+		border-radius: 25px;
+	}
+	
+	.error-msg ul {
+	  list-style-type: circle;
+	}
+	
 </style>
-
 
 <div class="container-fluid">
 <div class="container">
 
-<div class="error-msg"><h3>Please correct the following issues:</h3></div>
-<div id="instructions">Please fill out all required information. Dealer Results will be displayed below. <span style="color:#000; font-style:italic; font-size: 13px;">All fields required</span></div>
+<div class="error-msg" style="display: none;"><h4>Please correct the following issues:</h4></div>
+<div id="instructions">Please enter your zip code and select at least one product (you may select multiple products). Then Select "Get Results" to display your dealer results below.</div>
 <section style="z-index:1;" id="sec-form">
 	
 	<fieldset id="fs-audience" style="display:none;">
@@ -83,7 +97,7 @@ if(isset($_GET['audience']))
 	
 	<fieldset id="fs-zip">
 		<div class="homeOwner" style="display:inline;margin-top: 10px;">
-			<h2>ENTER ZIP CODE:</h2>
+			<h2>ZIP CODE:</h2>
 			<input type="text" value="<?php echo $zipcode; ?>" class="txtfld" name="fld-zip" id="fld-zip">
 		</div>
 		<div class="professional" style="display: none;">
@@ -183,7 +197,7 @@ if(isset($_GET['audience']))
 		</div>
 
 		<div class="selectproducts" style="clear:both;">
-			<h2>SELECT PRODUCT(S): <i style="font-weight:normal;">Select at least one</i><span class="required">&nbsp;</span></h2>
+			<h2>PRODUCT(S):&nbsp;</h2>
 			<div id="fld-prod-col1">
 				<input type="checkbox" value="Entry Doors" name="fld-prod" id="fld-prod-entry">
 				<label for="fld-prod-entry">ENTRY DOORS</label><br>
@@ -201,9 +215,11 @@ if(isset($_GET['audience']))
 
 			<div id="fld-prod-col2">
 
+				<!--
 				<input type="checkbox" id="fld-prod-windows-storm" name="fld-prod" value="windows-storm" />
 				<label for="fld-prod-windows-storm">STORM WINDOWS</label><br />
-
+				-->
+				
 				<input type="checkbox" value="Stone Veneer" name="fld-prod" id="fld-prod-stone">
 				<label for="fld-prod-stone">MANUFACTURED STONE</label><br>
 				
@@ -304,7 +320,7 @@ if(isset($_GET['audience']))
 
 </div>
 </div>
-<div id="preferred-dealer-dialog" title="Preferred Dealer">
+<div id="preferred-dealer-dialog" title="Preferred Dealer" style="display:none;">
   <p>Thank you!  Your Preferred Dealer has been updated!</p>
 </div>
 
