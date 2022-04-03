@@ -1,0 +1,8 @@
+[10-Mar-2022 14:22:08 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function wp_get_current_user() in /home/proviav2/public_html/provia.com/wp-content/plugins/provia-groutselector/index.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/proviav2/public_html/provia.com/wp-content/plugins/provia-groutselector/index.php on line 9
+[10-Mar-2022 14:22:18 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function wp_get_current_user() in /home/proviav2/public_html/provia.com/wp-content/plugins/provia-groutselector/index.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/proviav2/public_html/provia.com/wp-content/plugins/provia-groutselector/index.php on line 9

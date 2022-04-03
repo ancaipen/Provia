@@ -21,7 +21,7 @@
 		$result = $GLOBALS['wpdb']->get_results($sql);
 		
 		$project_html = '<select name="project-lists" id="project-lists">';
-		$project_html .= '<option value="-1">All Project Items</option>';
+		$project_html .= '<option value="-1">All Vision Boards</option>';
 		foreach ( $result as $list )
 		{
 			$project_html .= '<option value="'.$list->ID.'">'.$list->title.'</option>';
@@ -40,14 +40,25 @@
 <?php if($showcanvas == true) { ?>
 
 <div id="my-projects-save">
-	<?php echo $project_html; ?>
-	<input type="text" name="myproject-name" id="myproject-name" value="" placeholder="Enter Project Name Here" />
+
+	<div class="myprojects-input-container">
+		<?php echo $project_html; ?>
+		<input type="text" name="myproject-name" id="myproject-name" value="" placeholder="Enter Project Name Here" />
+	</div>
+	
+	<div class="myprojects-button-container">
+		<a href="javascript:void(0);" id="save-project"><img src="/wp-content/plugins/provia-myprojects/images/save.png" width="35"/></a>
+		<a href="javascript:void(0);" id="refresh-project"><img src="/wp-content/plugins/provia-myprojects/images/refresh5.png" width="35"/></a>
+		<a href="javascript:void(0);" id="save-file"><img src="/wp-content/plugins/provia-myprojects/images/download.png" width="35"/></a>
+	</div>
+	
+	<div class="myprojects-social-container">
+		<a href="javascript:void(0);" id="save-facebook"><img src="/wp-content/plugins/provia-myprojects/images/facebook.png" width="35"/></a>
+		<a href="javascript:void(0);" id="save-twitter"><img src="/wp-content/plugins/provia-myprojects/images/twitter.png" width="35"/></a>
+	</div>
+	
 	<input type="hidden" name="list_id" id="list_id" value="" />
-	<a href="javascript:void(0);" id="save-project"><img src="/wp-content/plugins/provia-myprojects/images/save.png" width="35"/></a>
-	<a href="javascript:void(0);" id="refresh-project"><img src="/wp-content/plugins/provia-myprojects/images/refresh5.png" width="35"/></a>
-	<a href="javascript:void(0);" id="save-file"><img src="/wp-content/plugins/provia-myprojects/images/download.png" width="35"/></a>
-	<a href="javascript:void(0);" id="save-facebook"><img src="/wp-content/plugins/provia-myprojects/images/facebook.png" width="35"/></a>
-	<a href="javascript:void(0);" id="save-twitter"><img src="/wp-content/plugins/provia-myprojects/images/twitter.png" width="35"/></a>
+	</div>
 </div>
 
 <div id="my-projects-overlay" style="display:none;"></div>
@@ -627,6 +638,6 @@
 </script>
 
 <?php } else { ?>
-<div id="my-projects-overlay">To begin using the Project Builder <a href="/login">Sign-in or Register for an account here</a></div>
+<div id="my-projects-overlay">To begin using the Vision Board <a href="/login">Sign-in or Register for an account here</a></div>
 <div id="my-projects-container"></div>
 <?php } ?>
