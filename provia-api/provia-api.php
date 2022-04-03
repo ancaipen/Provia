@@ -144,7 +144,8 @@ function provia_getproject_images($data)
 	$userid = $GLOBALS['provia']['userid'];
 	$image_html = '';
 	$project_html = '';
-	$list_id = 0;
+	$project_id = 0;
+	$list_id = -1;
 	$toolset = false;
 	
 	//check for userid in post 
@@ -156,11 +157,11 @@ function provia_getproject_images($data)
 		}
 	}
 	
-	if(isset($data['list_id']))
+	if(isset($data['project_id']))
 	{
-		if($data['list_id'] != "")
+		if($data['project_id'] != "")
 		{
-			$list_id = filter_var($data['list_id'], FILTER_SANITIZE_NUMBER_INT);
+			$project_id = filter_var($data['project_id'], FILTER_SANITIZE_NUMBER_INT);
 		}
 	}
 	
@@ -179,23 +180,11 @@ function provia_getproject_images($data)
 	}
 	
 	//load images from all projects
-	if(isset($list_id) && $list_id > 0)
-	{
-		$sql = "SELECT ti_i.ID as wishlistitem_id, ti_i.wishlist_id, u.ID as user_id, p.ID as product_id, p.post_title  ";
-		$sql .= "FROM wp_tinvwl_items ti_i ";
-		$sql .= "inner join wp_users u on u.ID = ti_i.author ";
-		$sql .= "inner join wp_posts p on p.ID=ti_i.product_id ";
-		$sql .= "where p.post_status = 'publish' and p.post_type='product' and ti_i.author = ".$userid;
-		$sql .= " and ti_i.wishlist_id=".$list_id;
-	}
-	else
-	{
-		$sql = "SELECT DISTINCT -1 as wishlistitem_id, -1 as wishlist_id, u.ID as user_id, p.ID as product_id, p.post_title  ";
-		$sql .= "FROM wp_tinvwl_items ti_i ";
-		$sql .= "inner join wp_users u on u.ID = ti_i.author ";
-		$sql .= "inner join wp_posts p on p.ID=ti_i.product_id ";
-		$sql .= "where p.post_status = 'publish' and p.post_type='product' and ti_i.author = ".$userid;
-	}
+	$sql = "SELECT DISTINCT -1 as wishlistitem_id, -1 as wishlist_id, u.ID as user_id, p.ID as product_id, p.post_title  ";
+	$sql .= "FROM wp_tinvwl_items ti_i ";
+	$sql .= "inner join wp_users u on u.ID = ti_i.author ";
+	$sql .= "inner join wp_posts p on p.ID=ti_i.product_id ";
+	$sql .= "where p.post_status = 'publish' and p.post_type='product' and ti_i.author = ".$userid;
 	
 	//echo $sql;
 	
@@ -220,12 +209,12 @@ function provia_getproject_images($data)
 			$datax = "";
 			$datay = "";
 			
-			if(isset($list_id) && $list_id > 0)
+			if(isset($project_id) && $project_id > 0)
 			{
 				$query_file = "SELECT pm.meta_value, pi.image_style, pi.datax, pi.datay FROM wp_postmeta pm ";
-				$query_file .= "LEFT JOIN wp_provia_projects_images pi on pi.wishlist_id=%d and REPLACE(pi.image_name, '/wp-content/uploads/', '')=pm.meta_value and pi.user_id=%d ";
+				$query_file .= "INNER JOIN wp_provia_projects_images pi on pi.project_id=%d and REPLACE(pi.image_name, '/wp-content/uploads/', '')=pm.meta_value and pi.user_id=%d ";
 				$query_file .= "WHERE pm.meta_key ='_wp_attached_file' AND pm.post_id = %d";
-				$sql_result = $GLOBALS['wpdb']->prepare($query_file,$wishlist_id,$userid,$thumb_post_id);
+				$sql_result = $GLOBALS['wpdb']->prepare($query_file,$project_id,$userid,$thumb_post_id);
 				$result_query = $GLOBALS['wpdb']->get_results($sql_result);	
 				
 				$attached_file_path = $result_query[0]->meta_value;
@@ -248,7 +237,7 @@ function provia_getproject_images($data)
 			
 			if($attached_file_path != "")
 			{
-				if(isset($list_id) && $list_id > 0 && $toolset == false)
+				if(isset($project_id) && $project_id > 0 && $toolset == false)
 				{
 					$image_html .= '<div class="drag-drop" product_id="'.$product_id.'" wishlist-id="'.$wishlist_id.'" style="'.$image_style.'" data-x="'.$datax.'" data-y="'.$datay.'">';
 					$image_html .= '<a href="javascript:void(0);" class="myprojects-close-image" product_id="'.$product_id.'" style="display:none;"><img src="/wp-content/plugins/provia-myprojects/images/close.png" width="25" /></a>';
@@ -283,8 +272,10 @@ function provia_saveproject_image($data)
 	$image_style = '';
 	$image_x = -1;
 	$image_y = -1;
-	$list_id = -1;
+	$project_id = -1;
 	$image_product = -1;
+	$list_id = -1;
+	$project_id = -1;
 	
 	//echo var_dump($data);
 	
@@ -298,11 +289,11 @@ function provia_saveproject_image($data)
 	}
 	
 	//check for listid
-	if(isset($data['list_id']))
+	if(isset($data['project_id']))
 	{
-		if($data['list_id'] != "")
+		if($data['project_id'] != "")
 		{
-			$list_id = filter_var($data['list_id'], FILTER_SANITIZE_NUMBER_INT);
+			$project_id = filter_var($data['project_id'], FILTER_SANITIZE_NUMBER_INT);
 		}
 	}
 
@@ -329,18 +320,12 @@ function provia_saveproject_image($data)
 		return new WP_Error( 'error_image', 'Image is not found', array( 'status' => 500 ));
 	}
 	
-	//if list is not found attempt to find based on project name and user
-	if($list_id == -1)
-	{
-		$list_id = provia_getlistid($project_name, $userid);
-	}	
-
 	//create image by wishlist and user
 	$GLOBALS['wpdb']->query(
 	   $GLOBALS['wpdb']->prepare(
 		  "
-		  INSERT INTO wp_provia_projects_images (wishlist_id, image_name, image_style, datax, datay, user_id, date_created)
-		  VALUES (%d,%s,%s,%d,%d,%d,%s);
+		  INSERT INTO wp_provia_projects_images (wishlist_id, image_name, image_style, datax, datay, user_id, project_id, date_created)
+		  VALUES (%d,%s,%s,%d,%d,%d,%d,%s);
 		  ",
 		  $list_id,
 		  $image_src,
@@ -348,31 +333,10 @@ function provia_saveproject_image($data)
 		  $image_x,
 		  $image_y,
 		  $userid,
+		  $project_id,
 		  $curr_date
 	   )
 	);
-	
-	//create image in ti wishlist items table
-	if($image_product > 0)
-	{
-		$GLOBALS['wpdb']->query(
-		   $GLOBALS['wpdb']->prepare(
-			  "
-			  INSERT INTO wp_tinvwl_items (wishlist_id,product_id,variation_id,formdata,author,date,quantity,price,in_stock)
-			  VALUES (%d,%d,%d,%s,%d,%s,%d,%s,%d)
-			  ",
-			  $list_id,
-			  $image_product,
-			  0,
-			  '',
-			  $userid,
-			  $curr_date,
-			  1,
-			  '',
-			  1
-		   )
-		);
-	}
 	
 	$sql_statment = "select image_id from wp_provia_projects_images WHERE wishlist_id=%d AND user_id=%d AND image_name=%s;";
 	$sql = $GLOBALS['wpdb']->prepare($sql_statment,$list_id,$userid,$image_src);
@@ -528,7 +492,7 @@ function provia_saveproject($data)
 		
 	$userid = $GLOBALS['provia']['userid'];
 	$project_name = '';
-	$list_id = -1;
+	$project_id = -1;
 	
 	//echo var_dump($data);
 	
@@ -542,11 +506,11 @@ function provia_saveproject($data)
 	}
 	
 	//check for listid
-	if(isset($data['list_id']))
+	if(isset($data['project_id']))
 	{
-		if($data['list_id'] != "")
+		if($data['project_id'] != "")
 		{
-			$list_id = filter_var($data['list_id'], FILTER_SANITIZE_NUMBER_INT);
+			$project_id = filter_var($data['project_id'], FILTER_SANITIZE_NUMBER_INT);
 		}
 	}
 	
@@ -587,7 +551,7 @@ function provia_saveproject($data)
     file_put_contents($image_full, base64_decode($image_save[1]));
 	
 	//save image to database and link to project
-	$err_msg = provia_saveproject_data($data, $image_full, $userid, $list_id);
+	$err_msg = provia_saveproject_data($data, $image_full, $userid, $project_id);
 	
 	//return result
 	if($err_msg == "")
@@ -597,7 +561,7 @@ function provia_saveproject($data)
 		//update image path to be URL
 		$image_full = str_replace('/home/proviav2/public_html/provia.com/', provia_default_url, $image_full);
 		
-		$response_array = array($list_id, $image_full);
+		$response_array = array($project_id, $image_full);
 		$response = json_encode($response_array);
 		
 		return new WP_REST_Response($response, 200);
@@ -609,7 +573,7 @@ function provia_saveproject($data)
 	
 }
 
-function provia_saveproject_data($data, $image_full, $userid)
+function provia_saveproject_data($data, $image_full, $userid, $project_id)
 {
 	
 	$err_msg = '';
@@ -646,76 +610,26 @@ function provia_saveproject_data($data, $image_full, $userid)
 	}
 			
 	$curr_date = date("Y-m-d H:i:s");
-	
-	//make sure project name is not already created for user
-	$list_id = provia_getlistid($project_name, $userid);
 		
-	//insert project to ti wishlist
-	if($list_id == -1)
+	//make sure project name isn't already created
+	if($project_id <= 0)
 	{
-		
-		$share_key = strtolower(generateRandomString(6));
-		
-		//insert ti wish list
-		$GLOBALS['wpdb']->query(
-		   $GLOBALS['wpdb']->prepare(
-			  "
-			  INSERT INTO wp_tinvwl_lists (author,date,title,status,type,share_key)
-			  VALUES (%d,%s,%s,%s,%s,%s)
-			  ",
-			  $userid,
-			  $curr_date,
-			  $project_name,
-			  'share',
-			  'list',
-			  $share_key
-		   )
-		);
-		
-		//get newly created listid
-		$list_id = provia_getlistid($project_name, $userid);
-		
-		//insert to provia project list
-		$GLOBALS['wpdb']->query(
-		   $GLOBALS['wpdb']->prepare(
-			  "
-			  INSERT INTO wp_provia_projects (project_name,project_image,wishlist_project_id)
-			  VALUES (%s,%s,%s)
-			  ",
-			  $project_name,
-			  $image_full,
-			  $list_id
-		   )
-		);
-		
+		$project_id = provia_getprojectid($project_name, $userid);
 	}
-	else
+	
+	if($project_id > 0)
 	{
-		//update ti wish list date and title
-		$GLOBALS['wpdb']->query(
-		   $GLOBALS['wpdb']->prepare(
-			  "
-			  UPDATE wp_tinvwl_lists 
-			  SET date=%s,title=%s
-			  WHERE ID=%s
-			  ",
-			  $curr_date,
-			  $project_name,
-			  $list_id
-		   )
-		);
-		
-		//update ti wish list date and title
+		//update provia project
 		$GLOBALS['wpdb']->query(
 		   $GLOBALS['wpdb']->prepare(
 			  "
 			  UPDATE wp_provia_projects 
 			  SET project_name=%s,project_image=%s
-			  WHERE wishlist_project_id=%s
+			  WHERE project_id=%d
 			  ",
 			  $project_name,
 			  $image_full,
-			  $list_id
+			  $project_id
 		   )
 		);
 		
@@ -724,25 +638,28 @@ function provia_saveproject_data($data, $image_full, $userid)
 		   $GLOBALS['wpdb']->prepare(
 			  "
 			  DELETE FROM wp_provia_projects_images 
-			  WHERE wishlist_id=%d AND user_id=%d; 
+			  WHERE project_id=%d AND user_id=%d; 
 			  ",
-			  $list_id,
+			  $project_id,
 			  $userid
 		   )
 		);
-		
-		//delete existing images in TI wishlist and user
+	}
+	else
+	{
+		//insert to provia project list
 		$GLOBALS['wpdb']->query(
 		   $GLOBALS['wpdb']->prepare(
 			  "
-			  DELETE FROM wp_tinvwl_items 
-			  WHERE wishlist_id=%d AND author=%d; 
+			  INSERT INTO wp_provia_projects (project_name,project_image,wishlist_project_id,userid)
+			  VALUES (%s,%s,%s,%d)
 			  ",
+			  $project_name,
+			  $image_full,
 			  $list_id,
 			  $userid
 		   )
 		);
-		
 	}
 	
 	//return err message
@@ -775,6 +692,34 @@ function provia_getlistid($project_name, $userid, $list_id = -1)
 	}
 	
 	return $list_id;
+	
+}
+
+function provia_getprojectid($project_name, $userid, $project_id = -1)
+{
+
+	$sql_statment = 'SELECT project_id from wp_provia_projects ';
+	$projects = null;
+	
+	if($project_id == -1)
+	{
+		$sql_statment .= 'where project_name=%s AND userid=%d;';
+		$sql = $GLOBALS['wpdb']->prepare($sql_statment,$project_name,$userid);
+		$projects = $GLOBALS['wpdb']->get_results($sql);
+	}
+	else
+	{
+		$sql_statment .= 'where project_id=%d;';
+		$sql = $GLOBALS['wpdb']->prepare($sql_statment,$project_id);
+		$projects = $GLOBALS['wpdb']->get_results($sql);
+	}	
+	
+	if(isset($projects) && count($projects) > 0)
+	{
+		$project_id = $projects[0]->project_id;
+	}
+	
+	return $project_id;
 	
 }
 

@@ -6,25 +6,39 @@
 	$image_html = '';
 	$project_html = '';
 	$showcanvas = false;
+	$project_id_default = -1;
 	
 	if(isset($user))
 	{
 		$userid = $user->ID;
 	}
 	
+	//check for defaulted project id from another page
+	if(isset($_GET['myprojects_projectid']))
+	{
+		$project_id_default = filter_var($_GET['myprojects_projectid'], FILTER_SANITIZE_NUMBER_INT);
+	}
+	
 	if($userid > 0)
 	{
 		//create project dropdown
-		$sql = "SELECT ID, author, title FROM wp_tinvwl_lists ";
-		$sql .= "where title <> '' and author = ".$userid;
+		$sql = "SELECT project_id, project_name FROM wp_provia_projects ";
+		$sql .= "where userid = ".$userid;
 		
 		$result = $GLOBALS['wpdb']->get_results($sql);
 		
 		$project_html = '<select name="project-lists" id="project-lists">';
-		$project_html .= '<option value="-1">All Vision Boards</option>';
-		foreach ( $result as $list )
+		$project_html .= '<option value="-1">My Vision Boards</option>';
+		foreach ( $result as $project )
 		{
-			$project_html .= '<option value="'.$list->ID.'">'.$list->title.'</option>';
+			
+			$selected = '';
+			if($project_id_default == $project->project_id)
+			{
+				$selected = ' SELECTED';
+			}
+			
+			$project_html .= '<option value="'.$project->project_id.'"'.$selected.'>'.$project->project_name.'</option>';
 		}
 		$project_html .= '</select>';
 		$showcanvas = true;
@@ -43,7 +57,7 @@
 
 	<div class="myprojects-input-container">
 		<?php echo $project_html; ?>
-		<input type="text" name="myproject-name" id="myproject-name" value="" placeholder="Enter Project Name Here" />
+		<input type="text" name="myproject-name" id="myproject-name" value="" placeholder="Enter Vision Board Name" />
 	</div>
 	
 	<div class="myprojects-button-container">
@@ -57,12 +71,17 @@
 		<a href="javascript:void(0);" id="save-twitter"><img src="/wp-content/plugins/provia-myprojects/images/twitter.png" width="35"/></a>
 	</div>
 	
-	<input type="hidden" name="list_id" id="list_id" value="" />
+	<input type="hidden" name="project_id" id="project_id" value="<?php echo $project_id_default; ?>" />
 	</div>
 </div>
 
 <div id="my-projects-overlay" style="display:none;"></div>
+
+<div class="my-projects-rightcol">
+<div id="my-projects-textsearch"><input type="text" id="my-projects-textsearch-input" placeholder="Filter Images" onkeyup="filterProjectImages();" /></div>
 <div id="my-projects-images"></div>
+</div>
+
 <div id="my-projects-container"></div>
 
 <script>
@@ -153,6 +172,59 @@
 		
 	});
 	
+	function filterProjectImages()
+	{
+		
+		var searchText = jQuery('#my-projects-textsearch-input').val().toLowerCase();
+		var searchTextLength = searchText.length;
+		
+		if(searchTextLength >= 4)
+		{
+			
+			//debugger;
+			
+			jQuery("#my-projects-images div.toolset-image").each(function() {
+				
+				//make sure item is not already hidden
+				var productItemDisplay = jQuery(this).attr('style');
+				
+				if(productItemDisplay == "")
+				{
+					var productTitle = jQuery(this).find(".product-title");
+					var productTitleName = jQuery(productTitle[0]).html().toLowerCase();
+					
+					if(productTitleName != "")
+					{
+						var productTitleResult = productTitleName.indexOf(searchText);
+							
+						//hide if not found
+						if(productTitleResult == -1)
+						{
+							jQuery(this).attr('style', 'display:none;');
+							jQuery(this).attr('textsearch', 'true');
+						}
+					}
+				}
+				
+			});
+		}
+		else if(searchTextLength == 0)
+		{
+			//reset search items
+			jQuery("#my-projects-images div.toolset-image").each(function() {
+				
+				var productSearchFilter = jQuery(this).attr('textsearch');
+				if(productSearchFilter == "true")
+				{
+					jQuery(this).attr('style', '');
+					jQuery(this).attr('textsearch', '');
+				}
+				
+			});
+		}
+		
+	}
+	
 	function showHideLoading(showDiv, displayText)
 	{
 		
@@ -213,19 +285,19 @@
 		showHideLoading(true);
 		
 		//set list text defaults
-		var list_id = jQuery('#project-lists').val();
+		var project_id = jQuery('#project-lists').val();
 		var projectName = jQuery("#project-lists option:selected" ).text();
 		
 		//set selected projectid
-		jQuery('#list_id').val(list_id);
+		jQuery('#project_id').val(project_id);
 		
 		//set project name to textbox
-		if(projectName != null && projectName != "" && list_id > 0)
+		if(projectName != null && projectName != "" && project_id > 0)
 		{
 			jQuery('#myproject-name').val(projectName);
 		}
 		
-		if(list_id == -1)
+		if(project_id == -1)
 		{
 			jQuery('#myproject-name').val('');
 		}
@@ -247,9 +319,9 @@
 			}
 			
 			//load canvas images
-			if(list_id != null && parseInt(list_id)  > 0)
+			if(project_id != null && parseInt(project_id)  > 0)
 			{
-				url = "/wp-json/provia/v1/provia_getproject/getimages/?uid=<?php echo $userid; ?>" + '&list_id=' + list_id;
+				url = "/wp-json/provia/v1/provia_getproject/getimages/?uid=<?php echo $userid; ?>" + '&project_id=' + project_id;
 				
 				jQuery.get( url, function(result) {
 				
@@ -292,7 +364,7 @@
 		}
 		
 		var project = jQuery('#myproject-name').val();
-		var list_id = jQuery('#list_id').val();
+		var project_id = jQuery('#project_id').val();
 		
 		//validate input
 		if(project == "" || project == "")
@@ -314,7 +386,7 @@
 			{
 					project_image : img,
 					project_name : project,
-					list_id: list_id,
+					project_id: project_id,
 					user_id : "<?php echo base64_encode($userid); ?>"
 			};
 			
@@ -333,7 +405,7 @@
 					{
 						
 						//set as current list
-						jQuery('#list_id').val(id);
+						jQuery('#project_id').val(id);
 						
 						//save individual images in the background
 						saveProjectImages();
@@ -375,7 +447,7 @@
 		//debugger;
 		
 		var project = jQuery('#myproject-name').val();
-		var list_id = jQuery('#list_id').val();
+		var project_id = jQuery('#project_id').val();
 		
 		//validate input
 		if(project == "" || project == "")
@@ -410,6 +482,7 @@
 					image_y: imgDataY,
 					image_src: imgSrc,
 					image_product: imgProductId,
+					project_id : project_id,
 					user_id : "<?php echo base64_encode($userid); ?>"
 			};
 			

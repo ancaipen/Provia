@@ -47,6 +47,17 @@
 	background-color: #fff;
 }
 
+#my-projects-textsearch-input
+{
+	max-width: 100%;
+	margin-bottom: 15px;
+	border: 0px solid #000;
+	border-radius: 19px;
+	box-shadow: inset 1px 0 10px 0 rgba(0, 0, 0, 0.16);
+	-webkit-transition: all 200ms ease;
+	transition: all 200ms ease;
+}
+
 #myproject-name
 {
 	max-width: 100%;
@@ -56,7 +67,6 @@
 	box-shadow: inset 1px 0 10px 0 rgba(0, 0, 0, 0.16);
 	-webkit-transition: all 200ms ease;
 	transition: all 200ms ease;
-
 }
 
 #my-projects-save
