@@ -8,7 +8,7 @@
 	<div class="perferred-dealer-text">
 		<h1 class="preferred-dealer-label">Preferred Dealer</h1>
    
-		<a href="/where-to-buy-2">
+		<a href="/where-to-buy">
 			<img src="https://assets.website-files.com/6129234d13126814a210bb20/612cdfa3e2a6ba1a7897b8d0_002-pencil.png" loading="lazy" alt="">
 		</a>
 		<h2 class="preferred-dealer-heading"><?php echo $dealer_name; ?></h2>

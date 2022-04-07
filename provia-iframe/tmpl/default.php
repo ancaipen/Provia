@@ -4,7 +4,14 @@ $dealertype = '';
 $username = '';
 $aeris = true;
 $embarq = true;
+$user = wp_get_current_user();
+$userid = 0;
 
+if(isset($user))
+{
+	$userid = $user->ID;
+}
+	
 //get url and parse out username and dealer type and aeris, embarq settings
 if(isset($_GET['d']))
 {
@@ -143,7 +150,8 @@ if(isset($_GET['embarq']))
         <div id="errors"></div>
         
         <input type="hidden" name="dealertype" id="dealertype" value="<?php echo $dealertype; ?>" />
-
+		<input type="hidden" name="userid" id="userid" value="<?php echo $userid; ?>" />
+		
 		</div>
 		
 		<div class="col-lg-4">
@@ -339,6 +347,7 @@ if(isset($_GET['embarq']))
         var font = jQuery('#drpFontScheme').val();
 		var fontsize = jQuery('#drpFontSize').val();
         var username = "<?php echo $username; ?>";
+		var userid = "<?php echo $userid; ?>";
 
         var url = urls[0];
         var anchor = null;
@@ -355,7 +364,7 @@ if(isset($_GET['embarq']))
         //create iframe html
         if (url != null) {
             
-            var querystring_val = '?iframe=true&font=' + font + '&fontsize=' + fontsize + '&username=' + username;
+            var querystring_val = '?iframe=true&userid=' + userid + '&font=' + font + '&fontsize=' + fontsize + '&username=' + username;
 
             if(anchor != null)
             {
@@ -365,7 +374,7 @@ if(isset($_GET['embarq']))
             //override with renoworks url
             if(url.indexOf("provia.renoworks.com") > -1)
             {
-                script_url = "https://provia.renoworks.com/en/";
+                script_url = "https://provia.renoworks.com/en/?userid=" + userid;
                 url = "";
                 querystring_val = "";
             }

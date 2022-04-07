@@ -19,7 +19,7 @@ if(isset($_GET['zipcode']))
 	$zipcode = filter_var($zipcode, FILTER_SANITIZE_STRING);
 }
 
-$query_str = '/where-to-buy-2/';
+$query_str = '/where-to-buy/';
 
 if(isset($_GET['audience']))
 {
