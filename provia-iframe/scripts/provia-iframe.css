@@ -3,3 +3,55 @@
 .elementor-location-footer{
 	display:none !important;
 }
+
+.elementor-container.elementor-column-gap-default  {
+	min-height: auto !important;
+}
+
+
+
+
+.tinv-wraper {
+	display:none !important;
+}
+
+
+
+section.page-header {
+	min-height: 500px;
+}
+
+
+.elementor-section-wrap section.elementor-section:nth-of-type(1) {
+	padding-top:20px;
+}
+
+.elementor-widget-eael-divider .elementor-widget-container,
+.elementor-global-widget.elementor-widget-eael-divider > .elementor-widget-container, .elementor-element.elementor-global-2635 > .elementor-widget-container {
+	margin: 25px 0 25px 0 !important;
+}
+
+
+
+
+/* Product Lightbox */
+.remodal div.images img {
+	padding:15px;
+}
+
+@media (min-width: 268px) {
+    .remodal {height:7vmax !important;min-width:auto;}
+    .remodal-wrapper {min-width:auto;min-height:auto;width:auto !important; top:50%;}
+}
+
+@media (min-width: 769px) {
+    .remodal {height: 12vmax !important;}
+    .remodal-wrapper {min-height:500px;}
+
+}
+
+@media (min-width: 1258px) {
+    .remodal {height:700px !important;}
+    .remodal-wrapper {min-height:600px;}
+}
+

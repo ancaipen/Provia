@@ -25,8 +25,7 @@ jQuery( document ).ready(function() {
 				  {
 					src: url,
 					type: "iframe",
-					preload: false,
-					autoSize : true
+					preload: false
 				  },
 				]);
 				

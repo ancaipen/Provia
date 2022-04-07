@@ -54,6 +54,8 @@ function updateIframeLinks()
 				}
 			}
 			*/
+						
+			
 			
 			//add iframe link to all links
 			if (link != null) {
@@ -88,11 +90,12 @@ function updateIframeLinks()
 				}
 
 			}
-
+			
 			//remove links from any links that contain the class: linkframe
 			if (jQuery(this).attr('class') == "linkframe") {
 				jQuery(this).removeAttr("href");
 			}
+
 
 		}
 		catch (e) { }
