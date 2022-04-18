@@ -3,13 +3,15 @@ jQuery( document ).ready(function() {
     
 	jQuery( ".eael-lc-logo a" ).click(function(e) {
 		
-		//debugger;
-		
+		debugger;
+				
 		//get href value
 		var productId = jQuery(this).attr('href');
 		
 		if(productId != null)
 		{
+			
+			productId = productId.replace("?iframe=true", "");
 			productId = productId.replace("#", "");
 			productId = parseInt(productId);
 			

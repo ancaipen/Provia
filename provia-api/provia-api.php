@@ -42,6 +42,10 @@ add_shortcode('provia_user_avatar', 'provia_user_avatar_load');
 // ACTIONS
 //--------------------------------------------------
 
+
+add_action( 'wp_footer', 'provia_add_custom_html' );
+add_action( 'wp_footer', 'provia_add_custom_js_files' );
+
 add_action('init','provia_set_user');
 
 add_action( 'rest_api_init', function () {
@@ -115,12 +119,43 @@ add_action( 'rest_api_init', function () {
   ));
 });
 
-
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'provia/v1/provia_admin', '/savewishlistitem/', array(
+    'methods' => 'GET',
+    'callback' => 'provia_save_wishlist_item',
+  ));
+});
 
 
 //--------------------------------------------------
 // FUNCTIONS
 //--------------------------------------------------
+
+function provia_add_custom_html()
+{
+	
+	$request_url = $_SERVER['REQUEST_URI'];
+	if (str_contains($request_url, 'elementor-preview')) {
+		return;
+	}
+	
+	$userid = get_current_user_id();
+	
+	//include custom provia user id
+	echo '<input type="hidden" name="provia_uid" id="provia_uid" value="'.$userid.'">';
+}
+
+function provia_add_custom_js_files()
+{
+	
+	$request_url = $_SERVER['REQUEST_URI'];
+	if (str_contains($request_url, 'elementor-preview')) {
+		return;
+	}
+
+	//include custom javascript for any customized, site wide javascript
+	echo '<script type="text/javascript" src="/wp-content/plugins/provia-api/scripts/provia-api.js"></script>';
+}
 
 function provia_set_user()
 {
@@ -133,6 +168,166 @@ function provia_set_user()
 	}
 	
 	$GLOBALS['provia']['userid'] = $userid;
+	
+}
+
+function provia_save_wishlist_item($data)
+{
+	provia_set_user();
+		
+	$userid = $GLOBALS['provia']['userid'];
+	$product_id = -1;
+	$consumer_key = "ck_6bf1457a8f56fc354d40ec2af3b12aeee2b11cb2";
+	$consumer_secret = "cs_29b86f55e3d0f39ed19fb484d7206fdb33169ed5";
+	$domain = "https://provia.proviaserver-v2.com";
+	
+	if(isset($data['uid']))
+	{
+		if($data['uid'] != "")
+		{
+			$userid = filter_var($data['uid'], FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	if(isset($data['product_id']))
+	{
+		if($data['product_id'] != "")
+		{
+			$product_id = filter_var($data['product_id'], FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	if(!isset($userid))
+	{
+		return new WP_Error( 'no_user', 'Invalid user, not found', array( 'status' => 404 ));
+	}
+	
+	//-------------------------------------
+	// get default wishlist by user id
+	//-------------------------------------
+	
+	$url = $domain."/wp-json/wc/v3/wishlist/get_by_user/" . $userid . "/?consumer_key=".$consumer_key."&consumer_secret=".$consumer_secret;
+	
+	$curl = curl_init($url);
+	curl_setopt($curl, CURLOPT_URL, $url);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+	$resp = curl_exec($curl);
+	curl_close($curl);
+	
+	//echo var_dump($resp);
+	
+	if(!isset($resp) || trim($resp) == "")
+	{
+		return new WP_Error( 'no_wishlist_response', 'Invalid wishlist response, no data found', array( 'status' => 404 ));
+	}
+	
+	//$arr = json_decode($resp);
+	$arr = json_decode( preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $resp), true );
+
+	$wishlistid = -1;
+	$share_key = "";
+	
+	//echo var_dump($arr);
+
+	foreach($arr as $item) { 
+	
+		$title = strtolower(trim($item['title'])); 
+		
+		if($title == "all saved images")
+		{
+			$wishlistid = filter_var($item['id'], FILTER_SANITIZE_NUMBER_INT);
+			$share_key = $item['share_key'];
+		}
+		
+	}
+	
+	if($wishlistid < 0)
+	{
+		return new WP_Error( 'no_wishlist_default', 'Invalid default wishlist, no data found', array( 'status' => 404 ));
+	}
+	
+	if($share_key == "")
+	{
+		return new WP_Error( 'no_wishlist_default', 'Invalid default wishlist, no data found', array( 'status' => 404 ));
+	}
+	
+	//echo $wishlistid;
+	
+	//-------------------------------------
+	// get wishlist products and make sure product id is not already added
+	//-------------------------------------
+
+	$url = $domain."/wp-json/wc/v3/wishlist/".$share_key."/get_products?consumer_key=".$consumer_key."&consumer_secret=".$consumer_secret;
+	
+	$curl = curl_init($url);
+	curl_setopt($curl, CURLOPT_URL, $url);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+	$resp = curl_exec($curl);
+	curl_close($curl);
+	
+	//echo var_dump($resp);
+	
+	if(!isset($resp) || trim($resp) == "")
+	{
+		return new WP_Error( 'no_wishlist_product', 'Invalid wishlist product response, no data found', array( 'status' => 404 ));
+	}
+	
+	$arr = json_decode( preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $resp), true );
+	$product_found = false;
+	$variation_id = 0;
+	
+	foreach($arr as $item) { 
+		
+		$wishlist_product_id = filter_var($item['product_id'], FILTER_SANITIZE_NUMBER_INT);
+		$variation_id = filter_var($item['variation_id'], FILTER_SANITIZE_NUMBER_INT);
+		
+		if($wishlist_product_id == $product_id)
+		{
+			$product_found = true;
+		}
+		
+	}
+	
+	//-------------------------------------
+	// add product to wishlist
+	//-------------------------------------
+	
+	if($product_found == false)
+	{
+		
+		//allow product to be added to wishlist
+		$product_data_json = '{
+			"product_id": '.$product_id.',
+			"variation_id": '.$variation_id.',
+			"meta": {
+			"saveall": "true"
+			}
+		}';
+		
+		$url = $domain."/wp-json/wc/v3/wishlist/".$share_key."/add_product?consumer_key=".$consumer_key."&consumer_secret=".$consumer_secret;
+		
+		$curl = curl_init($url);
+
+		curl_setopt($curl, CURLOPT_URL,$url);
+		curl_setopt($curl, CURLOPT_POST, 1);
+		curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+		curl_setopt($curl, CURLOPT_POSTFIELDS, $product_data_json);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+		$server_output = curl_exec($curl);
+
+		curl_close ($curl);
+		
+		//echo var_dump($server_output);
+		
+		return new WP_REST_Response($product_id, 200);
+	}
+	else
+	{
+		return new WP_REST_Response('product already added', 200);
+	}
 	
 }
 

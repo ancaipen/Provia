@@ -69,8 +69,9 @@ Disallow: /
 	- File Location: C:\SITES\polysort\provia\provia_v3\Provia\provia-iframe\scripts\iframe
 	- provia-iframe plugin
 	
-6. Update provia-api plugin code to point to proper url
+6. Update provia-api plugin code to point to proper url: search for provia.proviaserver-v2.com
 	- provia-api.php
+	- search all custom code for hardcoded values and update
 
 7. update provia where to buy links to use proper URL (provia.com)
 
@@ -79,5 +80,7 @@ Disallow: /
 9. Update failover/dev site hosting? - need discussion	
 
 10. Update DNS, Sucuri firewall settings
-
+		- Whitelist URL: /wp-content/plugins/provia-wheretobuy/ajax/wtb.php
+		- Any other POSTs for plugins?
+		
 11. Group walkthrough after go-live to ensure that everything looks ok.
