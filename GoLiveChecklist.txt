@@ -72,15 +72,17 @@ Disallow: /
 6. Update provia-api plugin code to point to proper url: search for provia.proviaserver-v2.com
 	- provia-api.php
 	- search all custom code for hardcoded values and update
+	- where to buy
+	- etc
 
-7. update provia where to buy links to use proper URL (provia.com)
+7. Update/enable google analytics for new site
 
-8. Update google analytics for new site
-
-9. Update failover/dev site hosting? - need discussion	
-
-10. Update DNS, Sucuri firewall settings
+8. Update DNS, Sucuri firewall settings
 		- Whitelist URL: /wp-content/plugins/provia-wheretobuy/ajax/wtb.php
 		- Any other POSTs for plugins?
 		
-11. Group walkthrough after go-live to ensure that everything looks ok.
+9. Group walkthrough after go-live to ensure that everything looks ok.
+		- Test all pages with custom plugins
+		- Test the IFRAMEs
+
+10. Provision backup server and copy/paste site copy script to new server.  Work through any issues and get backup/restore working properly.

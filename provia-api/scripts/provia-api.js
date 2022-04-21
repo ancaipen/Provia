@@ -2,17 +2,17 @@
 jQuery( document ).ready(function() {
     
 	//add click event to button 
-	jQuery( ".elementor-button-link, .elementor-button, .provia-saveall" ).click(function() {
-	  proviaAddProductsToWishlist();
+	jQuery( ".provia-saveall .elementor-button-link, .provia-saveall .elementor-button" ).click(function() {
+		proviaAddProductsToWishlist(this);
 	});
 	
 	
 });
 
-function proviaAddProductsToWishlist()
+function proviaAddProductsToWishlist(buttonClicked)
 {
 	
-	debugger;
+	//debugger;
 	
 	var provia_uid = jQuery('#provia_uid').val();
 	
@@ -23,12 +23,21 @@ function proviaAddProductsToWishlist()
 	
 	provia_uid = parseInt(provia_uid);
 	
-	var product_ids = jQuery(".palette-container").find('.quick_view');
+	if(provia_uid <= 0)
+	{
+		alert('Please sign in or create an account in order save this palette!');
+		return;
+	}
+	
+	//get parent elementor container of the click button
+	var elementorContainer = jQuery(buttonClicked).parents('.elementor-section').first();
+	var paletteContainer = jQuery(elementorContainer).find(".palette-container").first();
+	var product_ids = jQuery(paletteContainer).find('.quick_view');
 	
 	//loop through all products in save all container	
 	if(product_ids != null)
 	{
-		var product_ids_count = product_ids.length - 1;
+		var product_ids_count = product_ids.length;
 		
 		for(var i = 0; i < product_ids_count; i++)
 		{

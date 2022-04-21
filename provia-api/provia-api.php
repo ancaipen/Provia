@@ -234,7 +234,7 @@ function provia_save_wishlist_item($data)
 	
 		$title = strtolower(trim($item['title'])); 
 		
-		if($title == "all saved images")
+		if($title == "all saved images" || $title == "default folder")
 		{
 			$wishlistid = filter_var($item['id'], FILTER_SANITIZE_NUMBER_INT);
 			$share_key = $item['share_key'];
@@ -746,10 +746,10 @@ function provia_saveproject($data)
     file_put_contents($image_full, base64_decode($image_save[1]));
 	
 	//save image to database and link to project
-	$err_msg = provia_saveproject_data($data, $image_full, $userid, $project_id);
+	$project_id = provia_saveproject_data($data, $image_full, $userid, $project_id);
 	
 	//return result
-	if($err_msg == "")
+	if($project_id >= 0)
 	{
 		$list_id = provia_getlistid($project_name, $userid, $list_id);
 		
@@ -763,7 +763,7 @@ function provia_saveproject($data)
 	}
 	else
 	{
-		return new WP_Error( 'error_user', $err_msg, array( 'status' => 500 ));
+		return new WP_Error( 'error_projectid', 'ERROR: project id did not save', array( 'status' => 500 ));
 	}
 	
 }
@@ -771,7 +771,7 @@ function provia_saveproject($data)
 function provia_saveproject_data($data, $image_full, $userid, $project_id)
 {
 	
-	$err_msg = '';
+	$project_id = -1;
 	$project_name = '';
 	$ipaddress = trim($_SERVER['REMOTE_ADDR']);
 	
@@ -783,25 +783,29 @@ function provia_saveproject_data($data, $image_full, $userid, $project_id)
 	if(!isset($userid))
 	{
 		$err_msg = 'UserId '.$userid.' is Invalid';
-		return $err_msg;
+		$project_id = -1;
+		return $project_id;
 	}
 	
 	if($userid == "")
 	{
 		$err_msg = 'UserId '.$userid.' is Invalid';
-		return $err_msg;
+		$project_id = -1;
+		return $project_id;
 	}
 		
 	if($project_name == null || trim($project_name) == "")
 	{
 		$err_msg = 'Project Name is Invalid';
-		return $err_msg;
+		$project_id = -1;
+		return $project_id;
 	}
 			
 	if($ipaddress == null || trim($ipaddress) == "")
 	{
 		$err_msg = 'Ip Address is Invalid';
-		return $err_msg;
+		$project_id = -1;
+		return $project_id;
 	}
 			
 	$curr_date = date("Y-m-d H:i:s");
@@ -855,10 +859,13 @@ function provia_saveproject_data($data, $image_full, $userid, $project_id)
 			  $userid
 		   )
 		);
+		
+		$project_id = provia_getprojectid($project_name, $userid);
+		
 	}
 	
-	//return err message
-	return $err_msg;
+	//return project id
+	return $project_id;
 	
 }
 

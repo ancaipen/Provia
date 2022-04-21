@@ -633,20 +633,28 @@
 			closeLink.style = 'display:none;';
 			clone.prepend(closeLink);
 			
-			var positionCont = document.querySelector('#my-projects-container').getBoundingClientRect().left;
-			var positionEvent = event.clientX;
-			var position = parseInt(positionEvent) - parseInt(positionCont) - 25;
+			var positionContLeft = document.querySelector('#my-projects-container').getBoundingClientRect().left;
+			var positionContTop = document.querySelector('#my-projects-container').getBoundingClientRect().top;
+			var positionEventX = event.clientX;
+			var positionEventY = event.clientY;
+			var positionLeft = parseInt(positionEventX) - parseInt(positionContLeft) - 90;
+			var positionTop = parseInt(positionEventY) - parseInt(positionContTop) - 5;
 			
-			if(position < 0)
+			if(positionLeft < 0)
 			{
-				position = 0;
+				positionLeft = 0;
+			}
+			
+			if(positionTop < 0)
+			{
+				positionTop = 0;
 			}
 			
 			//debugger;
 			
 			clone.style.position = 'absolute';
-			clone.style.left = position + 'px';
-			clone.style.top = '0px';
+			clone.style.left = positionLeft + 'px';
+			clone.style.top = positionTop + 'px';
 			clone.style.width = '25%';
 			
 			// insert the clone to the page
