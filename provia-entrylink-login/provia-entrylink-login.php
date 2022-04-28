@@ -57,11 +57,17 @@ function provia_entrylinklogin_load()
 	echo '<h2>Entry Link Login</h2>';
 	echo '</div>';
 	
+	//echo var_dump($user);
+	
 	if(isset($user))
 	{
 		if(isset($user->user_login))
 		{
 			echo '<div class="entrylink-login-user">Hello '. $user->user_login . '</div>';
+			echo '<ul class="um-misc-ul">';
+			echo '<li><a href="/my-portfolio/"> Your account</a></li>';
+			echo '<li><a href="/logout/?redirect_to=/login/"> Logout</a></li>';
+			echo '</ul>';
 		}
 		else
 		{
@@ -86,9 +92,7 @@ function provia_entrylinklogin_load()
 				if($error_messages == "")
 				{
 					//check login against entry link db and wordpress
-					$error_messages .= provia_loginuser($username, $password, $remember_me);
-
-					
+					$error_messages .= provia_loginuser($username, $password, $remember_me);					
 				}
 				
 			}
@@ -134,14 +138,22 @@ function provia_loginuser($username, $password, $remember_me)
 		
 		//if login error happens, check to see if user is valid (password may have changed)
 		$user_found = get_user_by('login', $username);
+		$userid = -1;
+				
+		if(isset($user_found->ID))
+		{
+			$userid = $user_found->ID;
+		}
 		
-		if ($user_found)
+		//echo var_dump($userid);
+		
+		if ($userid > 0)
 		{
 			
-			var_dump($user);
+			//var_dump($user);
 			
-			//we know user exists, but password is wrong, reset it
-			//wp_set_password($password, $user->ID);
+			//we know user exists, but password may have been changed, reset it to make sure it matches entry link
+			wp_set_password($password, $userid);
 			
 			wordpress_login_user($username, $password, false, $remember_me);
 			
@@ -166,7 +178,7 @@ function provia_loginuser($username, $password, $remember_me)
 	else
 	{
 		//redirect to homepage
-		$redirect_to = user_admin_url();
+		$redirect_to = get_home_url();
 		wp_safe_redirect( $redirect_to );
 		exit();
 	}
@@ -180,7 +192,9 @@ function wordpress_login_user($username,$password,$setrole = false, $remember_me
 	$creds['user_password'] = $password;
 	$creds['remember'] = $remember_me;
 	$user = wp_signon($creds, false);
-
+	
+	echo var_dump($user);
+	
 	if($setrole && isset($user))
 	{
 		$wp_user_object = new WP_User($user->ID);		
@@ -188,9 +202,9 @@ function wordpress_login_user($username,$password,$setrole = false, $remember_me
 	}
 	
 	$user_meta = get_userdata($user->ID);
-	var_dump($user_meta);
+	//var_dump($user_meta);
 	
-	$redirect_to = user_admin_url();
+	$redirect_to = get_home_url();
 	wp_safe_redirect( $redirect_to );
 	exit();
 	

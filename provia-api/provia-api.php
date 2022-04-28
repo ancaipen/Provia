@@ -408,7 +408,8 @@ function provia_getproject_images($data)
 			{
 				$query_file = "SELECT pm.meta_value, pi.image_style, pi.datax, pi.datay FROM wp_postmeta pm ";
 				$query_file .= "INNER JOIN wp_provia_projects_images pi on pi.project_id=%d and REPLACE(pi.image_name, '/wp-content/uploads/', '')=pm.meta_value and pi.user_id=%d ";
-				$query_file .= "WHERE pm.meta_key ='_wp_attached_file' AND pm.post_id = %d";
+				$query_file .= "WHERE pm.meta_key ='_wp_attached_file' AND pm.post_id = %d ";
+				$query_file .= "ORDER BY image_id DESC";
 				$sql_result = $GLOBALS['wpdb']->prepare($query_file,$project_id,$userid,$thumb_post_id);
 				$result_query = $GLOBALS['wpdb']->get_results($sql_result);	
 				
@@ -425,7 +426,6 @@ function provia_getproject_images($data)
 				$result_query = $GLOBALS['wpdb']->get_results($sql_result);	
 				
 				$attached_file_path = $result_query[0]->meta_value;
-				
 			}
 			
 			//echo 'sql: '.$query_file . "||||";
@@ -688,6 +688,8 @@ function provia_saveproject($data)
 	$userid = $GLOBALS['provia']['userid'];
 	$project_name = '';
 	$project_id = -1;
+	$screen_width = 0;
+	$screen_height = 0;
 	
 	//echo var_dump($data);
 	
@@ -700,12 +702,28 @@ function provia_saveproject($data)
 		}
 	}
 	
-	//check for listid
+	//check for project id
 	if(isset($data['project_id']))
 	{
 		if($data['project_id'] != "")
 		{
 			$project_id = filter_var($data['project_id'], FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	if(isset($data['screen_width']))
+	{
+		if($data['screen_width'] != "")
+		{
+			$screen_width = filter_var($data['screen_width'], FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	if(isset($data['screen_height']))
+	{
+		if($data['screen_height'] != "")
+		{
+			$screen_height = filter_var($data['screen_height'], FILTER_SANITIZE_NUMBER_INT);
 		}
 	}
 	
@@ -746,7 +764,7 @@ function provia_saveproject($data)
     file_put_contents($image_full, base64_decode($image_save[1]));
 	
 	//save image to database and link to project
-	$project_id = provia_saveproject_data($data, $image_full, $userid, $project_id);
+	$project_id = provia_saveproject_data($data, $image_full, $userid, $project_id, $screen_width, $screen_height);
 	
 	//return result
 	if($project_id >= 0)
@@ -768,7 +786,7 @@ function provia_saveproject($data)
 	
 }
 
-function provia_saveproject_data($data, $image_full, $userid, $project_id)
+function provia_saveproject_data($data, $image_full, $userid, $project_id, $screen_width, $screen_height)
 {
 	
 	$project_id = -1;
@@ -823,12 +841,14 @@ function provia_saveproject_data($data, $image_full, $userid, $project_id)
 		   $GLOBALS['wpdb']->prepare(
 			  "
 			  UPDATE wp_provia_projects 
-			  SET project_name=%s,project_image=%s
+			  SET project_name=%s,project_image=%s,screen_width=%d,screen_height=%d 
 			  WHERE project_id=%d
 			  ",
 			  $project_name,
 			  $image_full,
-			  $project_id
+			  $project_id,
+			  $screen_width,
+			  $screen_height
 		   )
 		);
 		
@@ -850,13 +870,15 @@ function provia_saveproject_data($data, $image_full, $userid, $project_id)
 		$GLOBALS['wpdb']->query(
 		   $GLOBALS['wpdb']->prepare(
 			  "
-			  INSERT INTO wp_provia_projects (project_name,project_image,wishlist_project_id,userid)
+			  INSERT INTO wp_provia_projects (project_name,project_image,wishlist_project_id,userid,screen_width,screen_height)
 			  VALUES (%s,%s,%s,%d)
 			  ",
 			  $project_name,
 			  $image_full,
 			  $list_id,
-			  $userid
+			  $userid,
+			  $screen_width,
+			  $screen_height
 		   )
 		);
 		

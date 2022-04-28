@@ -72,6 +72,8 @@
 	</div>
 	
 	<input type="hidden" name="project_id" id="project_id" value="<?php echo $project_id_default; ?>" />
+	<input type="hidden" name="project_userid" id="project_userid" value="<?php echo $userid; ?>" />
+	
 	</div>
 </div>
 
@@ -86,7 +88,19 @@
 
 <script>
 	
+	var maxSaveCount = 0;
+	var maxSaveLimit = 10;
+	var defaultProjectName = 'Untitled Vision Board';
+	
 	jQuery(document).ready(function() {
+		
+		//check for untitled vision board if found select it by default
+		var project_id = jQuery("#project-lists option:contains('" + defaultProjectName + "')").val();
+		
+		if(project_id != null && project_id != "-1")
+		{
+			jQuery('#project-lists').val(project_id);
+		}
 		
 		loadProjectImages();	
 		
@@ -142,6 +156,9 @@
 		jQuery("#save-file").click(function () {
 			saveProject('file');
 		});
+		
+		//enable autosave every 2 min up to 10 times
+		setInterval('saveProject("autosave");', 120000);
 		
 		jQuery('body').on('click', 'a.myprojects-close-image', function() {
 			
@@ -280,8 +297,8 @@
 	function loadProjectImages()
 	{
 		
-		//debugger;
-		
+		debugger;
+			
 		showHideLoading(true);
 		
 		//set list text defaults
@@ -349,29 +366,72 @@
 		
 	}
 	
-	function saveProject(socialMediaType)
+	function saveProject(saveOperation)
 	{
 		
 		//debugger;
+		
+		//check for valid user, if not found do not allow save
+		var userid_check = parseInt(jQuery('#project_userid').val());
+		
+		if(userid_check == null)
+		{
+			return;
+		}
+		
+		if(userid_check <= 0)
+		{
+			return;
+		}
 		
 		//show loading overlay
 		showHideLoading(true, 'Saving...');
 		
 		//set defaults		
-		if(socialMediaType == null)
+		if(saveOperation == null)
 		{
-			socialMediaType = '';
+			saveOperation = '';
 		}
 		
 		var project = jQuery('#myproject-name').val();
 		var project_id = jQuery('#project_id').val();
 		
-		//validate input
-		if(project == "" || project == "")
+		//validate input only for non-autosave
+		if(saveOperation != "autosave")
 		{
-			alert('Project name is missing, please enter to continue save');
+			if(project == "" || project == "")
+			{
+				alert('Project name is missing, please enter to continue save');
+				showHideLoading(false);
+				return;
+			}
+		}
+		
+		if(saveOperation == "autosave")
+		{
+			
+			//debugger;
 			showHideLoading(false);
-			return;
+			maxSaveCount += 1;
+			
+			//only allow 25 auto save
+			if(maxSaveCount >= maxSaveLimit)
+			{
+				return;
+			}
+			
+			//default project name if not found for autosave
+			if(project == "")
+			{
+				
+				jQuery('#myproject-name').val(defaultProjectName);
+				project = defaultProjectName;
+				
+				//check if untitled vision board is already saved and select in dropdown
+				jQuery("#project-lists option:contains('" + defaultProjectName + "')").prop('selected',true);
+				
+			}
+			
 		}
 		
 		//create snapshot of canvas
@@ -381,13 +441,17 @@
 
 			// Send the screenshot to PHP to save it on the server
 			var url = '/wp-json/provia/v1/provia_saveproject/default/';
+			var screenWidth = window.screen.width;
+			var screenHeight = window.screen.height;
 			
 			var data = 
 			{
 					project_image : img,
 					project_name : project,
 					project_id: project_id,
-					user_id : "<?php echo base64_encode($userid); ?>"
+					user_id : "<?php echo base64_encode($userid); ?>",
+					screen_width: screenWidth,
+					screen_height: screenHeight
 			};
 			
 			jQuery.post( url, data, function(result) {
@@ -395,7 +459,7 @@
 				if(result != null && result != "")
 				{
 					
-					debugger;
+					//debugger;
 					
 					var project_result = JSON.parse(result);
 					var id = parseInt(project_result[0]);
@@ -410,17 +474,17 @@
 						//save individual images in the background
 						saveProjectImages();
 
-						if(socialMediaType != '')
+						if(saveOperation != '')
 						{
-							if(socialMediaType == 'facebook')
+							if(saveOperation == 'facebook')
 							{
 								shareToFacebook(imagePath);
 							}
-							else if(socialMediaType == 'twitter')
+							else if(saveOperation == 'twitter')
 							{
 								shareToTwitter(imagePath);
 							}
-							else if(socialMediaType == 'file')
+							else if(saveOperation == 'file')
 							{
 								downloadFile(imagePath);
 							}
@@ -640,6 +704,27 @@
 			var positionLeft = parseInt(positionEventX) - parseInt(positionContLeft) - 90;
 			var positionTop = parseInt(positionEventY) - parseInt(positionContTop) - 5;
 			
+			//get image height and width
+			var cloneWidth = '25%';
+			var cloneWidthOrig = 0;
+			var cloneHeightOrig = 0; 
+			
+			//get image from clone
+			var cloneImages = jQuery(clone).find('img');
+			
+			try
+			{
+				cloneWidthOrig = cloneImages[1].width; 
+				cloneHeightOrig = cloneImages[1].height;  
+			}
+			catch(e){}
+			
+			//adjust width down for taller images
+			if(cloneHeightOrig > cloneWidthOrig)
+			{
+				cloneWidth = '15%';
+			}
+			
 			if(positionLeft < 0)
 			{
 				positionLeft = 0;
@@ -650,15 +735,15 @@
 				positionTop = 0;
 			}
 			
-			//debugger;
+			debugger;
 			
+			//update clone position
 			clone.style.position = 'absolute';
 			clone.style.left = positionLeft + 'px';
 			clone.style.top = positionTop + 'px';
-			clone.style.width = '25%';
+			clone.style.width = cloneWidth;
 			
 			// insert the clone to the page
-			// TODO: position the clone appropriately
 			document.getElementById("my-projects-container").appendChild(clone);
 
 			// start a drag interaction targeting the clone

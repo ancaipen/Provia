@@ -1,6 +1,8 @@
 
 jQuery( document ).ready(function() {
-    updateIframeLinks();
+    
+	updateIframeLinks();
+	
 });
 
 
@@ -45,17 +47,6 @@ function updateIframeLinks()
 
 			//update link by default to open in the same window
 			jQuery(this).attr('target', '_self');
-
-			//update all links that do not contain productdetail to open in new window
-			/*
-			if (link.toLowerCase().indexOf("productdetail") == -1) {
-				if (link.toLowerCase().indexOf("javascript") == -1) {
-					jQuery(this).attr('target', '_blank');
-				}
-			}
-			*/
-						
-			
 			
 			//add iframe link to all links
 			if (link != null) {

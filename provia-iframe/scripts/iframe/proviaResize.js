@@ -7,6 +7,9 @@ if (typeof jQuery == 'undefined') {
 	}
 	script.onload = includeResize;
 	document.getElementsByTagName('head')[0].appendChild(script); 
+	
+	includeResize();
+	
 }
 else
 {
@@ -27,14 +30,8 @@ function includeResize()
 	   if (this.readyState == 'complete'){ loadProviaIframe(); };
 	}
 	scriptResize.onload= loadProviaIframe;
-	document.getElementsByTagName('head')[0].appendChild(scriptResize);
-	
-	/*
-	setInterval(function() {
-        loadProviaIframe();
-    }, 2000);
-	*/
-	
+	document.getElementsByTagName('head')[0].appendChild(scriptResize);	
+
 }
 
 function loadProviaIframe()
@@ -45,6 +42,33 @@ function loadProviaIframe()
 		checkOrigin:false,
 		minHeight:1500,
 		heightCalculationMethod:'lowestElement'
-		//log:true,
      });
+	 
 }
+
+jQuery(document).ready(function () {
+    jQuery("#provia_iframe").each(function () {
+        //Using closures to capture each one
+        var iframe = jQuery(this);
+        iframe.on("load", function () { 
+            debugger;
+			setTimeout("iframeScrollTop();", 1000);
+        });
+    });
+});
+
+function iframeScrollTop()
+{	
+
+	//resize iframe
+	loadProviaIframe();
+	
+	//scroll to the top
+	jQuery('html, body').animate({
+        scrollTop: jQuery('#provia_iframe').offset().top - 20
+	}, 'fast');
+	
+	
+	
+}
+

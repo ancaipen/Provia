@@ -291,7 +291,7 @@ if(isset($_GET['embarq']))
 			jQuery('#drpProductPages').append('<option value="/stone/natural-cut-stone">Natural Cut</option>');
 			jQuery('#drpProductPages').append('<option value="/stone/precision-fit">Precision Fit</option>');
 			jQuery('#drpProductPages').append('<option value="/stone/grout-visualizer">Grout Visualizer</option>');
-			//jQuery('#drpProductPages').append('<option value="/stone-calculator">Stone Calculator</option>');
+			jQuery('#drpProductPages').append('<option value="/stone/profiles/">Stone Profiles</option>');
         }
 		else if (_sel == 'Metal Roofing') {
             jQuery('#drpProductPages').append('<option value="/metal-roofing">Metal Roofing</option>');
