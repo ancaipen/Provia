@@ -158,7 +158,7 @@
 		});
 		
 		//enable autosave every 2 min up to 10 times
-		setInterval('saveProject("autosave");', 120000);
+		//setInterval('saveProject("autosave");', 120000);
 		
 		jQuery('body').on('click', 'a.myprojects-close-image', function() {
 			
@@ -208,7 +208,15 @@
 				if(productItemDisplay == "")
 				{
 					var productTitle = jQuery(this).find(".product-title");
+					var productTerms = jQuery(this).find(".product-searchterms");
+					
 					var productTitleName = jQuery(productTitle[0]).html().toLowerCase();
+					var productTermsName = jQuery(productTerms[0]).html().toLowerCase();
+					
+					if(productTermsName != null && productTermsName != "")
+					{
+						productTitleName = productTitleName + " " + productTermsName;
+					}
 					
 					if(productTitleName != "")
 					{
@@ -297,7 +305,7 @@
 	function loadProjectImages()
 	{
 		
-		debugger;
+		//debugger;
 			
 		showHideLoading(true);
 		
@@ -436,7 +444,9 @@
 		
 		//create snapshot of canvas
 		html2canvas(document.querySelector("#my-projects-container")).then(canvas => {
-
+			
+			//debugger;
+			
 			var img = canvas.toDataURL();
 
 			// Send the screenshot to PHP to save it on the server

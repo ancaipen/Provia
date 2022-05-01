@@ -3,16 +3,52 @@ body, html
 	margin: 0;
 	padding: 0;
 	width: 100%;
-	background-color: #F9F9F9;
+	background-color: #FFF;
 	overflow: hidden;
 
 }
+
+header
+{
+	display:none;
+}
+
+footer
+{
+	display:none;
+}
+
+.site-main
+{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+.ui-dialog {
+  width: 80% !important;
+  left: 60% !important;
+  top: 24% !important;
+  margin: 0 -50%;
+  min-height: 0%;
+  position: absolute !important;
+  background: #fff;
+  padding: 15px;
+  border-radius: 15px;
+}
+
+.wishlist-name
+{
+	padding: 3px;
+}
+
+
 
 .grout-color-container{
 	position: absolute;
 	bottom: 0;
 	left: 0;
-    background-color: #F9F9F9;
+    background-color: #FFF;
 	width: 100% !important;
 	display: block !important;
 	z-index: 1000 !important;
@@ -55,7 +91,7 @@ body, html
 .product-enhanced-premium .product-type
 {
 	padding-left: 45px;
-	background-color: #F9F9F9;
+	background-color: #FFF;
 	background-image: url("/images/product-selector-icon-star.png");
 	background-repeat: no-repeat;
 	background-position: center left;
@@ -65,7 +101,7 @@ body, html
 .product-enhanced .product-type
 {
 	padding-left: 45px;
-	background-color: #F9F9F9;
+	background-color: #FFF;
 	background-image: url("/images/product-selector-icon-2.png");
 	background-repeat: no-repeat;
 	background-position: center left;
@@ -147,12 +183,12 @@ body, html
 
 .color-info{
 	padding: 0px 0 0px 0;
-	background-color: #F9F9F9 !important;
+	background-color: #ffffff !important;
 }
 
 .col1-header-mobile{
 	text-align: left;
-	padding: 0 0 0 0;
+	padding: 5px 0 0 0;
 }
 
 .magnify{
@@ -169,11 +205,11 @@ body, html
 }
 
 #main-menu .product-type {
-    background-color: #F9F9F9;
+    background-color: #ffffff;
 }
 
 .grout-color-4 .col2-header:nth-child(2){
-	background-color: #F9F9F9;
+	background-color: #ffffff;
 	
 }
 
@@ -192,11 +228,14 @@ div#main-menu ul.product-type li.media-item a  {
 }
 
 div#main-menu ul.product-type li.media-item a.media-none  {
-     background-image: url('/images/no-option2.png')!important;
+     background-image: url('/wp-content/plugins/provia-groutselector-embed/images/no-option2.png')!important;
      background-size: 100%;
 }
 
-
+div#main-menu ul.product-type li.media-item a.media-nogrout  {
+     background-image: url('/wp-content/plugins/provia-groutselector-embed/images/no-option2.png')!important;
+     background-size: 100%;
+}
 
 /* 480px and up */
 @media only screen and (min-width: 480px) { 
@@ -219,6 +258,9 @@ div#main-menu ul.product-type li.media-item a.media-none  {
 	font-weight: lighter;
 	line-height: 100%;
 }
+
+
+
 
 
 }
@@ -344,7 +386,7 @@ div#main-menu ul.product-type li.media-item a.media-none  {
 	font-size: 16px;
 }
 
- }
+
  
  
 /* 992px and up*/
@@ -366,3 +408,94 @@ div#main-menu ul.product-type li.media-item a.media-none  {
 
 }
 
+/*Grout Selector Sizing*/
+
+.fancybox-iframe{
+	width: 100% !important;
+	height: 300px !important;
+}
+
+/* 480px and up */
+@media only screen and (min-width: 480px){
+  .fancybox-iframe{
+	width: 100% !important;
+	height: 400px !important;
+}  
+}
+
+/* 768px and up */
+@media only screen and (min-width: 768px){
+  .fancybox-iframe{
+	width: 100% !important;
+	height: 500px !important;
+}  
+}
+
+
+@media (min-width: 268px) {	
+.ui-dialog{
+width:100% !important;
+left:50% !important;
+top:0 !important;
+margin:0 -50%;
+min-height:70%;
+	z-index:99999;
+	}
+	
+.ui-dialog p{
+	 font-size: 13px;
+		line-height:20px;
+	}
+	}
+	
+	@media (min-width: 516px) {
+		
+		.ui-dialog{
+width:80% !important;
+left:60% !important;
+top:20% !important;
+margin:0 -50%;
+min-height:0%;
+	}
+	
+.ui-dialog p{
+	 font-size: 13px;
+		line-height:20px;
+	}
+		
+	}	
+	
+	@media (min-width: 768px) {
+		.ui-dialog{
+		top:40% !important;
+	}
+		
+	}	
+	
+
+.fancybox-type-iframe .fancybox-inner {
+	overflow:hidden !important ;
+	height:500px !important;
+}
+
+.ui-button
+{
+	display:none;
+}
+
+.ui-dialog-titlebar
+{
+	display: none;
+}
+.dialog-important
+{
+	font-size: 18px;
+	font-weight: bold;
+	padding: 5px;
+}
+#important-btn
+{
+	font-size: 18px;
+	font-weight: bold;
+	padding: 8px;
+}

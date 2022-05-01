@@ -20,7 +20,7 @@ jQuery( document ).ready(function() {
 				e.preventDefault();
 				
 				//set product url
-				var url = '/wp-content/plugins/provia-groutselector/index.php?product_id=' + productId;
+				var url = '/provia-grout-selector-iframe/?product_id=' + productId;
 				
 				//set url and display
 				Fancybox.show([

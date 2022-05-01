@@ -202,6 +202,11 @@ function provia_save_wishlist_item($data)
 		return new WP_Error( 'no_user', 'Invalid user, not found', array( 'status' => 404 ));
 	}
 	
+	if(!isset($product_id))
+	{
+		return new WP_Error( 'no_product', 'Invalid product, not found', array( 'status' => 404 ));
+	}
+	
 	//-------------------------------------
 	// get default wishlist by user id
 	//-------------------------------------
@@ -395,7 +400,23 @@ function provia_getproject_images($data)
 		$query_thumb = "SELECT meta_value FROM wp_postmeta WHERE meta_key ='_thumbnail_id' AND post_id = ".$product_id;
 		$result_query = $GLOBALS['wpdb']->get_results($query_thumb);
 		$thumb_post_id = $result_query[0]->meta_value;
+		$search_terms = "";
 		
+		//get all search tags and category names
+		$terms_sql = "select t.name from wp_term_relationships tr ";
+		$terms_sql .= "inner join wp_term_taxonomy tt on tt.term_taxonomy_id=tr.term_taxonomy_id ";
+		$terms_sql .= "inner join wp_terms t on t.term_id=tt.term_id ";
+		$terms_sql .= "where tt.taxonomy <> 'author' AND tr.object_id = ". $product_id;
+		
+		$terms_result = $GLOBALS['wpdb']->get_results($terms_sql);
+
+		foreach ( $terms_result as $terms )
+		{
+			$search_terms .= html_entity_decode($terms->name) . " ";
+		}
+		
+		$search_terms = trim($search_terms);
+				
 		if($thumb_post_id != "")
 		{
 			
@@ -436,8 +457,9 @@ function provia_getproject_images($data)
 				{
 					$image_html .= '<div class="drag-drop" product_id="'.$product_id.'" wishlist-id="'.$wishlist_id.'" style="'.$image_style.'" data-x="'.$datax.'" data-y="'.$datay.'">';
 					$image_html .= '<a href="javascript:void(0);" class="myprojects-close-image" product_id="'.$product_id.'" style="display:none;"><img src="/wp-content/plugins/provia-myprojects/images/close.png" width="25" /></a>';
-					$image_html .= '<img src="/wp-content/uploads/'.$attached_file_path.'" class="myprojects-image" />';
+					$image_html .= '<img src="/wp-content/uploads/'.html_entity_decode($attached_file_path).'" class="myprojects-image" />';
 					$image_html .= '<div class="product-title">'.$post_title.'</div>';
+					$image_html .= '<div class="product-searchterms" style="display:none;">'.$search_terms.'</div>';
 					$image_html .= '</div>';
 				}
 				else
@@ -445,6 +467,7 @@ function provia_getproject_images($data)
 					$image_html .= '<div class="drag-drop toolset-image" product_id="'.$product_id.'">';
 					$image_html .= '<img src="/wp-content/uploads/'.$attached_file_path.'" class="myprojects-drag-image" />';
 					$image_html .= '<div class="product-title">'.$post_title.'</div>';
+					$image_html .= '<div class="product-searchterms" style="display:none;">'.$search_terms.'</div>';
 					$image_html .= '</div>';
 				}
 				
@@ -632,9 +655,10 @@ function provia_gettiwishlist_image($data)
 	provia_set_user();
 	
 	$list_id = 5;
-	$product_id = 0;
-	$userid = 1;
+	$product_id = -1;
+	$userid = -1;
 	$curr_date = date("Y-m-d H:i:s");
+	$image_id = -1;
 	
 	if(isset($GLOBALS['provia']['userid']))
 	{
@@ -666,10 +690,19 @@ function provia_gettiwishlist_image($data)
 		}
 	}
 	
-	$sql_statment = "select ID from wp_tinvwl_items WHERE wishlist_id=%d AND author=%d AND product_id=%s;";
-	$sql = $GLOBALS['wpdb']->prepare($sql_statment,$list_id,$userid,$product_id);
+	if($product_id <= 0)
+	{
+		return new WP_REST_Response($image_id, 200);
+	}
+	
+	if($userid <= 0)
+	{
+		return new WP_REST_Response($image_id, 200);
+	}
+	
+	$sql_statment = "select ID from wp_tinvwl_items WHERE author=%d AND product_id=%d;";
+	$sql = $GLOBALS['wpdb']->prepare($sql_statment,$userid,$product_id);
 	$images = $GLOBALS['wpdb']->get_results($sql);
-	$image_id = -1;
 	
 	if(isset($images) && count($images) > 0)
 	{
@@ -733,6 +766,11 @@ function provia_saveproject($data)
 	}
 	
 	if($userid == "")
+	{
+		return new WP_Error( 'error_user', 'UserId '.$userid.' is Invalid', array( 'status' => 500 ));
+	}
+	
+	if($userid == "0")
 	{
 		return new WP_Error( 'error_user', 'UserId '.$userid.' is Invalid', array( 'status' => 500 ));
 	}
@@ -846,9 +884,9 @@ function provia_saveproject_data($data, $image_full, $userid, $project_id, $scre
 			  ",
 			  $project_name,
 			  $image_full,
-			  $project_id,
 			  $screen_width,
-			  $screen_height
+			  $screen_height,
+			  $project_id,
 		   )
 		);
 		
@@ -871,7 +909,7 @@ function provia_saveproject_data($data, $image_full, $userid, $project_id, $scre
 		   $GLOBALS['wpdb']->prepare(
 			  "
 			  INSERT INTO wp_provia_projects (project_name,project_image,wishlist_project_id,userid,screen_width,screen_height)
-			  VALUES (%s,%s,%s,%d)
+			  VALUES (%s,%s,%s,%d,%d,%d)
 			  ",
 			  $project_name,
 			  $image_full,

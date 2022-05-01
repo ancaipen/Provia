@@ -1,39 +1,64 @@
 <?php
 
-require('/home/proviav2/public_html/provia.com/wp-content/plugins/provia-groutselector/config.php');
-require(Config::$home_dir.'/wp-content/plugins/provia-groutselector/data.php');
 
 //check for product id
 $product_id = '';
 $ver = rand(1, 1000000);
-//$user = wp_get_current_user();
+$user = wp_get_current_user();
+$userid = -1;
+$products = null;
+$product_media = null;
+$product_media_count = 0;
 
 if(isset($_GET['product_id']))
 {
 	$product_id = filter_var($_GET['product_id'], FILTER_SANITIZE_NUMBER_INT);
 }
 
-$products = null;
-$product_media = null;
+if(isset($user))
+{
+	$userid = $user->ID;
+}
 
 if($product_id != null && $product_id != '')
 {
-	$products = select_product($product_id);	
+	$query = "SELECT p1.ID as product_id, p1.post_title as product_title, p1.post_content as product_desc, p2.post_excerpt as product_color, p2.ID as product_variation_id, ";
+	$query .= "(select meta_value from wp_postmeta where meta_key='_variation_description' and post_id=p2.ID limit 1) as product_hex, ";
+	$query .= "(select meta_value from wp_postmeta where meta_key='_thumbnail_id' and post_id=p2.ID limit 1) as product_thumb_id ";
+	$query .= "from wp_posts p1 ";
+	$query .= "inner join wp_posts p2 on p1.ID=p2.post_parent ";
+	$query .= "where p1.post_status = 'publish' and p1.post_type='product' ";
+	$query .= "and p2.post_status = 'publish' and p2.post_type='product_variation' ";
+	$query .= "and p1.ID = ". $product_id;
+	$query .= " ORDER BY p2.menu_order";	
+	$products = $GLOBALS['wpdb']->get_results($query);
+	
+	if($products != null)
+	{
+		$product_media_count = count($products);
+	}
+}
+else
+{
+	echo '<h1>No products found</h1>';
+	return;
 }
 
 //final check to make sure that data is found
-if($products == null || $products[0] == null)
+if($products == null || $product_media_count == 0)
 {
 	echo '<h1>No products found</h1>';
-	exit();
+	return;
 }
 
-$product_title = 'Provia Product Selector '. $products[0]["product_title"];
+$product_title = 'Provia Product Selector '. $products[0]->product_title;
 $product_description = 'ProVia entry doors, replacement windows, vinyl siding and manufactured stone are the best-in-class in home renovation products.';
 $product_keywords = 'entry doors, home windows, replacement windows, manufactured stone, vinyl siding, product selector';
-
 $product_enhanced = "";
 $product_enhanced_link = "";
+$product_enhanced_premium = "";
+$product_enhanced_premium_link = "";
+
 if(isset($_GET['product_enhanced']))
 {
 	$enhanced_bool = filter_var($_GET['product_enhanced'], FILTER_VALIDATE_BOOLEAN);
@@ -44,8 +69,6 @@ if(isset($_GET['product_enhanced']))
 	}
 }
 
-$product_enhanced_premium = "";
-$product_enhanced_premium_link = "";
 if(isset($_GET['product_enhanced_premium']))
 {
 	$enhanced_premium_bool = filter_var($_GET['product_enhanced_premium'], FILTER_VALIDATE_BOOLEAN);
@@ -56,56 +79,29 @@ if(isset($_GET['product_enhanced_premium']))
 	}
 }
 
-$product_media_count = count($products);
 $media_full_default = "";
 $description_default = "";
 $type_default = "";
 $name_default = "";
 
-//echo var_dump($product_media);
-
 //get default values
 if($products != null)
 {
 	//get image
-	$media_full_default = select_product_media_by_product($products[0]['product_thumb_id']);	
-	$media_full_default = '/wp-content/uploads/'.$media_full_default[0];
-	$description_default = $products[0]['product_desc'];
-	$type_default = trim(str_replace("Color:","",$products[0]['product_color']));
-	$name_default = $products[0]['product_title'];
+	$query = "SELECT meta_value FROM wp_postmeta WHERE meta_key ='_wp_attached_file' AND post_id='".$products[0]->product_thumb_id."'";
+	$media_full_default = $GLOBALS['wpdb']->get_results($query);
+	$media_full_default = '/wp-content/uploads/'.$media_full_default[0]->meta_value;
+	$description_default = $products[0]->product_desc;
+	$type_default = trim(str_replace("Color:","",$products[0]->product_color));
+	$name_default = $products[0]->product_title;
 }
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<meta name="keywords" content="<?php echo $product_keywords; ?>" />
-	<meta name="author" content="ProVia" />
-	<meta name="description" content="<?php echo $product_description; ?>" />
-	<meta name="generator" content="ProVia" />
-	<title><?php echo $product_title; ?></title>
-	
-	<link href="/wp-content/plugins/provia-groutselector/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 
-	<script src="/wp-content/plugins/provia-groutselector/js/jquery.min.js?8e295d9a2745a1ae1e87fc3b8ba05e38" type="text/javascript"></script>
-	<script src="/wp-content/plugins/provia-groutselector/js/jquery.lazyload.js" type="text/javascript"></script>
-			
-	<link href="/wp-content/plugins/provia-groutselector/js/bootstrap.css" rel="stylesheet" type="text/css">
-	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100' rel='stylesheet' type='text/css'>
-
-    <link rel="stylesheet" type="text/css" href="/wp-content/plugins/provia-groutselector/js/magnify.css" />
-    <script type="text/javascript" src="/wp-content/plugins/provia-groutselector/js/jquery.magnify.js"></script>
-
-	<link href="/wp-content/plugins/provia-groutselector/product_selector.css?ver=<?php echo $ver; ?>" rel="stylesheet" type="text/css">
-	<script src="https://kit.fontawesome.com/81446b4acc.js" crossorigin="anonymous"></script>
-	
-</head>
-<body>
-
+<link rel="stylesheet" type="text/css" href="/wp-content/plugins/provia-groutselector-embed/scripts/magnify.css" />
+<script type="text/javascript" src="/wp-content/plugins/provia-groutselector-embed/scripts/jquery.magnify.js"></script>
+<link href="/wp-content/plugins/provia-groutselector-embed/css/product_selector.css?ver=<?php echo $ver; ?>" rel="stylesheet" type="text/css">
+<script src="https://kit.fontawesome.com/81446b4acc.js" crossorigin="anonymous"></script>
 
 <div id="main-container">
 <div class="product-selector-cont">
@@ -177,19 +173,20 @@ if($products != null)
 				{
 					
 					//get image
-					$media_image = select_product_media_by_product($media['product_thumb_id']);	
-					$media_image = '/wp-content/uploads/'.$media_image[0];
+					$sql = "SELECT meta_value FROM wp_postmeta WHERE meta_key ='_wp_attached_file' AND post_id='".$media->product_thumb_id."'";
+					$media_image = $GLOBALS['wpdb']->get_results($sql);
+					$media_image = '/wp-content/uploads/'.$media_image[0]->meta_value;
 					
-					$product_color = trim(str_replace("Color:","",$media['product_color']));
+					$product_color = trim(str_replace("Color:","",$media->product_color));
 					
 					echo '<li class="media-item">';
 					echo '<a href="javascript:void(0);" ';
-					echo 'id="media-'.$media['product_variation_id'].'" ';
+					echo 'id="media-'.$media->product_variation_id.'" ';
 					echo 'class="media-full';
 					
 					if($product_color != "")
 					{
-						echo ' media-'.strtolower(trim($product_color));
+						echo ' media-'.strtolower(trim(str_replace(" ", "", $product_color)));
 					}
 					
 					//make default option selected
@@ -204,7 +201,7 @@ if($products != null)
 					
 					echo 'rel="'.$media_image.'" ';
 					echo 'shown="'.$product_color.'" ';
-					echo 'onclick="changeProduct('.$media['product_variation_id'].')"></a>';
+					echo 'onclick="changeProduct('.$media->product_variation_id.')"></a>';
 					echo '</li>'; 
 					$media_count++;
 				}
@@ -222,86 +219,16 @@ if($products != null)
 
 <style type="text/css">
 <?php 
-
 if($products != null)
 {
 	foreach($products as $media)
 	{
-		echo '#media-'.$media['product_variation_id']. ' { '. "\r\n";
-		echo 'background-color: '.$media['product_hex'].';'."\r\n";
+		echo '#media-'.$media->product_variation_id. ' { '. "\r\n";
+		echo 'background-color: '.$media->product_hex.';'."\r\n";
 		echo ' } '."\r\n"; 
 	}
 }
-
 ?>
-
-@media (min-width: 268px) {	
-.ui-dialog{
-width:100% !important;
-left:50% !important;
-top:0 !important;
-margin:0 -50%;
-min-height:70%;
-	z-index:99999;
-	}
-	
-.ui-dialog p{
-	 font-size: 13px;
-		line-height:20px;
-	}
-	}
-	
-	@media (min-width: 516px) {
-		
-		.ui-dialog{
-width:80% !important;
-left:60% !important;
-top:20% !important;
-margin:0 -50%;
-min-height:0%;
-	}
-	
-.ui-dialog p{
-	 font-size: 13px;
-		line-height:20px;
-	}
-		
-	}	
-	
-	@media (min-width: 768px) {
-		.ui-dialog{
-top:40% !important;
-	}
-		
-	}	
-	
-
-.fancybox-type-iframe .fancybox-inner {
-	overflow:hidden !important ;
-	height:500px !important;
-}
-
-.ui-button
-{
-	display:none;
-}
-
-.ui-dialog-titlebar
-{
-	display: none;
-}
-.dialog-important
-{
-	font-size: 18px;
-	font-weight: bold;
-	padding: 5px;
-}
-#important-btn
-{
-	font-size: 18px;
-	font-weight: bold;
-	padding: 8px;
-}
 </style>
 
 </div>
@@ -361,8 +288,9 @@ top:40% !important;
 		$images = '';
 		foreach($products as $media)
 		{
-			$media_image = select_product_media_by_product($media['product_thumb_id']);	
-			$media_image = '/wp-content/uploads/'.$media_image[0];
+			$sql = "SELECT meta_value FROM wp_postmeta WHERE meta_key ='_wp_attached_file' AND post_id='".$media->product_thumb_id."'";
+			$media_image = $GLOBALS['wpdb']->get_results($sql);
+			$media_image = '/wp-content/uploads/'.$media_image[0]->meta_value;
 			$images .= '"'.$media_image.'",'; 
 		}
 		$images = trim($images, ',');
@@ -393,7 +321,8 @@ top:40% !important;
 			
 		var data = 
 		{
-			product_id : product_id
+			product_id : product_id,
+			user_id : '<?php echo base64_encode($userid); ?>'
 		};
 		
 		try
@@ -423,23 +352,24 @@ top:40% !important;
 	function saveWishlistImage(product_id)
 	{
 		
-		debugger;
+		//debugger;
 		
 		if(product_id == null || product_id == "")
 		{
 			return;
 		}
 
-		var url = '/wp-json/provia/v1/provia_tiwishlist/saveimage/';
+		var url = '/wp-json/provia/v1/provia_admin/savewishlistitem/';
 			
 		var data = 
 		{
-				product_id : product_id
+			product_id : product_id,
+			uid : <?php echo $userid; ?>
 		};
 		
 		try
 		{
-			jQuery.post( url, data, function(result) {
+			jQuery.get( url, data, function(result) {
 				var errMsg = result;
 				jQuery('.heart-icon').attr('class', 'fa-solid fa-heart heart-icon');
 			}).fail(function(xhr, status, error) {
@@ -542,6 +472,3 @@ top:40% !important;
 	}
 
 </script>
-
-</body>
-</html>

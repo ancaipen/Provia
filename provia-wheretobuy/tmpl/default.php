@@ -29,6 +29,8 @@ if(isset($_GET['audience']))
 ?>
 <link href="/wp-content/plugins/provia-wheretobuy/css/where-to-buy.css" rel="stylesheet" type="text/css" />
 <link href="/wp-content/plugins/provia-wheretobuy/scripts/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/wp-content/plugins/provia-wheretobuy/scripts/tooltipster-master/dist/css/tooltipster.bundle.min.css" />
+
 <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBBNzHIIdHxWk68i_x0iPmcu3mz-iAu28I" type="text/javascript"></script>
 <script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/scripts/jquery-ui-1.11.4/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/scripts/jquery-validate/jquery.validate.min.js"></script>
@@ -37,6 +39,7 @@ if(isset($_GET['audience']))
 <script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/scripts/tooltipster-master/dist/js/tooltipster.bundle.min.js"></script>
 <script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/scripts/wheretobuy.js?version=<?php echo  $randnum; ?>"></script>
 <script type="text/javascript" src="/wp-content/plugins/provia-wheretobuy/scripts/preferreddealer.js?version=<?php echo  $randnum; ?>"></script>
+
 <style type="text/css">
     .ui-dialog {
         z-index: 1002 !important;

@@ -128,7 +128,7 @@ function provia_entrylink_gallery_load()
 		$session = $image->session;
 		$password = $image->password;
 		
-		$entrylink_href = 'https://entrylink.provia.com/entryLINK/design.aspx?s='.$session.'&p='.$password . '&newui=on';
+		$entrylink_href = 'https://entrylink.provia.com/entryLINK/design.aspx?s='.$session.'&p='.$password . '&userid='.$userid;
 		$image_name = '/wp-content/plugins/provia-api/images/'.$userid.'/'.$image_name;
 		
 		//write out gallery images
