@@ -47,19 +47,22 @@ function loadProviaIframe()
 }
 
 jQuery(document).ready(function () {
-    jQuery("#provia_iframe").each(function () {
-        //Using closures to capture each one
+    
+	//each iframe load
+	jQuery("#provia_iframe").each(function () {
+        
+		//scroll to the top when new pages load
         var iframe = jQuery(this);
         iframe.on("load", function () { 
-            debugger;
 			setTimeout("iframeScrollTop();", 1000);
         });
+		
     });
+	
 });
 
 function iframeScrollTop()
 {	
-
 	//resize iframe
 	loadProviaIframe();
 	
@@ -67,8 +70,5 @@ function iframeScrollTop()
 	jQuery('html, body').animate({
         scrollTop: jQuery('#provia_iframe').offset().top - 20
 	}, 'fast');
-	
-	
-	
 }
 

@@ -105,7 +105,7 @@ function provia_entrylink_gallery_load()
 	
 	//get saved images
 	$sql = "SELECT * FROM wp_provia_images ";
-	$sql .= "WHERE userid = ".$userid;
+	$sql .= "WHERE (deleted IS NULL OR deleted = 0) AND userid = ".$userid;
 	$sql .= " ORDER BY created_date DESC ";
 			
 	//echo $sql;
@@ -132,7 +132,8 @@ function provia_entrylink_gallery_load()
 		$image_name = '/wp-content/plugins/provia-api/images/'.$userid.'/'.$image_name;
 		
 		//write out gallery images
-		echo '<div class="entrylink-configurator-gallery-image-item">';
+		echo '<div class="entrylink-configurator-gallery-image-item" id="entrylink-configurator-gallery-image-item-'.$image_id.'">';
+		echo '<a href="javascript:void(0);" class="entrylink-configurator-close-image" image_id="'.$image_id.'"><img src="/wp-content/plugins/provia-myprojects/images/close.png" width="25" /></a>';
 		echo '<a href="'.$entrylink_href.'" target="new">';
 		echo '<img src="'.$image_name.'" class="entrylink-configurator-gallery-image" />';
 		echo '</a>';
@@ -140,8 +141,7 @@ function provia_entrylink_gallery_load()
 		
 	}
 	
-	echo '</div>';
-	
+	echo '</div>';	
 	
 }
 

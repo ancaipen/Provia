@@ -2,11 +2,11 @@
  
 /*
  
-Plugin Name: Provia - My Projects
+Plugin Name: Provia - Vision Boards
  
 Plugin URI: https://provia.com/
  
-Description: Plugin is used to display 'My Projects' shortcode for use in design center.  My projects allow users to drag and drop images to a canvas to save a create pin boards.
+Description: Plugin is used to display the Vision Board shortcode for use in design center.  Vision Boards allow users to drag and drop images to a canvas to save a create pin boards.
  
 Version: 1.0
  
@@ -75,7 +75,7 @@ function provia_myprojects_boards_load()
 	}
 	
 	$sql = "SELECT * FROM wp_provia_projects  ";
-	$sql .= "where userid = ".$userid;
+	$sql .= "where (deleted IS NULL OR deleted = 0) AND userid = ".$userid;
 	
 	//echo $sql;
 	
@@ -99,7 +99,8 @@ function provia_myprojects_boards_load()
 		
 		$img = str_replace('/home/proviav2/public_html/provia.com', '', $project->project_image);
 		
-		echo '<div class="visionboards-item-container">';
+		echo '<div class="visionboards-item-container" id="visionboards-item-container-'.$project->project_id.'">';
+		echo '<a href="javascript:void(0);" class="visionboards-item-close-image" project_id="'.$project->project_id.'"><img src="/wp-content/plugins/provia-myprojects/images/close.png" width="25" /></a>';
 		echo '<a href="/design-center/?myprojects_projectid='.$project->project_id.'#project-builder" class="elementor-button-link elementor-button elementor-size-sm" role="button">';
 		echo '<img src="'.$img.'" class="visionboards-image" />';
 		echo '</a>';
@@ -108,6 +109,9 @@ function provia_myprojects_boards_load()
 	}
 	
 	echo '</div>';
+	
+	//include custom javascript to handle project operations
+	echo '<script type="text/javascript" src="/wp-content/plugins/provia-myprojects/js/provia-myprojects-operations.js"></script>';
 	
 }
 

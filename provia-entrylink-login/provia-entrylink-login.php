@@ -161,7 +161,8 @@ function provia_loginuser($username, $password, $remember_me)
 		else
 		{
 			//user does not exist, create it
-			$result = wp_create_user($username, $password, 'entrylink@provia.com');
+			$email = strtolower(str_replace(" ","",$username)). '_entrylink@provia.com';
+			$result = wp_create_user($username, $password, $email);
 			
 			if(is_wp_error($result))
 			{
@@ -193,7 +194,7 @@ function wordpress_login_user($username,$password,$setrole = false, $remember_me
 	$creds['remember'] = $remember_me;
 	$user = wp_signon($creds, false);
 	
-	echo var_dump($user);
+	//echo var_dump($user);
 	
 	if($setrole && isset($user))
 	{
@@ -202,7 +203,7 @@ function wordpress_login_user($username,$password,$setrole = false, $remember_me
 	}
 	
 	$user_meta = get_userdata($user->ID);
-	//var_dump($user_meta);
+	var_dump($user_meta);
 	
 	$redirect_to = get_home_url();
 	wp_safe_redirect( $redirect_to );
@@ -217,6 +218,7 @@ function provia_check_entrylink_login($username, $password)
 	$password = filter_var($password, FILTER_SANITIZE_STRING);
 		
 	$service_url = "https://entrylink.provia.com/entrylink/integrate.aspx?u=" . $username . "&p=" .$password. "&m=ping";
+	$service_url = str_replace(" ","%20",$service_url);
 	
 	$ch = curl_init();
 	$timeout = 60;
@@ -226,7 +228,8 @@ function provia_check_entrylink_login($username, $password)
 	$response = curl_exec($ch);
 	curl_close($ch);
 	
-	//echo $response;
+	//echo $service_url . '<br />';
+	//echo $username .' - '.$password.' - '.$response;
 	
 	if(isset($response))
 	{

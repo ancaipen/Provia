@@ -94,7 +94,7 @@ function gbfl_dequeue_um_scripts() {
 
 }
 
-add_action( 'um_before_form',  'provia_add_entrylink_login', $um_priority + 1);
+add_action( 'um_after_form',  'provia_add_entrylink_login', $um_priority + 1);
 
 function provia_add_entrylink_login()
 {
@@ -110,3 +110,14 @@ function provia_add_entrylink_login()
 	echo '<div class="um-clear"></div>';
 	
 }
+
+add_filter('big_image_size_threshold', '__return_false'); 
+
+/* filter added to prevent automatic regeneration of thumbnail images and causing server hikes  */
+add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
+
+// Update CSS within in Admin
+function admin_style() {
+  wp_enqueue_style('admin-styles', get_stylesheet_directory_uri().'/admin.css');
+}
+add_action('admin_enqueue_scripts', 'admin_style');

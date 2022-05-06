@@ -23,7 +23,7 @@
 	{
 		//create project dropdown
 		$sql = "SELECT project_id, project_name FROM wp_provia_projects ";
-		$sql .= "where userid = ".$userid;
+		$sql .= "where (deleted IS NULL OR deleted = 0) AND userid = ".$userid;
 		
 		$result = $GLOBALS['wpdb']->get_results($sql);
 		
@@ -89,7 +89,7 @@
 <script>
 	
 	var maxSaveCount = 0;
-	var maxSaveLimit = 10;
+	var maxSaveLimit = 8;
 	var defaultProjectName = 'Untitled Vision Board';
 	
 	jQuery(document).ready(function() {
@@ -157,8 +157,8 @@
 			saveProject('file');
 		});
 		
-		//enable autosave every 2 min up to 10 times
-		//setInterval('saveProject("autosave");', 120000);
+		//enable autosave every 2.5 min up to 8 times
+		setInterval('saveProject("autosave");', 160000);
 		
 		jQuery('body').on('click', 'a.myprojects-close-image', function() {
 			
@@ -403,7 +403,7 @@
 		
 		var project = jQuery('#myproject-name').val();
 		var project_id = jQuery('#project_id').val();
-		
+			
 		//validate input only for non-autosave
 		if(saveOperation != "autosave")
 		{
@@ -417,6 +417,16 @@
 		
 		if(saveOperation == "autosave")
 		{
+			
+			debugger;
+			
+			//check if items have been moved to canvas before enabling auto-save
+			var numImageItems = jQuery('#my-projects-container .drag-drop').length;
+			if(numImageItems == 0)
+			{
+				showHideLoading(false);
+				return;
+			}
 			
 			//debugger;
 			showHideLoading(false);
@@ -451,17 +461,21 @@
 
 			// Send the screenshot to PHP to save it on the server
 			var url = '/wp-json/provia/v1/provia_saveproject/default/';
-			var screenWidth = window.screen.width;
-			var screenHeight = window.screen.height;
+			var screenWidth = Math.round(window.screen.width);
+			var screenHeight = Math.round(window.screen.height);
+			var canvasWidth = Math.round(jQuery('#my-projects-container').width());
+			var canvasHeight = Math.round(jQuery('#my-projects-container').height());
 			
 			var data = 
 			{
-					project_image : img,
-					project_name : project,
-					project_id: project_id,
-					user_id : "<?php echo base64_encode($userid); ?>",
-					screen_width: screenWidth,
-					screen_height: screenHeight
+				project_image : img,
+				project_name : project,
+				project_id: project_id,
+				user_id : "<?php echo base64_encode($userid); ?>",
+				screen_width: screenWidth,
+				screen_height: screenHeight,
+				canvas_width: canvasWidth,
+				canvas_height: canvasHeight
 			};
 			
 			jQuery.post( url, data, function(result) {
@@ -636,7 +650,7 @@
 		var text = encodeURIComponent("Provia: My Projects Image!");
 		var url = "https://provia.com/";
 		var user_id = "jagathish1123";
-		var hash_tags = "ProVia,MyProjects";
+		var hash_tags = "ProVia,ProViaVisionBoard";
 
 		var params = "menubar=no,toolbar=no,status=no,width=570,height=570"; // for window
 		var ShareUrl = 'https://twitter.com/intent/tweet?url=' + imagePath + '&text=' + text + '&hashtags=' + hash_tags;
@@ -745,7 +759,7 @@
 				positionTop = 0;
 			}
 			
-			debugger;
+			//debugger;
 			
 			//update clone position
 			clone.style.position = 'absolute';

@@ -385,7 +385,7 @@ function get_result_html($child, $rowCount, $type = 'all', $idx_count = 0)
 		
 		$tooltip_id = 'tooltipp_wtb_'.$rowCount.'_'.$type;
 		$html .= '<img class="certification tooltip_wtb" src="/wp-content/plugins/provia-wheretobuy/images/platinum_dealer_icon.png" alt="Visualization" data-tooltip-content="#'.$tooltip_id.'" />';
-		$html .= '<div class="tooltip_templates"><div id="'.$tooltip_id.'" class="tooltip-certified"><strong style="text-decoration: underline;">Platinum Dealer</strong><br />ProVia' ."'". 's performance-based recognition program for those who have demonstrated the highest level of commitment to selling and installing our products.</div></div>';
+		$html .= '<div class="tooltip_templates" style="display:none;"><div id="'.$tooltip_id.'" class="tooltip-certified"><strong style="text-decoration: underline;">Platinum Dealer</strong><br />ProVia' ."'". 's performance-based recognition program for those who have demonstrated the highest level of commitment to selling and installing our products.</div></div>';
 		
 	}
 	
@@ -429,7 +429,7 @@ function get_result_html($child, $rowCount, $type = 'all', $idx_count = 0)
 		$html_certification = substr($html_certification, 0, -2);
 		$tooltip_id = 'tooltipc_wtb_'.$rowCount.'_'.$type;
 		$html .= '<img class="certification tooltip_wtb" src="/wp-content/plugins/provia-wheretobuy/images/certified_installer_icon.png" alt="Certified Installed" data-tooltip-content="#'.$tooltip_id.'" />';
-		$html .= '<div class="tooltip_templates">
+		$html .= '<div class="tooltip_templates" style="display:none;">
 					<div id="'.$tooltip_id.'" class="tooltip-certified">
 						<strong style="text-decoration: underline;">ProVia-Certified Installer</strong><br />This symbol identifies this company has completed specialized training for installing ProVia: 
 						<div class="tooltip-highlight-text">'.$html_certification.'</div></div></div></div>';
@@ -439,7 +439,7 @@ function get_result_html($child, $rowCount, $type = 'all', $idx_count = 0)
 	{
 		$tooltip_id = 'tooltipv_wtb_'.$rowCount.'_'.$type;
 		$html .= '<img class="certification tooltip_wtb" src="/wp-content/plugins/provia-wheretobuy/images/product_vis_icon.png" alt="Visualization" data-tooltip-content="#'.$tooltip_id.'" />';
-		$html .= '<div class="tooltip_templates"><div id="'.$tooltip_id.'" class="tooltip-certified"><strong style="text-decoration: underline;">Product Visualization</strong><br />Dealers who utilize ProVia'."'".'s visualization tools - <span class="tooltip-highlight-text">ProVia iPad App or entryLINK Spec Sheet</span> - to virtually show products before work begins.</div></div>';
+		$html .= '<div class="tooltip_templates" style="display:none;"><div id="'.$tooltip_id.'" class="tooltip-certified"><strong style="text-decoration: underline;">Product Visualization</strong><br />Dealers who utilize ProVia'."'".'s visualization tools - <span class="tooltip-highlight-text">ProVia iPad App or entryLINK Spec Sheet</span> - to virtually show products before work begins.</div></div>';
 	}
 	
 	/*

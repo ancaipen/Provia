@@ -3,7 +3,7 @@ jQuery( document ).ready(function() {
     
 	jQuery( ".eael-lc-logo a" ).click(function(e) {
 		
-		debugger;
+		//debugger;
 				
 		//get href value
 		var productId = jQuery(this).attr('href');
@@ -30,6 +30,8 @@ jQuery( document ).ready(function() {
 					preload: false
 				  },
 				]);
+				
+				jQuery('.fancybox__content').attr('style', 'margin: 50% auto;');
 				
 			}
 		}
