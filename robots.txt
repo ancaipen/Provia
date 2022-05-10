@@ -1,3 +1,13 @@
 User-agent: * 
-Crawl-Delay: 20
 Disallow: /
+Disallow: /wp-admin/
+Disallow: /wp-content/
+
+Disallow: /training/
+Disallow: /wdusa/
+Disallow: /category/
+Disallow: /entry-link-login/
+Disallow: /login/
+Disallow: /password-reset/
+Disallow: /product-category/
+Disallow: /product/

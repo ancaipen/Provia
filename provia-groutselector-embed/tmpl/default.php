@@ -1,14 +1,30 @@
 <?php
 
 
-//check for product id
-$product_id = '';
+//product vars and id
+$product_id = -1;
 $ver = rand(1, 1000000);
 $user = wp_get_current_user();
 $userid = -1;
 $products = null;
 $product_media = null;
 $product_media_count = 0;
+
+//product title placeholders
+$product_title = 'Provia Product Selector '. $products[0]->product_title;
+$product_description = 'ProVia entry doors, replacement windows, vinyl siding and manufactured stone are the best-in-class in home renovation products.';
+$product_keywords = 'entry doors, home windows, replacement windows, manufactured stone, vinyl siding, product selector';
+$product_enhanced = "";
+$product_enhanced_link = "";
+$product_enhanced_premium = "";
+$product_enhanced_premium_link = "";
+
+//media placeholders
+$media_full_default = "";
+$media_custom_style = "";
+$description_default = "";
+$type_default = "";
+$name_default = "";
 
 if(isset($_GET['product_id']))
 {
@@ -20,28 +36,56 @@ if(isset($user))
 	$userid = $user->ID;
 }
 
-if($product_id != null && $product_id != '')
+//if product id is not found, do not load
+if($product_id <= 0)
 {
-	$query = "SELECT p1.ID as product_id, p1.post_title as product_title, p1.post_content as product_desc, p2.post_excerpt as product_color, p2.ID as product_variation_id, ";
-	$query .= "(select meta_value from wp_postmeta where meta_key='_variation_description' and post_id=p2.ID limit 1) as product_hex, ";
-	$query .= "(select meta_value from wp_postmeta where meta_key='_thumbnail_id' and post_id=p2.ID limit 1) as product_thumb_id ";
-	$query .= "from wp_posts p1 ";
-	$query .= "inner join wp_posts p2 on p1.ID=p2.post_parent ";
-	$query .= "where p1.post_status = 'publish' and p1.post_type='product' ";
-	$query .= "and p2.post_status = 'publish' and p2.post_type='product_variation' ";
-	$query .= "and p1.ID = ". $product_id;
-	$query .= " ORDER BY p2.menu_order";	
+	echo '<h1>No products found</h1>';
+	return;
+}
+
+$query = "SELECT p1.ID as product_id, p1.post_title as product_title, p1.post_content as product_desc, p2.post_excerpt as product_color, p2.ID as product_variation_id, ";
+$query .= "(select meta_value from wp_postmeta where meta_key='_variation_description' and post_id=p2.ID limit 1) as product_hex, ";
+$query .= "(select meta_value from wp_postmeta where meta_key='_thumbnail_id' and post_id=p2.ID limit 1) as product_thumb_id ";
+$query .= "from wp_posts p1 ";
+$query .= "inner join wp_posts p2 on p1.ID=p2.post_parent ";
+$query .= "where p1.post_status = 'publish' and p1.post_type='product' ";
+$query .= "and p2.post_status = 'publish' and p2.post_type='product_variation' ";
+$query .= "and p1.ID = ". $product_id;
+$query .= " ORDER BY p2.menu_order";	
+$products = $GLOBALS['wpdb']->get_results($query);
+
+if($products != null)
+{
+	$product_media_count = count($products);
+}
+
+//check for single image
+if($products == null || $product_media_count == 0)
+{
+	$query = "SELECT p.ID as product_id, p.post_title as product_title, p.post_content as product_desc, '' as product_color, -1 as product_variation_id, '#fff' as product_hex, ";
+	$query .= "( ";
+	$query .= "select pm2.meta_value  FROM wp_postmeta pm, wp_postmeta pm2 ";
+	$query .= "WHERE pm.meta_key = '_thumbnail_id' and pm.post_id = ".$product_id." and pm2.post_id=pm.meta_value and pm2.meta_key='_wp_attached_file' ";
+	$query .= "LIMIT 0, 1 ";
+	$query .= ") as thumbnail_image ";
+	$query .= "from wp_posts p  ";
+	$query .= "where p.post_status = 'publish' and p.post_type='product' ";
+	$query .= "and p.ID = ". $product_id;
 	$products = $GLOBALS['wpdb']->get_results($query);
 	
 	if($products != null)
 	{
 		$product_media_count = count($products);
 	}
-}
-else
-{
-	echo '<h1>No products found</h1>';
-	return;
+	
+	if($product_media_count > 0)
+	{
+		$description_default = $products[0]->product_desc;
+		$type_default = trim(str_replace("Color:","",$products[0]->product_color));
+		$name_default = $products[0]->product_title;
+		$media_full_default = '/wp-content/uploads/'.$products[0]->thumbnail_image;
+		$media_custom_style = 'style="display:none;"';
+	}
 }
 
 //final check to make sure that data is found
@@ -50,14 +94,6 @@ if($products == null || $product_media_count == 0)
 	echo '<h1>No products found</h1>';
 	return;
 }
-
-$product_title = 'Provia Product Selector '. $products[0]->product_title;
-$product_description = 'ProVia entry doors, replacement windows, vinyl siding and manufactured stone are the best-in-class in home renovation products.';
-$product_keywords = 'entry doors, home windows, replacement windows, manufactured stone, vinyl siding, product selector';
-$product_enhanced = "";
-$product_enhanced_link = "";
-$product_enhanced_premium = "";
-$product_enhanced_premium_link = "";
 
 if(isset($_GET['product_enhanced']))
 {
@@ -79,13 +115,8 @@ if(isset($_GET['product_enhanced_premium']))
 	}
 }
 
-$media_full_default = "";
-$description_default = "";
-$type_default = "";
-$name_default = "";
-
 //get default values
-if($products != null)
+if($products != null && $media_full_default == "")
 {
 	//get image
 	$query = "SELECT meta_value FROM wp_postmeta WHERE meta_key ='_wp_attached_file' AND post_id='".$products[0]->product_thumb_id."'";
@@ -127,7 +158,7 @@ if($products != null)
 	<div class="col-md-12">
 		<div id="main-body">
 			<div class="media-main">
-				<img src="<?php echo $media_full_default; ?>" id="main-image" data-magnify-src="<?php echo $media_full_default; ?>" class="lazy" />
+				<img src="<?php echo $media_full_default; ?>" id="main-image" data-magnify-src="<?php echo $media_full_default; ?>" class="lazy" <?php echo $media_custom_style; ?>/>
 			</div>
 			<div class="media-desciption">
 				<?php  echo $description_default; ?>
@@ -152,9 +183,11 @@ if($products != null)
 				<span class="product-name"><?php echo $name_default; ?></span>
 				<span class="wishlist-name"><a href="javascript:void(0);" product-id="<?php echo $product_id; ?>" class="add-to-wishlist"><i class="far fa-heart fa-lg fa-fw heart-icon" style="font-size: 25px;padding-bottom:6px;"></i></a></span>
 			</div>
+			<?php if($type_default != "") { ?>
 			<div class="col2-header">
 				<span class="align-text-bottom media-title">Color: </span> <span id="media-type"><?php echo $type_default; ?></span>
 			</div>
+			<?php } ?>
 		</div>
 	</div>
 	
