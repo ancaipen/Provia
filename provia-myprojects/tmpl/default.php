@@ -418,7 +418,7 @@
 		if(saveOperation == "autosave")
 		{
 			
-			debugger;
+			//debugger;
 			
 			//check if items have been moved to canvas before enabling auto-save
 			var numImageItems = jQuery('#my-projects-container .drag-drop').length;
@@ -683,7 +683,12 @@
 		listeners: {
 		  // call this function on every dragmove event
 		  move: dragMoveListener
-		}
+		},
+		modifiers: [
+			interact.modifiers.restrictRect({
+			  restriction: 'parent'
+			})
+		  ]
 	}).on('move', function (event) {
 		var interaction = event.interaction
 	

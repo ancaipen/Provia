@@ -11,7 +11,7 @@ $product_media = null;
 $product_media_count = 0;
 
 //product title placeholders
-$product_title = 'Provia Product Selector '. $products[0]->product_title;
+$product_title = 'Provia Product Selector ';
 $product_description = 'ProVia entry doors, replacement windows, vinyl siding and manufactured stone are the best-in-class in home renovation products.';
 $product_keywords = 'entry doors, home windows, replacement windows, manufactured stone, vinyl siding, product selector';
 $product_enhanced = "";
@@ -25,6 +25,7 @@ $media_custom_style = "";
 $description_default = "";
 $type_default = "";
 $name_default = "";
+$variation_id = 0;
 
 if(isset($_GET['product_id']))
 {
@@ -62,7 +63,7 @@ if($products != null)
 //check for single image
 if($products == null || $product_media_count == 0)
 {
-	$query = "SELECT p.ID as product_id, p.post_title as product_title, p.post_content as product_desc, '' as product_color, -1 as product_variation_id, '#fff' as product_hex, ";
+	$query = "SELECT p.ID as product_id, p.post_title as product_title, p.post_content as product_desc, '' as product_color, 0 as product_variation_id, '#fff' as product_hex, ";
 	$query .= "( ";
 	$query .= "select pm2.meta_value  FROM wp_postmeta pm, wp_postmeta pm2 ";
 	$query .= "WHERE pm.meta_key = '_thumbnail_id' and pm.post_id = ".$product_id." and pm2.post_id=pm.meta_value and pm2.meta_key='_wp_attached_file' ";
@@ -125,6 +126,7 @@ if($products != null && $media_full_default == "")
 	$description_default = $products[0]->product_desc;
 	$type_default = trim(str_replace("Color:","",$products[0]->product_color));
 	$name_default = $products[0]->product_title;
+	$variation_id = $products[0]->product_variation_id;
 }
 
 ?>
@@ -158,7 +160,7 @@ if($products != null && $media_full_default == "")
 	<div class="col-md-12">
 		<div id="main-body">
 			<div class="media-main">
-				<img src="<?php echo $media_full_default; ?>" id="main-image" data-magnify-src="<?php echo $media_full_default; ?>" class="lazy" <?php echo $media_custom_style; ?>/>
+				<img src="<?php echo $media_full_default; ?>" id="main-image" data-magnify-src="<?php echo $media_full_default; ?>" class="lazy" <?php echo $media_custom_style; ?> variation-id="<?php echo $variation_id; ?>" />
 			</div>
 			<div class="media-desciption">
 				<?php  echo $description_default; ?>
@@ -286,7 +288,8 @@ if($products != null)
 		//jQuery("img.lazy").lazyload();
 		
 		var product_id = jQuery(".add-to-wishlist").attr('product-id');
-		getWishlistImage(product_id);
+		var variation_id = jQuery("#main-image").attr('variation-id');
+		getWishlistImage(product_id, variation_id);
 		
 		//message has been hidden permentally (for now)
 		/*
@@ -313,7 +316,8 @@ if($products != null)
 		
 		jQuery(".add-to-wishlist").click(function () {
 			var product_id = jQuery(this).attr('product-id');
-			saveWishlistImage(product_id);
+			var variation_id = jQuery('#main-image').attr('variation-id');
+			saveWishlistImage(product_id,variation_id);
         });
 			
 		<?php
@@ -340,7 +344,7 @@ if($products != null)
 		
 	});
 	
-	function getWishlistImage(product_id)
+	function getWishlistImage(product_id, variation_id)
 	{
 		
 		//debugger;
@@ -349,20 +353,29 @@ if($products != null)
 		{
 			return;
 		}
+		
+		//reset heart image to outline
+		jQuery('.heart-icon').attr('class', 'far fa-heart fa-lg fa-fw heart-icon');
+		
+		if(variation_id == null || variation_id == "")
+		{
+			variation_id = 0;
+		}
 
 		var url = '/wp-json/provia/v1/provia_tiwishlist/getimage/';
 			
 		var data = 
 		{
 			product_id : product_id,
+			variation_id : variation_id,
 			user_id : '<?php echo base64_encode($userid); ?>'
 		};
 		
 		try
 		{
 			jQuery.post( url, data, function(result) {
+
 				var imageId = result;
-				
 				if(imageId > 0)
 				{
 					jQuery('.heart-icon').attr('class', 'fa-solid fa-heart heart-icon');
@@ -382,7 +395,7 @@ if($products != null)
 		
 	}
 	
-	function saveWishlistImage(product_id)
+	function saveWishlistImage(product_id, variation_id)
 	{
 		
 		//debugger;
@@ -391,12 +404,18 @@ if($products != null)
 		{
 			return;
 		}
+		
+		if(variation_id == null || variation_id == "")
+		{
+			variation_id = 0;
+		}
 
 		var url = '/wp-json/provia/v1/provia_admin/savewishlistitem/';
 			
 		var data = 
 		{
 			product_id : product_id,
+			variation_id : variation_id,
 			uid : <?php echo $userid; ?>
 		};
 		
@@ -441,12 +460,15 @@ if($products != null)
 	
 	function changeProduct(productId)
 	{
+		
 		var mediaId = '#media-' + productId;
 		var mediaImage = mediaImageDir + jQuery(mediaId).attr('rel');
 		var nameType = jQuery(mediaId).attr('shown');
 		
 		//swap image
 		jQuery('#main-image').attr('src', mediaImage);
+		
+		jQuery('#main-image').attr('variation-id', productId);
 		
 		//update source and add magnify
 		jQuery('#main-image').attr('data-magnify-src', mediaImage);
@@ -475,6 +497,11 @@ if($products != null)
 				jQuery(li).attr('class', className);
 			}
 		});
+		
+		//get wishlist image
+		var product_id = jQuery(".add-to-wishlist").attr('product-id');
+		var variation_id = jQuery("#main-image").attr('variation-id');
+		getWishlistImage(product_id, variation_id);
 		
 	}
 	

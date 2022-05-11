@@ -191,6 +191,7 @@ function provia_save_wishlist_item($data)
 		
 	$userid = $GLOBALS['provia']['userid'];
 	$product_id = -1;
+	$variation_id = 0;
 	$consumer_key = "ck_6bf1457a8f56fc354d40ec2af3b12aeee2b11cb2";
 	$consumer_secret = "cs_29b86f55e3d0f39ed19fb484d7206fdb33169ed5";
 	$domain = "https://provia.proviaserver-v2.com";
@@ -208,6 +209,14 @@ function provia_save_wishlist_item($data)
 		if($data['product_id'] != "")
 		{
 			$product_id = filter_var($data['product_id'], FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	if(isset($data['variation_id']))
+	{
+		if($data['variation_id'] != "")
+		{
+			$variation_id = filter_var($data['variation_id'], FILTER_SANITIZE_NUMBER_INT);
 		}
 	}
 	
@@ -258,7 +267,6 @@ function provia_save_wishlist_item($data)
 			$wishlistid = filter_var($item['id'], FILTER_SANITIZE_NUMBER_INT);
 			$share_key = $item['share_key'];
 		}
-		
 	}
 	
 	if($wishlistid < 0)
@@ -295,14 +303,13 @@ function provia_save_wishlist_item($data)
 	
 	$arr = json_decode( preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $resp), true );
 	$product_found = false;
-	$variation_id = 0;
-	
+		
 	foreach($arr as $item) { 
 		
 		$wishlist_product_id = filter_var($item['product_id'], FILTER_SANITIZE_NUMBER_INT);
-		$variation_id = filter_var($item['variation_id'], FILTER_SANITIZE_NUMBER_INT);
+		$wishlist_variation_id = filter_var($item['variation_id'], FILTER_SANITIZE_NUMBER_INT);
 		
-		if($wishlist_product_id == $product_id)
+		if($wishlist_product_id == $product_id && $wishlist_variation_id == $variation_id)
 		{
 			$product_found = true;
 		}
@@ -394,7 +401,7 @@ function provia_getproject_images($data)
 	}
 	
 	//load images from all projects
-	$sql = "SELECT DISTINCT -1 as wishlistitem_id, -1 as wishlist_id, u.ID as user_id, p.ID as product_id, p.post_title  ";
+	$sql = "SELECT DISTINCT -1 as wishlistitem_id, -1 as wishlist_id, u.ID as user_id, p.ID as product_id, ti_i.variation_id as product_variation_id, p.post_title  ";
 	$sql .= "FROM wp_tinvwl_items ti_i ";
 	$sql .= "inner join wp_users u on u.ID = ti_i.author ";
 	$sql .= "inner join wp_posts p on p.ID=ti_i.product_id ";
@@ -408,10 +415,19 @@ function provia_getproject_images($data)
 	{
 		
 		$product_id = $product->product_id;
+		$product_variation_id = intval($product->product_variation_id);
 		$wishlist_id = $product->wishlist_id;
 		$post_title = $product->post_title;
 		
-		$query_thumb = "SELECT meta_value FROM wp_postmeta WHERE meta_key ='_thumbnail_id' AND post_id = ".$product_id;
+		$lookup_id = $product_id;
+		
+		//use variation if found
+		if($product_variation_id != null && $product_variation_id > 0)
+		{
+			$lookup_id = $product_variation_id;
+		}
+		
+		$query_thumb = "SELECT meta_value FROM wp_postmeta WHERE meta_key ='_thumbnail_id' AND post_id = ".$lookup_id;
 		$result_query = $GLOBALS['wpdb']->get_results($query_thumb);
 		$thumb_post_id = $result_query[0]->meta_value;
 		$search_terms = "";
@@ -449,6 +465,8 @@ function provia_getproject_images($data)
 				$result_query = $GLOBALS['wpdb']->get_results($sql_result);	
 				
 				$attached_file_path = str_replace('home/proviav2/public_html/provia.com/wp-content/uploads/', '', $result_query[0]->meta_value);
+				$attached_file_path = str_replace('home/oxbow/public_html/proviasandbox/wp-content/uploads/', '', $attached_file_path);
+				
 				$image_style = $result_query[0]->image_style;
 				$datax = $result_query[0]->datax;
 				$datay = $result_query[0]->datay;
@@ -459,7 +477,10 @@ function provia_getproject_images($data)
 				$query_file .= "WHERE pm.meta_key ='_wp_attached_file' AND pm.post_id = %d";
 				$sql_result = $GLOBALS['wpdb']->prepare($query_file,$thumb_post_id);
 				$result_query = $GLOBALS['wpdb']->get_results($sql_result);	
+				
 				$attached_file_path = str_replace('home/proviav2/public_html/provia.com/wp-content/uploads/', '', $result_query[0]->meta_value);
+				$attached_file_path = str_replace('home/oxbow/public_html/proviasandbox/wp-content/uploads/', '', $attached_file_path);
+				
 			}
 			
 			//echo 'sql: '.$query_file . "||||";
@@ -468,7 +489,7 @@ function provia_getproject_images($data)
 			{
 				if(isset($project_id) && $project_id > 0 && $toolset == false)
 				{
-					$image_html .= '<div class="drag-drop" product_id="'.$product_id.'" wishlist-id="'.$wishlist_id.'" style="'.$image_style.'" data-x="'.$datax.'" data-y="'.$datay.'">';
+					$image_html .= '<div class="drag-drop" product_id="'.$product_id.'" product-variation-id="'.$product_variation_id.'" wishlist-id="'.$wishlist_id.'" style="'.$image_style.'" data-x="'.$datax.'" data-y="'.$datay.'">';
 					$image_html .= '<a href="javascript:void(0);" class="myprojects-close-image" product_id="'.$product_id.'" style="display:none;"><img src="/wp-content/plugins/provia-myprojects/images/close.png" width="25" /></a>';
 					$image_html .= '<img src="/wp-content/uploads/'.html_entity_decode($attached_file_path).'" class="myprojects-image" />';
 					$image_html .= '<div class="product-title">'.$post_title.'</div>';
@@ -740,6 +761,7 @@ function provia_gettiwishlist_image($data)
 	
 	$list_id = 5;
 	$product_id = -1;
+	$variation_id = 0;
 	$userid = -1;
 	$curr_date = date("Y-m-d H:i:s");
 	$image_id = -1;
@@ -774,6 +796,14 @@ function provia_gettiwishlist_image($data)
 		}
 	}
 	
+	if(isset($data['variation_id']))
+	{
+		if($data['variation_id'] != "")
+		{
+			$variation_id = filter_var($data['variation_id'], FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
 	if($product_id <= 0)
 	{
 		return new WP_REST_Response($image_id, 200);
@@ -784,8 +814,8 @@ function provia_gettiwishlist_image($data)
 		return new WP_REST_Response($image_id, 200);
 	}
 	
-	$sql_statment = "select ID from wp_tinvwl_items WHERE author=%d AND product_id=%d;";
-	$sql = $GLOBALS['wpdb']->prepare($sql_statment,$userid,$product_id);
+	$sql_statment = "select ID from wp_tinvwl_items WHERE author=%d AND product_id=%d AND variation_id=%d;";
+	$sql = $GLOBALS['wpdb']->prepare($sql_statment,$userid,$product_id,$variation_id);
 	$images = $GLOBALS['wpdb']->get_results($sql);
 	
 	if(isset($images) && count($images) > 0)
@@ -913,7 +943,7 @@ function provia_saveproject($data)
 		
 		//update image path to be URL
 		$image_full = str_replace('/home/proviav2/public_html/provia.com/', provia_default_url, $image_full);
-		
+				
 		$response_array = array($project_id, $image_full);
 		$response = json_encode($response_array);
 		
