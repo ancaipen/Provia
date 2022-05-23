@@ -108,7 +108,7 @@ function provia_preferreddealer_load()
 	}
 	else
 	{
-		$sql = "SELECT * FROM wp_provia_preferreddealers where ip_address='".$ip_address."'";
+		$sql = "SELECT * FROM wp_provia_preferreddealers where ip_address='".$ip_address."' and userid=0";
 		$dealers = $GLOBALS['wpdb']->get_results($sql);
 	}
 	

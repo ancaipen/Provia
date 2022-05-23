@@ -368,6 +368,8 @@ function provia_getproject_images($data)
 	$project_id = 0;
 	$list_id = -1;
 	$toolset = false;
+	$adjust_width = 0;
+	$adjust_height = 0;
 	
 	//check for userid in post 
 	if(isset($data['uid']))
@@ -383,6 +385,22 @@ function provia_getproject_images($data)
 		if($data['project_id'] != "")
 		{
 			$project_id = filter_var($data['project_id'], FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	if(isset($data['adjust_width']))
+	{
+		if($data['adjust_width'] != "")
+		{
+			$adjust_width = filter_var($data['adjust_width'], FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	if(isset($data['adjust_height']))
+	{
+		if($data['adjust_height'] != "")
+		{
+			$adjust_height = filter_var($data['adjust_height'], FILTER_SANITIZE_NUMBER_INT);
 		}
 	}
 	
@@ -418,7 +436,6 @@ function provia_getproject_images($data)
 		$product_variation_id = intval($product->product_variation_id);
 		$wishlist_id = $product->wishlist_id;
 		$post_title = $product->post_title;
-		
 		$lookup_id = $product_id;
 		
 		//use variation if found

@@ -22,13 +22,13 @@
 	if($userid > 0)
 	{
 		//create project dropdown
-		$sql = "SELECT project_id, project_name FROM wp_provia_projects ";
+		$sql = "SELECT project_id, project_name, canvas_width, canvas_height FROM wp_provia_projects ";
 		$sql .= "where (deleted IS NULL OR deleted = 0) AND userid = ".$userid;
 		
 		$result = $GLOBALS['wpdb']->get_results($sql);
 		
 		$project_html = '<select name="project-lists" id="project-lists">';
-		$project_html .= '<option value="-1">My Vision Boards</option>';
+		$project_html .= '<option value="-1">- My Vision Boards -</option>';
 		foreach ( $result as $project )
 		{
 			
@@ -38,7 +38,7 @@
 				$selected = ' SELECTED';
 			}
 			
-			$project_html .= '<option value="'.$project->project_id.'"'.$selected.'>'.$project->project_name.'</option>';
+			$project_html .= '<option canvas_height="'.$project->canvas_height.'" canvas_width="'.$project->canvas_width.'" value="'.$project->project_id.'"'.$selected.'>'.$project->project_name.'</option>';
 		}
 		$project_html .= '</select>';
 		$showcanvas = true;
@@ -90,6 +90,8 @@
 	
 	var maxSaveCount = 0;
 	var maxSaveLimit = 8;
+	var canvasAdjustWidth = 0;
+	var canvasAdjustHeight = 0;
 	var defaultProjectName = 'Untitled Vision Board';
 	
 	jQuery(document).ready(function() {
@@ -161,6 +163,8 @@
 		setInterval('saveProject("autosave");', 160000);
 		
 		jQuery('body').on('click', 'a.myprojects-close-image', function() {
+			
+			//debugger;
 			
 			//get parent div (drag-drop)
 			var parentDiv = jQuery(this).parent();
@@ -312,6 +316,41 @@
 		//set list text defaults
 		var project_id = jQuery('#project-lists').val();
 		var projectName = jQuery("#project-lists option:selected" ).text();
+			
+		//look for current/previously saved width and height
+		var canvasWidth = Math.round(jQuery('#my-projects-container').width());
+		var canvasHeight = Math.round(jQuery('#my-projects-container').height());
+		var canvasHeightPrev = jQuery('#project-lists option:selected').attr('canvas_height');
+		var canvasWidthPrev = jQuery('#project-lists option:selected').attr('canvas_width');
+		
+		if(canvasHeightPrev != null && canvasHeightPrev != "")
+		{
+			canvasHeightPrev = parseInt(canvasHeightPrev);
+		}
+		else
+		{
+			canvasHeightPrev = 0;
+		}
+		
+		if(canvasWidthPrev != null && canvasWidthPrev != "")
+		{
+			canvasWidthPrev = parseInt(canvasWidthPrev);
+		}
+		else
+		{
+			canvasWidthPrev = 0;
+		}
+		
+		//figure out image adjustment
+		if(canvasWidthPrev > 0 && canvasWidthPrev != canvasWidth)
+		{
+			canvasAdjustWidth = canvasWidthPrev - canvasWidth;
+		}
+		
+		if(canvasHeightPrev > 0 && canvasHeightPrev != canvasHeight)
+		{
+			canvasAdjustHeight = canvasHeightPrev - canvasHeight;
+		}
 		
 		//set selected projectid
 		jQuery('#project_id').val(project_id);
@@ -343,10 +382,12 @@
 				jQuery('#my-projects-images').html(image_html);
 			}
 			
+			//debugger;
+			
 			//load canvas images
 			if(project_id != null && parseInt(project_id)  > 0)
 			{
-				url = "/wp-json/provia/v1/provia_getproject/getimages/?uid=<?php echo $userid; ?>" + '&project_id=' + project_id;
+				url = "/wp-json/provia/v1/provia_getproject/getimages/?uid=<?php echo $userid; ?>" + '&project_id=' + project_id + '&adjust_width=' + canvasAdjustWidth + '&adjust_height=' + canvasAdjustHeight;
 				
 				jQuery.get( url, function(result) {
 				
@@ -457,7 +498,7 @@
 			
 			//debugger;
 			
-			var img = canvas.toDataURL();
+			var img = canvas.toDataURL('image/jpeg', 0.5);
 
 			// Send the screenshot to PHP to save it on the server
 			var url = '/wp-json/provia/v1/provia_saveproject/default/';
@@ -666,7 +707,7 @@
 		}
 		
 		var params = "menubar=no,toolbar=no,status=no,width=570,height=570";
-		var ShareUrl = 'https://www.facebook.com/sharer.php?u=https://provia.com?imageurl=' + imagePath;
+		var ShareUrl = 'https://www.facebook.com/sharer.php?quote=My ProVia Vision Board!&u=' + imagePath;
 		window.open(ShareUrl,"NewWindow" , params);  
 	}
 	

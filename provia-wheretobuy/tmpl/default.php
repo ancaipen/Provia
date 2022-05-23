@@ -231,14 +231,14 @@ if(isset($_GET['audience']))
 				<label for="fld-prod-roofing">METAL ROOFING</label><br>
 				</span>
 				
-				<input type="checkbox" value="Vinyl Siding" name="fld-prod" id="fld-prod-siding">
-				<label for="fld-prod-siding">VINYL SIDING</label><br>
+				<input type="checkbox" value="Vinyl Siding" name="fld-prod" id="fld-prod-siding-option">
+				<label for="fld-prod-siding-option">VINYL SIDING</label><br>
 				
 				<div style="display:none;" id="fld-prod-siding-details">
 					<input type="radio" checked="" value="R" name="fld-prod-siding" id="fld-prod-siding-contractors">
-					<label style="width:300px;">Show me Contractors/Installers who sell and install siding</label><br>
+					<label for="fld-prod-siding-contractors" style="width:300px;">Show me Contractors/Installers who sell and install siding</label><br>
 					<input type="radio" value="D" name="fld-prod-siding" id="fld-prod-siding-distributors">
-					<label style="width:300px;">Show me Distributors who sell siding (I already have a Contractor/Installer)</label><br>
+					<label for="fld-prod-siding-distributors" style="width:300px;">Show me Distributors who sell siding (I already have a Contractor/Installer)</label><br>
 				</div>
 
 			</div>
@@ -387,21 +387,21 @@ jQuery(document).ready(function () {
     jQuery("input").keypress(function(e) { if(e.keyCode == 13) getLocations(jQuery('.tabbed .active a').attr('id'), "1"); });
 
     //hide or show 
-    jQuery("#fld-prod-siding").click(function() { 
-    
+    jQuery("#fld-prod-siding-option").click(function() { 
+		
+		debugger;
+		
         //check to make sure that options only available to homeowners
-        if (jQuery('#fld-type-homeowner').is(':checked')) {
-            if (jQuery('#fld-prod-siding').is(':checked')) {
-                //show details
-                jQuery('#fld-prod-siding-details').attr('style', 'display:inline;');
-            } else {
-                //hide details
-                jQuery('#fld-prod-siding-details').attr('style', 'display:none;');
-            }  
-        } 
+        if (jQuery('#fld-prod-siding-option').is(':checked')) {
+			//show details
+			jQuery('#fld-prod-siding-details').attr('style', 'display:inline;');
+		} else {
+			//hide details
+			jQuery('#fld-prod-siding-details').attr('style', 'display:none;');
+		}  
         
     });
-
+	
     jQuery("#connect-submit").click(function () { postConnectMeLeadCapture() });
     
     jQuery(document).delegate('span.btn_connectme', "click", function (event) {

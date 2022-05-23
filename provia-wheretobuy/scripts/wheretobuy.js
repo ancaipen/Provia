@@ -488,7 +488,7 @@
 			"&windows_vinyl=" + getCheckBoxStatus("#fld-prod-windows-vinyl") +
 			"&windows_storm=" + getCheckBoxStatus("#fld-prod-windows-storm") +
 			"&vinylpatiodoors=" + getCheckBoxStatus("#fld-prod-patio") +
-			"&siding=" + getCheckBoxStatus("#fld-prod-siding") +
+			"&siding=" + getCheckBoxStatus("#fld-prod-siding-option") +
 			"&stone=" + getCheckBoxStatus("#fld-prod-stone") +
 			"&roofing=" + getCheckBoxStatus("#fld-prod-roofing") +
 			"&platiumn=" + getCheckBoxStatus("#recognition-type-platiumn") +

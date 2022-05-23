@@ -88,6 +88,8 @@ if($_SERVER["REQUEST_METHOD"] == 'GET')
 			}
 		}
 		
+		//echo '<h1>location call found: '.$zipcode.' '.$customertype.'</h1>';
+		
 		if(trim($zipcode != "")
 		&& trim($customertype) != "")
 		{

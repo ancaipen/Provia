@@ -54,7 +54,7 @@ function provia_entrylinklogin_load()
 	
 	echo '<div class="entrylink-login-header">';
 	echo '<img src="/wp-content/uploads/2021/05/ProVia-logo.svg" width="200">';
-	echo '<h2>Entry Link Login</h2>';
+	echo '<h2>EntryLink Login</h2>';
 	echo '</div>';
 	
 	//echo var_dump($user);
