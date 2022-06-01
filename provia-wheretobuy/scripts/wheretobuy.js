@@ -28,7 +28,14 @@
 		if(dealerid != null && dealerid != "")
 		{
 			var url = "/wp-json/provia/v1/savepreferreddealer/save/";
-			var data = { dealerid: dealerid };
+			var screenWidth = Math.round(window.screen.width);
+			var screenHeight = Math.round(window.screen.height);
+			
+			var data = { 
+				dealerid: dealerid,
+				screen_width: screenWidth,
+				screen_height: screenHeight
+			};
 			
 			//post to web api to save dealer/user association
 			jQuery.post(

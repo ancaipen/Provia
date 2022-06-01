@@ -1,9 +1,18 @@
-
+<?php
+	
+	//get current user and asspociated images
+	$user = wp_get_current_user();
+	$userid = 0;
+	
+	if(isset($user))
+	{
+		$userid = $user->ID;
+	}
+	
+?>
 <link href="/wp-content/plugins/provia-wheretobuy/css/preferred-dealer.css" rel="stylesheet" type="text/css" />
 
 <div class="perferred-dealer-container">
-
-
 
 	<div class="perferred-dealer-text">
 		<h1 class="preferred-dealer-label">Preferred Dealer</h1>
@@ -11,16 +20,9 @@
 		<a href="/where-to-buy">
 			<img src="https://assets.website-files.com/6129234d13126814a210bb20/612cdfa3e2a6ba1a7897b8d0_002-pencil.png" loading="lazy" alt="">
 		</a>
-		<h2 class="preferred-dealer-heading"><?php echo $dealer_name; ?></h2>
-		<h3 class="preferred-dealer-contact">
-		<?php echo $dealer_phone; ?> 
-		<?php
-			if(isset($dealer_website) && $dealer_website != "")
-			{
-				echo ' | '. '<a href="'.$dealer_website.'" target="_blank">Visit Dealer Website</a>';
-			}
-		?>
-		</h3>
+		
+		<div id="provia-preferred-dealer-html"></div>
+		
 	</div>
 
 	<div class="perferred-dealer-map-container">
@@ -29,23 +31,50 @@
 	
 </div> 
 
-<div class="perferred-dealer-hidden" style="display:none;">
-	<div id="perferred-dealer-zipcode"><?php echo $user_zipcode; ?></div>
-	<div id="perferred-dealer-name"><?php echo $dealer_name; ?></div>
-	<div id="perferred-dealer-phone"><?php echo $dealer_phone; ?></div>
-	<div id="perferred-dealer-website"><?php echo $dealer_website; ?></div>
-	<div id="perferred-dealer-address"><?php echo $dealer_address; ?></div>
-	<div id="perferred-dealer-lat"><?php echo $dealer_lat; ?></div>
-	<div id="perferred-dealer-long"><?php echo $dealer_long; ?></div>
-</div>
 
 <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBBNzHIIdHxWk68i_x0iPmcu3mz-iAu28I" type="text/javascript"></script>
 <script type="text/javascript">
 
 
 jQuery(document).ready(function () {
-	loadPreferredMap('perferred-dealer-map');
+	
+	//load preferred dealer and map
+	loadPreferredDealer();
+
 });
+
+function loadPreferredDealer()
+{
+	
+	
+	var url = "/wp-json/provia/v1/provia_wheretobuy/getpreferreddealer/?uid=<?php echo $userid; ?>";
+	
+	//load preferred dealer
+	jQuery.get(url, function(result) {
+		
+		//debugger;
+		
+		//clear existing html
+		jQuery('#provia-preferred-dealer-html').html('');
+		
+		if(result != null && result != "")
+		{
+			
+			//set html
+			jQuery('#provia-preferred-dealer-html').html(result);
+			
+			//load map 
+			loadPreferredMap('perferred-dealer-map');
+	
+		}
+		else
+		{
+			//hide preferred dealer code
+			jQuery('#perferred-dealer-container').attr('style', 'display:none;');
+		}
+		
+	});
+}
 
 function loadPreferredMap(id) 
 {

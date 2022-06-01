@@ -359,9 +359,17 @@ jQuery(document).ready(function () {
 		
 		if(zipcode != null && zipcode != "")
 		{
+			
+			//debugger;
+			
 			var url = "/wp-json/provia/v1/savezip/simple/";
+			var screenWidth = Math.round(window.screen.width);
+			var screenHeight = Math.round(window.screen.height);
+			
 			var data = { 
-				zipcode: zipcode
+				zipcode: zipcode,
+				screen_width: screenWidth,
+				screen_height: screenHeight
 			};
 			
 			//post to web api to save dealer/user association

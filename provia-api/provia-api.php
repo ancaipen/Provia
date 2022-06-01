@@ -140,10 +140,131 @@ add_action( 'rest_api_init', function () {
   ));
 });
 
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'provia/v1/provia_wheretobuy', '/getpreferreddealer/', array(
+    'methods' => 'GET',
+    'callback' => 'provia_get_preferred_dealer',
+  ));
+});
+
 
 //--------------------------------------------------
 // FUNCTIONS
 //--------------------------------------------------
+
+function provia_get_preferred_dealer($data)
+{
+	
+	//get preferred dealer
+	$userid = $GLOBALS['provia']['userid'];
+	$user_zipcode = "44681";
+	$ip_address = trim($_SERVER['REMOTE_ADDR']);
+	$dealers = null;
+	
+	//retrieve details by userid or ip address (provia set by default)
+	$dealer_name = "ProVia";
+	$dealer_phone = "(877) 389-0835";
+	$dealer_website = "https://www.provia.com";
+	$dealer_address = "";
+	$dealer_lat = "40.516380";
+	$dealer_long = "-81.700790";
+	
+	if(isset($data['uid']))
+	{
+		if($data['uid'] != "")
+		{
+			$userid = filter_var($data['uid'], FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	
+	//retrieve details by ip or user id
+	if($userid > 0)
+	{
+		$sql = "SELECT * FROM wp_provia_preferreddealers where userid=".$userid;
+		$dealers = $GLOBALS['wpdb']->get_results($sql);		
+	}
+	else
+	{
+		$sql = "SELECT * FROM wp_provia_preferreddealers where ip_address='".$ip_address."' and userid=0";
+		$dealers = $GLOBALS['wpdb']->get_results($sql);
+	}
+	
+	if(isset($dealers) && count($dealers) > 0)
+	{
+		$dealer_name = $dealers[0]->dealer_name;
+		$dealer_phone = $dealers[0]->dealer_phone;
+		$dealer_website = $dealers[0]->dealer_website;
+		$dealer_address = $dealers[0]->dealer_address;
+		$dealer_lat = $dealers[0]->dealer_lat;
+		$dealer_long = $dealers[0]->dealer_long;
+		$user_zipcode = $dealers[0]->dealer_zipcode;
+		
+		//use user ip address to find zip code
+		if($user_zipcode == "")
+		{
+			$user_zipcode = provia_getzipcode();
+		}
+	}
+	
+	//create html to return
+	$html = '<h2 class="preferred-dealer-heading">'.$dealer_name.'</h2>';
+	$html .= '<h3 class="preferred-dealer-contact">'.$dealer_phone;
+
+	if(isset($dealer_website) && $dealer_website != "")
+	{
+		$html .=  ' | '. '<a href="'.$dealer_website.'" target="_blank">Visit Dealer Website</a>';
+	}
+
+	$html .= '</h3>';
+
+	$html .= '<div class="perferred-dealer-hidden" style="display:none;">';
+	$html .= '<div id="perferred-dealer-zipcode">'.$user_zipcode.'</div>';
+	$html .= '<div id="perferred-dealer-name">'.$dealer_name.'</div>';
+	$html .= '<div id="perferred-dealer-phone">'.$dealer_phone.'</div>';
+	$html .= '<div id="perferred-dealer-website">'.$dealer_website.'</div>';
+	$html .= '<div id="perferred-dealer-address">'.$dealer_address.'</div>';
+	$html .= '<div id="perferred-dealer-lat">'.$dealer_lat.'</div>';
+	$html .= '<div id="perferred-dealer-long">'.$dealer_long.'</div>';
+	$html .= '</div>';
+	
+	return $html;
+	
+}
+
+function provia_getzipcode()
+{
+	
+	$ip_address = trim($_SERVER['REMOTE_ADDR']);
+	$ips = [$ip_address];
+
+	// ip-api endpoint URL
+	// see http://ip-api.com/docs/api:batch for documentation
+	$endpoint = 'http://ip-api.com/batch';
+
+	$options = [
+		'http' => [
+			'method' => 'POST',
+			'user_agent' => 'Batch-Example/1.0',
+			'header' => 'Content-Type: application/json',
+			'content' => json_encode($ips)
+		]
+	];
+	
+	$response = file_get_contents($endpoint, false, stream_context_create($options));
+
+	// Decode the response and print it
+	$array = json_decode($response, true);
+	$results = $array[0];
+	$zipcode = "";
+	
+	if(isset($results))
+	{
+		//print_r($results);
+		$zipcode = $results['zip'];
+	}
+	
+	return $zipcode;
+}
 
 function provia_add_custom_html()
 {
@@ -1222,6 +1343,8 @@ function provia_savezipfull($data)
 	$state = '';
 	$city = '';
 	$ipaddress = trim($_SERVER['REMOTE_ADDR']);
+	$screen_width = 0;
+	$screen_height = 0;
 	
 	if(isset($data['email']))
 	{
@@ -1251,6 +1374,16 @@ function provia_savezipfull($data)
 	if(isset($data['city']))
 	{
 		$city = filter_var($data['city'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['screen_width']))
+	{
+		$screen_width = filter_var($data['screen_width'], FILTER_SANITIZE_NUMBER_INT);
+	}
+	
+	if(isset($data['screen_height']))
+	{
+		$screen_height = filter_var($data['screen_height'], FILTER_SANITIZE_NUMBER_INT);
 	}
 	
 	//make sure values are found
@@ -1288,8 +1421,8 @@ function provia_savezipfull($data)
 	$GLOBALS['wpdb']->query(
 	   $GLOBALS['wpdb']->prepare(
 		  "
-		  INSERT INTO wp_provia_zipcode_log (zipcode,userid,ip_address,country_code,email_address,name,date_created)
-		  VALUES (%s,%d,%s,%s,%s,%s,%s)
+		  INSERT INTO wp_provia_zipcode_log (zipcode,userid,ip_address,country_code,email_address,name,screen_width,screen_height,date_created)
+		  VALUES (%s,%d,%s,%s,%s,%s,%d,%d,%s)
 		  ",
 		  $zipcode,
 		  $userid,
@@ -1297,6 +1430,8 @@ function provia_savezipfull($data)
 		  $country,
 		  $email,
 		  $name,
+		  $screen_width,
+		  $screen_height,
 		  $curr_date
 	   )
 	);
@@ -1312,11 +1447,23 @@ function provia_savezip($data)
 	$userid = $GLOBALS['provia']['userid'];
 	$zipcode = '';
 	$country = '';
+	$screen_width = 0;
+	$screen_height = 0;
 	$ipaddress = trim($_SERVER['REMOTE_ADDR']);
 	
 	if(isset($data['zipcode']))
 	{
 		$zipcode = filter_var($data['zipcode'], FILTER_SANITIZE_STRING);
+	}
+	
+	if(isset($data['screen_width']))
+	{
+		$screen_width = filter_var($data['screen_width'], FILTER_SANITIZE_NUMBER_INT);
+	}
+	
+	if(isset($data['screen_height']))
+	{
+		$screen_height = filter_var($data['screen_height'], FILTER_SANITIZE_NUMBER_INT);
 	}
 	
 	if(isset($data['country']))
@@ -1340,12 +1487,14 @@ function provia_savezip($data)
 	$GLOBALS['wpdb']->query(
 	   $GLOBALS['wpdb']->prepare(
 		  "
-		  INSERT INTO wp_provia_zipcode_log (zipcode,userid,ip_address,date_created)
-		  VALUES (%s,%s,%s,%s)
+		  INSERT INTO wp_provia_zipcode_log (zipcode,userid,ip_address,screen_width,screen_height,date_created)
+		  VALUES (%s,%s,%s,%d,%d,%s);
 		  ",
 		  $zipcode,
 		  $userid,
 		  $ipaddress,
+		  $screen_width,
+		  $screen_height,
 		  $curr_date
 	   )
 	);
@@ -1377,6 +1526,18 @@ function provia_savepreferreddealer($data)
 	$ip_address = trim($_SERVER['REMOTE_ADDR']);
 	$curr_date = date('Y-m-d H:i:s');
 	$preferreddealer_id = 0;
+	$screen_width = 0;
+	$screen_height = 0;
+	
+	if(isset($data['screen_width']))
+	{
+		$screen_width = filter_var($data['screen_width'], FILTER_SANITIZE_NUMBER_INT);
+	}
+	
+	if(isset($data['screen_height']))
+	{
+		$screen_height = filter_var($data['screen_height'], FILTER_SANITIZE_NUMBER_INT);
+	}
 	
 	//get dealer attributes if found
 	if(isset($data['dealer_name']))
@@ -1423,7 +1584,7 @@ function provia_savepreferreddealer($data)
 	}
 	else
 	{
-		$sql = "SELECT preferreddealer_id FROM wp_provia_preferreddealers where ip_address='".$ip_address."'";
+		$sql = "SELECT preferreddealer_id FROM wp_provia_preferreddealers where ip_address='".$ip_address."' and userid=0";
 		$dealers = $GLOBALS['wpdb']->get_results($sql);
 		$preferreddealer_id = $dealers[0]->preferreddealer_id;
 	}
@@ -1445,6 +1606,8 @@ function provia_savepreferreddealer($data)
 			  dealer_lat=%s,
 			  dealer_long=%s,
 			  dealer_zipcode=%s,
+			  screen_width=%d,
+			  screen_height=%d,
 			  date_modified=%s 
 			  WHERE preferreddealer_id=%d 
 			  ",
@@ -1458,6 +1621,8 @@ function provia_savepreferreddealer($data)
 			  $dealer_lat,
 			  $dealer_long,
 			  $dealer_zipcode,
+			  $screen_width,
+			  $screen_height,
 			  $curr_date,
 			  $preferreddealer_id
 		   )
@@ -1469,8 +1634,8 @@ function provia_savepreferreddealer($data)
 		$GLOBALS['wpdb']->query(
 		   $GLOBALS['wpdb']->prepare(
 			  "
-			  INSERT INTO wp_provia_preferreddealers (dealerid, userid, ip_address, dealer_name, dealer_phone, dealer_website, dealer_address, dealer_lat, dealer_long, dealer_zipcode, date_created)
-			  VALUES ( %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s )
+			  INSERT INTO wp_provia_preferreddealers (dealerid, userid, ip_address, dealer_name, dealer_phone, dealer_website, dealer_address, dealer_lat, dealer_long, dealer_zipcode, screen_width, screen_height, date_created)
+			  VALUES ( %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %d, %d, %s )
 			  ",
 			  $dealerid,
 			  $userid,
@@ -1482,6 +1647,8 @@ function provia_savepreferreddealer($data)
 			  $dealer_lat,
 			  $dealer_long,
 			  $dealer_zipcode,
+			  $screen_width,
+			  $screen_height,
 			  $curr_date
 		   )
 		);
