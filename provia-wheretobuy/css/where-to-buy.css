@@ -34,3 +34,5 @@ tr.featured-listing .btn:hover { background-color:#FFFFFF; }
 #sec-form .btn { padding:14px 34px 14px 14px; font-size:.9em; }
 
 #map-canvas { width:99.4%; height:418px; border:3px solid #6B8C21; border-bottom:none; }
+
+.tooltip_templates { display:none; }

@@ -178,8 +178,8 @@ if(isset($_GET['embarq']))
 <script language="javascript" type="text/javascript">
 	
 	var base_protocol = location.protocol.toString();
-	var base_url = base_protocol + "//provia.proviaserver-v2.com"
-	//var base_url = base_protocol + "//www.provia.com"
+	//var base_url = base_protocol + "//provia.proviaserver-v2.com"
+	var base_url = base_protocol + "//www.provia.com"
 	
 	jQuery("#show_advanced_options").click(function () {
 		jQuery("#advanced_options").toggle();

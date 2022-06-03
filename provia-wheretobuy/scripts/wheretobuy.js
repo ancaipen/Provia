@@ -219,6 +219,9 @@
 	 }
 	 
 	 function getLocations(tab, displaygroup, allowscroll) {
+		 
+		 var postURL = getProviaApiUrl(displaygroup);
+		 
 		 if (validateLocationRequest()) {
 				
 				displaygroup = displaygroup || "all";
@@ -247,7 +250,7 @@
 					_city = replaceAll('&', 'and', _city);
 					_city = escape(_city.replace(/\./g, ""));
 					
-					var postURL = self.location.protocol + '//' + document.domain + '/wp-content/plugins/provia-wheretobuy/ajax/wtb.php?capturelead=true&professional=' + jQuery('#fld-profession option:selected').val() + '&firstname=' + jQuery('#fld-first-name').val() + '&lastname=' + jQuery('#fld-last-name').val() + '&email=' + jQuery('#fld-email').val() + '&companyname=' + _company_name + '&businessaddress=' + _address + '&city=' + _city + '&state=' + jQuery('#fld-state').val() + '&zip=' + jQuery('#fld-form-zip').val() + '&phone=' + (jQuery('#fld-phone').val() == "" ? "(none)" : jQuery('#fld-phone').val()) + '&products=' + products + '&custno=-1&comments=-1&displaygroup=' + displaygroup;
+					postURL = self.location.protocol + '//' + document.domain + '/wp-content/plugins/provia-wheretobuy/ajax/wtb.php?capturelead=true&professional=' + jQuery('#fld-profession option:selected').val() + '&firstname=' + jQuery('#fld-first-name').val() + '&lastname=' + jQuery('#fld-last-name').val() + '&email=' + jQuery('#fld-email').val() + '&companyname=' + _company_name + '&businessaddress=' + _address + '&city=' + _city + '&state=' + jQuery('#fld-state').val() + '&zip=' + jQuery('#fld-form-zip').val() + '&phone=' + (jQuery('#fld-phone').val() == "" ? "(none)" : jQuery('#fld-phone').val()) + '&products=' + products + '&custno=-1&comments=-1&displaygroup=' + displaygroup;
 					
 					//alert(postURL);
 
@@ -312,6 +315,9 @@
 					loadLocations(displaygroup, allowscroll);
 				}
 		 }
+		 
+		 return postURL;
+		 
 	}
 
 	function postConnectMeLeadCapture() {

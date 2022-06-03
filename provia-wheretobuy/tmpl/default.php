@@ -345,8 +345,10 @@ jQuery(document).ready(function () {
 
     jQuery("#fld-wtb-go").click(function () { 
 	
+		debugger;
+	
 		//get results
-		getLocations(jQuery('.tabbed .active a').attr('id'), "1");
+		var postUrl = getLocations(jQuery('.tabbed .active a').attr('id'), "1");
 		
 		//get authorized dealers, wait until locations display
 		setTimeout(function(){ 
@@ -359,9 +361,7 @@ jQuery(document).ready(function () {
 		
 		if(zipcode != null && zipcode != "")
 		{
-			
-			//debugger;
-			
+
 			var url = "/wp-json/provia/v1/savezip/simple/";
 			var screenWidth = Math.round(window.screen.width);
 			var screenHeight = Math.round(window.screen.height);
@@ -369,7 +369,8 @@ jQuery(document).ready(function () {
 			var data = { 
 				zipcode: zipcode,
 				screen_width: screenWidth,
-				screen_height: screenHeight
+				screen_height: screenHeight,
+				search_vars: postUrl
 			};
 			
 			//post to web api to save dealer/user association
@@ -397,7 +398,7 @@ jQuery(document).ready(function () {
     //hide or show 
     jQuery("#fld-prod-siding-option").click(function() { 
 		
-		debugger;
+		//debugger;
 		
         //check to make sure that options only available to homeowners
         if (jQuery('#fld-prod-siding-option').is(':checked')) {

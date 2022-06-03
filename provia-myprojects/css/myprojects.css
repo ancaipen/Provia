@@ -201,3 +201,537 @@ img.myprojects-image:active {
 	width: 98%;
 }
 }
+
+
+
+
+
+
+
+
+
+
+/* From Elementor  */
+
+
+
+
+
+
+/* Vision Board Canvas */
+
+div#my-projects-container {
+    width:calc(100% - 320px);
+    height: 70vh;
+    background-color:white;
+    background:url(https://provia.proviaserver-v2.com/wp-content/uploads/2022/03/cork3.jpg);
+    border-radius:15px;
+    border:1px solid lightgray;
+    transition: all .3s ease !important;
+    transition-delay:1s;
+}
+
+div#my-projects-container::before {
+    display:block;
+    content:'';
+    opacity: 0;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform:translateX(-50%) translateY(-50%);
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    background:url(https://provia.proviaserver-v2.com/wp-content/uploads/2022/03/vision-board-4-.png) no-repeat center center;
+    background-size:300px;
+    transition: all .5s ease;
+}
+
+div#my-projects-container:hover{
+
+}
+
+div#my-projects-container:hover::before {
+    opacity:0;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Vision Board Images */
+
+div.drag-drop {
+    height: auto !important;
+}
+img.myprojects-drag-image {
+    box-shadow:rgba(0,0,0,0.1) 0 0px 6px;
+    border-radius:5px;
+    transition:all .2s ease !important;
+
+}
+
+img.myprojects-drag-image:hover {
+    box-shadow:rgba(0,0,0,0.1) 0 1px 10px;
+}
+
+img.myprojects-drag-image:active {
+    box-shadow:rgba(0,0,0,0.4) 5px 8px 30px;
+
+
+}
+
+img.myprojects-drag-image + .product-title {
+    opacity: 0;
+    font-size:12px;
+    line-height: 1em;
+    transition: all .2s ease;
+    margin-top: 8px;
+}
+
+img.myprojects-drag-image:hover + .product-title {
+    opacity: 1;
+    margin-top: 0px;
+    transition-delay:0s;
+}
+
+
+div.my-projects-rightcol {
+    width: 300px;
+    height: 70vh;
+    float:right;
+    display:flex;
+    flex-direction: column;
+    justify-content:start;
+    padding: 15px 15px 0 15px ;
+    margin: 0;
+    box-shadow: inset rgba(0,0,0,0.15) 1px 0 10px;
+    border-radius: 15px;
+}
+
+div#my-projects-textsearch {
+    width: 100%;
+}
+
+div#my-projects-textsearch::before {
+    content:'Drag images to move them to your Vision Board. Click the X on images to return them to your saved folder.';
+    display:block;
+    font-size:14px;
+    line-height:1.4em;
+    margin-bottom: 10px;
+    color:gray;
+}
+
+input#my-projects-textsearch-input {
+    font-size:16px;
+    border-radius:10px;
+    border:1px solid #e3e3e3;
+    box-shadow: rgb(235 248 212) 0 3px 3px;
+    transition: all .2s ease;
+    background:url(/wp-content/uploads/2022/04/green-search-icon-.svg) white no-repeat center right 10px ;
+    background-size:20px;
+}
+
+input#my-projects-textsearch-input:hover {
+    border-color:var(--e-global-color-accent);
+    background:url(/wp-content/uploads/2022/04/green-search-icon-.svg) #f4fbe9 no-repeat center right 10px ;
+    background-size:20px;
+}
+
+input#my-projects-textsearch-input:focus {
+    background:#f4fbe9;
+    background-position: center right 10px;
+    border-color:var(--e-global-color-accent);
+    box-shadow: rgb(235 248 212) 0 3px 10px;
+}
+
+div#my-projects-images {
+    box-shadow:none;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    display:flex;
+    flex-wrap:wrap;
+    align-content:start;
+    padding: 0;
+    border-radius: 0;
+    background:transparent;
+}
+
+div#my-projects-images .drag-drop.toolset-image {
+    width:85px;
+    height: 85px !important;
+    margin: 0;
+    padding: 5px;
+    cursor:grab !important;
+
+}
+
+div#my-projects-images .drag-drop.toolset-image:hover {
+    z-index: 2
+}
+
+div#my-projects-images .drag-drop.toolset-image:active {
+    cursor:grabbing !important;
+}
+
+div#my-projects-images .drag-drop.toolset-image img {
+    height: 100%;
+    width: 100%;
+    object-position:top center;
+    z-index: 1;
+    box-shadow:rgba(0,0,0,0.2) 0 3px 6px;
+}
+
+div#my-projects-images .drag-drop.toolset-image img:hover {
+    box-shadow:rgba(0,0,0,0.4) 0 3px 6px;
+}
+
+div#my-projects-images .drag-drop.toolset-image img:active {
+    transform:scale(1.05);
+}
+
+div#my-projects-images .drag-drop.toolset-image .product-title {
+    font-size: 11px;
+    line-height:1.4em;
+    overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-box-orient: vertical;
+   -webkit-line-clamp: 2;
+   text-align:center;
+   width: 100%;
+    position: absolute;
+    left:50%;
+    transform:translateX(-50%);
+    bottom: -40px;
+    background:rgba(0,0,0,0.5);
+    backdrop-filter:blur(5px);
+    padding: 3px 3px;
+    border-radius:3px;
+    color:white;
+    z-index: 2;
+    opacity: 0;
+    visibility:hidden;
+    transition: all .2s ease;
+    transition-delay: 0s;
+}
+
+div#my-projects-images .drag-drop.toolset-image:hover .product-title {
+    opacity: 1;
+    bottom: -30px;
+    visibility:visible;
+    opacity: 1;
+}
+
+div#my-projects-images .drag-drop.toolset-image .product-title::before {
+    position:absolute;
+    top:-8px;
+    left: calc(50% - 3px);
+    content:'';
+    width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 0 5px 8px 5px;
+  border-color: transparent  transparent rgba(0,0,0,0.5) transparent;
+  backdrop-filter:blur(5px);
+}
+
+
+
+
+
+
+
+
+/* Vision Board Controls */
+
+
+
+div#my-projects-overlay {
+    background-color:white ;
+    border:none;
+    box-shadow: rgba(0,0,0,0.1) 0 3px 6px;
+    text-align:center;
+}
+
+div#my-projects-overlay img {
+    display:none;
+}
+
+div#my-projects-overlay .my-projects-overlay-text {
+    font-weight:normal;
+}
+
+div#my-projects-overlay .my-projects-overlay-text::before {
+    content:'';
+    display: block;
+    width: 50px;
+    height: 50px;
+    background:url(https://provia.proviaserver-v2.com/wp-content/uploads/2022/01/ProVia-Spinner-1.1s-51px.gif) center center no-repeat;
+    background-size: 100% 100%;
+    margin:0 auto;
+}
+
+
+
+div#my-projects-save {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:start;
+    row-gap: 15px;
+    margin-bottom: 15px;
+    padding: 0;
+}
+
+div#my-projects-save > div:not(:last-of-type) {
+    border-right: solid 1px lightgray;
+    padding-right: 15px;
+    margin-right: 15px;
+}
+
+div.myprojects-input-container {
+    width:auto ;
+    display:flex;
+    gap: 15px
+}
+
+
+div.myprojects-input-container #project-lists {
+    width: auto ;
+    font-size: 16px;
+    border-radius:10px;
+    border:1px solid #e3e3e3;
+    box-shadow: rgb(235 248 212) 0 3px 3px;
+
+    transition: all .2s ease;
+}
+
+
+div.myprojects-input-container #myproject-name
+{
+    font-size:16px;
+    margin: 0;
+    border-radius:10px;
+    border:1px solid #e3e3e3;
+    box-shadow: rgb(235 248 212) 0 3px 3px;
+    transition: all .2s ease;
+    min-width: 230px;
+}
+
+
+
+div.myprojects-input-container #myproject-name:hover,
+div.myprojects-input-container #project-lists:hover{
+    background:#f4fbe9;
+    border-color:var(--e-global-color-accent);
+}
+
+div.myprojects-input-container #myproject-name:focus,
+div.myprojects-input-container #project-lists:focus {
+    background:#f4fbe9;
+    border-color:var(--e-global-color-accent);
+    box-shadow: rgb(235 248 212) 0 3px 10px;
+}
+
+
+
+
+
+
+
+div#my-projects-save a > img  {
+    display:none;
+}
+
+div#my-projects-save a#save-facebook > img,
+div#my-projects-save a#save-twitter > img {
+    display:block;
+}
+
+div#my-projects-save a#save-facebook::before,
+div#my-projects-save a#save-twitter::before {
+    display:none;
+}
+
+
+
+
+/* Vision Board Buttons */
+
+div.myprojects-button-container {
+    display:flex;
+    align-items:center;
+    gap: 15px
+}
+
+div.myprojects-social-container {
+    display:flex;
+    align-items:center;
+    gap: 15px;
+    position: relative;
+    transition: all .2s ease;
+}
+/*
+div.myprojects-social-container a {
+    pointer-events:none !important;
+}
+
+div.myprojects-social-container:hover a {
+    opacity: 0.5;
+}
+
+div.myprojects-social-container:hover {
+
+
+}
+
+div.myprojects-social-container::after {
+    content:'Coming Soon!';
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform:translateY(calc(-100% - 20px));
+    width: 100%;
+    text-align:center;
+    background:#f4fbe9;
+    border:1px solid var(--e-global-color-accent);
+    border-radius:10px;
+    padding: 5px;
+    opacity: 0;
+
+    transition:all .2s ease;
+}
+
+div.myprojects-social-container:hover::after {
+    opacity: 1;
+
+    transform:translateY(calc(-100% - 10px));
+}
+
+div.myprojects-social-container::before {
+    content:'';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform:translateY(calc(-100% - 13px)) translateX(-50%) rotate(45deg);
+    z-index: 1;
+    width: 15px;
+    height: 15px;
+    text-align:center;
+    background:#f4fbe9;
+    border:1px solid var(--e-global-color-accent);
+    border-color:transparent var(--e-global-color-accent) var(--e-global-color-accent) transparent ;
+    opacity: 0 !important;
+    transition: all .2s ease;
+}
+
+div.myprojects-social-container:hover::before {
+    transform:translateY(calc(-100% - 3px)) translateX(-50%) rotate(45deg);
+    opacity: 1 !important;
+}
+
+*/
+
+
+
+
+div#my-projects-save a {
+    font-size: 16px;
+    height: auto;
+    color:black;
+    display:inline-flex;
+    flex-direction: row !important;
+    gap: 10px;
+    justify-content:center;
+    flex-direction: column;
+    align-items:center;
+    margin-top: auto;
+    padding: 15px;
+    border:1px solid #e3e3e3;
+    box-shadow: rgb(235 248 212)0 3px 3px;
+    border-radius: 10px;
+    white-space:nowrap;
+    transition: all .2s ease;
+}
+
+div#my-projects-save a:hover {
+    background:#f4fbe9;
+    border-color:var(--e-global-color-accent);
+    box-shadow: rgb(235 248 212) 0 2px 6px;
+}
+
+div#my-projects-save a:active {
+    background:var(--e-global-color-accent);
+    color:white;
+}
+
+div#my-projects-save a:active::before {
+    color:white;
+}
+
+
+div#my-projects-save a::before {
+    color:var(--e-global-color-accent);
+    font-size:25px;
+    line-height: 1em;
+}
+
+div#my-projects-save img {
+    height: 25px;
+    width: auto;
+}
+
+div#my-projects-save a::after {
+    line-height:1em;
+}
+
+div#my-projects-save a#save-project::before {
+    content:'\f0c7';
+    font-family: "Font Awesome 5 Free"; font-weight: 900;
+}
+
+div#my-projects-save a#save-project::after {
+    content:'Save Board';
+}
+
+div#my-projects-save a#refresh-project::before {
+    content:'\f2ea';
+    font-family: "Font Awesome 5 Free"; font-weight: 900;
+}
+
+div#my-projects-save a#refresh-project::after {
+    content:'Restart';
+}
+
+div#my-projects-save a#save-file::before {
+    content:'\f56d';
+    font-family: "Font Awesome 5 Free"; font-weight: 900;
+}
+
+div#my-projects-save a#save-file::after {
+    content:'Download';
+}
+
+div#my-projects-save a#save-facebook::before {
+    content:'\f021';
+    font-family: "Font Awesome 5 Free"; font-weight: 900;
+}
+
+div#my-projects-save a#save-facebook::after {
+    content:'Share';
+}
+
+div#my-projects-save a#save-twitter::before {
+    content:'\f021';
+    font-family: "Font Awesome 5 Free"; font-weight: 900;
+}
+
+div#my-projects-save a#save-twitter::after {
+    content:'Share';
+}

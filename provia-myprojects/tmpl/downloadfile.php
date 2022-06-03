@@ -12,6 +12,7 @@ if(trim($_REQUEST['f']) == "")
 
 $filepath = $_REQUEST['f'];
 $filepath = str_replace('https://provia.proviaserver-v2.com','',$filepath);
+$filepath = str_replace('https://www.provia.com','',$filepath);
 $filenames = explode('/', $filepath);
 $filenames_length = count($filenames);
 

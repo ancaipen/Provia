@@ -270,7 +270,7 @@ if($products != null)
 </div>
 <script language="javascript" type="text/javascript">
 	
-	var mediaImageDir = 'https://provia.proviaserver-v2.com/';
+	var mediaImageDir = 'https://www.provia.com/';
 
 	jQuery(document).ready(function() {
 		

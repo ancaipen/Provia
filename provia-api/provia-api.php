@@ -28,7 +28,7 @@ include_once( ABSPATH."wp-includes/wp-db.php" );
 
 $plugin_data = get_plugin_data( __FILE__ );
 define( 'provia_saveimage_path', plugin_dir_path( __FILE__ ) );
-define( 'provia_default_url', 'https://provia.proviaserver-v2.com/' );
+define( 'provia_default_url', 'https://www.provia.com/' );
 
 //--------------------------------------------------
 // SHORTCODE
@@ -1450,6 +1450,7 @@ function provia_savezip($data)
 	$screen_width = 0;
 	$screen_height = 0;
 	$ipaddress = trim($_SERVER['REMOTE_ADDR']);
+	$search_vars = '';
 	
 	if(isset($data['zipcode']))
 	{
@@ -1470,6 +1471,11 @@ function provia_savezip($data)
 	{
 		$country = filter_var($data['country'], FILTER_SANITIZE_STRING);
 	}
+	
+	if(isset($data['search_vars']))
+	{
+		$search_vars = filter_var($data['search_vars'], FILTER_SANITIZE_STRING);
+	}
 		
 	if($zipcode == null || trim($zipcode) == "")
 	{
@@ -1487,14 +1493,15 @@ function provia_savezip($data)
 	$GLOBALS['wpdb']->query(
 	   $GLOBALS['wpdb']->prepare(
 		  "
-		  INSERT INTO wp_provia_zipcode_log (zipcode,userid,ip_address,screen_width,screen_height,date_created)
-		  VALUES (%s,%s,%s,%d,%d,%s);
+		  INSERT INTO wp_provia_zipcode_log (zipcode,userid,ip_address,screen_width,screen_height,search_vars,date_created)
+		  VALUES (%s,%s,%s,%d,%d,%s,%s);
 		  ",
 		  $zipcode,
 		  $userid,
 		  $ipaddress,
 		  $screen_width,
 		  $screen_height,
+		  $search_vars,
 		  $curr_date
 	   )
 	);
